@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Markdown on Hori</title>
+    <link>//localhost:1313/tags/markdown/</link>
+    <description>Recent content in Markdown on Hori</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/tags/markdown/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Certificates</title>
+      <link>//localhost:1313/modules/certificates/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/modules/certificates/</guid>
+      <description>&lt;p&gt;Linkerd automatically enable mTLS for all TCP traffic between meshed pods. To do so, it relies on several certificates that should be in place for the control plane to work as expected. You can either provide them during the installation or using thirds party tools like Cert-Manager and Trust-Manager.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;//localhost:1313/modules/certificates/hierarchy.jpg&#34; alt=&#34;Certificate Hierarchy&#34;&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
+  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and the &lt;code&gt;cluster.yaml&lt;/code&gt; to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Control Plane</title>
+      <link>//localhost:1313/modules/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/modules/control-plane/</guid>
+      <description>&lt;p&gt;Linkerd Service Mesh has a two layer archtitecture with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Control Plane:&lt;/strong&gt; composed by the destination, policy, identity, sp-validatior and proxy-injector controllers&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Data Plane:&lt;/strong&gt; composed by the proxies running alongside the applications in the same pod and taking care of managin all the inbound/outbound communications.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The Control Plane and the proxies communicate via gRPC, while the proxies communivate via HTTP/2.&lt;/p&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm (v3+)&lt;/li&gt;
+&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
+  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;policy.linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;gateway.networking.k8s.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: None
+EOF
+cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+volumes:
+  - volume: &amp;quot;&amp;lt;LOCAL-FULL-PATH&amp;gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&amp;quot;
+    nodeFilters: [&amp;quot;server:*&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linkerd CLI</title>
+      <link>//localhost:1313/modules/cli/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/modules/cli/</guid>
+      <description>&lt;p&gt;The Linkerd maintainers have developed a rich CLI that allows you to easily install Linkerd CRDs, control plane components, and manage extensions directly from the command line.&lt;/p&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#1-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and the &lt;code&gt;cluster.yaml&lt;/code&gt; to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Proxy-Init</title>
+      <link>//localhost:1313/modules/proxy-init/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/modules/proxy-init/</guid>
+      <description>&lt;p&gt;The &lt;code&gt;linkerd-init&lt;/code&gt; container is added to each meshed pod as a Kubernetes init container that runs before any other containers start. It configures &lt;code&gt;iptables&lt;/code&gt; rules that redirect all TCP traffic to and from the pod through the Linkerd proxy.&lt;/p&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm (v3+)&lt;/li&gt;
+&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
+  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and the &lt;code&gt;cluster.yaml&lt;/code&gt; to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Timeouts</title>
+      <link>//localhost:1313/modules/timeouts/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/modules/timeouts/</guid>
+      <description>&lt;p&gt;Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/request:&lt;/strong&gt; Maximum time from when a request is sent until the first byte of the request body arrives at the server.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/response:&lt;/strong&gt; Maximum time from when the first byte of the response header is received until the entire response body is delivered.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/idle:&lt;/strong&gt; Maximum time of inactivity between data frames (both request and response) before the connection is closed.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm (v3+)&lt;/li&gt;
+&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
+  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; application.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  namespace: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: [&amp;quot;sleep&amp;quot;, &amp;quot;infinity&amp;quot;]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      containers:
+        - name: http-app
+          image: kong/httpbin:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  selector:
+    app: server
+    version: v1
+  ports:
+    - port: 80
+      targetPort: 80
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;1-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#1-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

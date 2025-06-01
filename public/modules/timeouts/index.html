@@ -1,0 +1,712 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Timeouts - Hori</title>
+
+    
+    <meta name="description" content="Lorem Ipsum Dolor Si Amet" />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/setup/">Setup</a></li><li>
+                            <a href="/changelog/">Changelog</a></li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/control-plane">Control Plane</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/zh-tw/" class="pure-menu-link">正體中文</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/setup/" class="pure-menu-link">Setup</a>
+                    
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/control-plane" class="pure-menu-link">Control Plane</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+</ul>
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    <p>Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:</p>
+<ul>
+<li><strong>timeout.linkerd.io/request:</strong> Maximum time from when a request is sent until the first byte of the request body arrives at the server.</li>
+<li><strong>timeout.linkerd.io/response:</strong> Maximum time from when the first byte of the response header is received until the entire response body is delivered.</li>
+<li><strong>timeout.linkerd.io/idle:</strong> Maximum time of inactivity between data frames (both request and response) before the connection is closed.</li>
+</ul>
+
+<h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
+  <a href="#prerequisites" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<ul>
+<li>macOS/Linux/Windows with a Unix‑style shell</li>
+<li>k3d (v5+) for local Kubernetes clusters</li>
+<li>kubectl (v1.25+)</li>
+<li>Helm (v3+)</li>
+<li>Smallstep (step) CLI for certificate generation</li>
+</ul>
+
+<h1 id="tutorial" class="header-anchor-wrapper">Tutorial
+  <a href="#tutorial" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+
+<h2 id="1-create-the-configuration-files" class="header-anchor-wrapper">1. Create the configuration files
+  <a href="#1-create-the-configuration-files" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>cat &lt;&lt; 'EOF' &gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &quot;cluster&quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --debug
+        nodeFilters: [&quot;server:*&quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&quot;loadbalancer&quot;]
+EOF
+cat &lt;&lt; 'EOF' &gt; application.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  namespace: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: [&quot;sleep&quot;, &quot;infinity&quot;]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      containers:
+        - name: http-app
+          image: kong/httpbin:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  selector:
+    app: server
+    version: v1
+  ports:
+    - port: 80
+      targetPort: 80
+EOF
+</code></pre>
+
+<h2 id="1-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">1. Create a Local Kubernetes Cluster
+  <a href="#1-create-a-local-kubernetes-cluster" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:</p>
+<pre><code>k3d cluster create  --kubeconfig-update-default \
+  -c ./cluster.yaml
+</code></pre>
+
+<h2 id="2-generate-identity-certificates" class="header-anchor-wrapper">2. Generate Identity Certificates
+  <a href="#2-generate-identity-certificates" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd requires a trust anchor (root CA) and an issuer (intermediate CA) for mTLS identity.</p>
+<pre><code>step certificate create root.linkerd.cluster.local ./certificates/ca.crt ./certificates/ca.key \
+    --profile root-ca \
+    --no-password \
+    --insecure
+step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt ./certificates/issuer.key \
+    --profile intermediate-ca \
+    --not-after 8760h \
+    --no-password \
+    --insecure \
+    --ca ./certificates/ca.crt \
+    --ca-key ./certificates/ca.key
+</code></pre>
+
+<h2 id="3-install-linkerd-via-helm" class="header-anchor-wrapper">3. Install Linkerd via Helm
+  <a href="#3-install-linkerd-via-helm" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>helm repo add linkerd-edge https://helm.linkerd.io/edge
+helm repo update
+helm install linkerd-crds linkerd-edge/linkerd-crds \
+  -n linkerd --create-namespace --set installGatewayAPI=true
+helm install linkerd-control-plane \
+  -n linkerd \
+  --set-file identityTrustAnchorsPEM=./certificates/ca.crt \
+  --set-file identity.issuer.tls.crtPEM=./certificates/issuer.crt \
+  --set-file identity.issuer.tls.keyPEM=./certificates/issuer.key \
+  linkerd-edge/linkerd-control-plane
+</code></pre>
+
+<h2 id="4-deploy-the-sample-application" class="header-anchor-wrapper">4. Deploy the Sample Application
+  <a href="#4-deploy-the-sample-application" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Assuming your app is kustomized under ./application, deploy with:</p>
+<pre><code>kubectl apply -f ./application.yaml
+</code></pre>
+<p>You can then validate that the traffic is going from the client&rsquo;s pod to server&rsquo;s deployment</p>
+<pre><code>kubectl exec -n simple-app client -c curl -- sh -c '\
+  curl -sS --no-progress-meter \
+    -X POST \
+    -H &quot;Content-Type: application/json&quot; \
+    -o /dev/null \
+    -w &quot;HTTPSTATUS:%{http_code}\n&quot; \
+    http://server.simple-app.svc.cluster.local/post \
+'
+</code></pre>
+
+<h2 id="timeout-scenarios" class="header-anchor-wrapper">Timeout Scenarios
+  <a href="#timeout-scenarios" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Below are examples of how to annotate your server service and test each timeout policy.</p>
+
+<h2 id="1-request-timeout-timeoutlinkerdiorequest" class="header-anchor-wrapper">1. Request Timeout (timeout.linkerd.io/request)
+  <a href="#1-request-timeout-timeoutlinkerdiorequest" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Limit the time to upload the entire request body by setting the following annotation to the server&rsquo;s service.</p>
+<pre><code>kubectl annotate svc server \
+  -n simple-app \
+  timeout.linkerd.io/request=1s \
+  timeout.linkerd.io/response=1h \
+  timeout.linkerd.io/idle=1h \
+  --overwrite
+</code></pre>
+<p>Throttle the upload to take longer than 1s (100 KB at 20 KB/s):</p>
+<pre><code>kubectl exec -n simple-app client -c curl -- sh -c '\
+  yes a | head -c 100000 &gt; /tmp/payload.json &amp;&amp; \
+  curl -sS --no-progress-meter \
+    --limit-rate 20K \
+    -X POST \
+    -H &quot;Content-Type: application/json&quot; \
+    --data-binary @/tmp/payload.json \
+    -o /dev/null \
+    -w &quot;HTTPSTATUS:%{http_code}\n&quot; \
+    http://server.simple-app.svc.cluster.local/post \
+'
+</code></pre>
+
+<h2 id="2-response-timeout-timeoutlinkerdioresponse" class="header-anchor-wrapper">2. Response Timeout (timeout.linkerd.io/response)
+  <a href="#2-response-timeout-timeoutlinkerdioresponse" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Limit the time to receive the full response by setting the following annotation to the server&rsquo;s service.</p>
+<pre><code>kubectl annotate svc server \
+  -n simple-app \
+  timeout.linkerd.io/request=1h \
+  timeout.linkerd.io/response=1s \
+  timeout.linkerd.io/idle=1h \
+  --overwrite
+</code></pre>
+<p>Use HTTPBin’s /delay/5 endpoint to delay the response &gt;5s:</p>
+<pre><code>kubectl exec -n simple-app client -c curl -- sh -c '\
+  curl -sS --no-progress-meter \
+    -X POST \
+    -H &quot;Content-Type: application/json&quot; \
+    -o /dev/null \
+    -w &quot;HTTPSTATUS:%{http_code}\n&quot; \
+    http://server.simple-app.svc.cluster.local/delay/5 \
+'
+</code></pre>
+
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2.18/reference/timeouts/">https://linkerd.io/2.18/reference/timeouts/</a></li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

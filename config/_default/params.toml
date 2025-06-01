@@ -1,0 +1,23 @@
+navbar_title = 'Hori'
+footer = "Copyright © 2025"
+author = "Ivan Porta"
+color_scheme = "light"
+
+enable_zooming_js = true
+enable_header_anchor = true
+enable_toc = false
+enable_site_search = true
+enable_math = false
+
+# SEO
+enable_open_graph = false
+enable_twitter_cards = false
+
+# Collapsible Menu
+enable_collapsible_toc = false
+enable_collapsible_changelogs = true
+
+[list_layout]
+enable_group_by_year = false
+enable_show_date = false
+enable_pagination = false

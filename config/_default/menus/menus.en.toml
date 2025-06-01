@@ -1,0 +1,47 @@
+[[navbar]]
+  identifier = "setup"
+  name = "Setup"
+  url = "/setup/"
+  weight = 1
+
+[[navbar]]
+  identifier = "changelog"
+  name = "Changelog"
+  url = "/changelog/"
+  weight = 2
+
+[[navbar]]
+  identifier = "modules"
+  name = "Modules"
+  url = "/modules/"
+  weight = 3
+  [[navbar]]
+    identifier = "certificates"
+    name = "Certificates"
+    url = "/modules/certificates"
+    parent = "modules"
+    weight = 1
+  [[navbar]]
+    identifier = "proxy-init"
+    name = "Proxy-Init"
+    url = "/modules/proxy-init"
+    parent = "modules"
+    weight = 2
+  [[navbar]]
+    identifier = "control-plane"
+    name = "Control Plane"
+    url = "/modules/control-plane"
+    parent = "modules"
+    weight = 3
+  [[navbar]]
+    identifier = "timeouts"
+    name = "Timeouts"
+    url = "/modules/timeouts"
+    parent = "modules"
+    weight = 4
+  [[navbar]]
+    identifier = "linkerd-cli"
+    name = "Linkerd CLI"
+    url = "/modules/cli"
+    parent = "modules"
+    weight = 4

@@ -1,0 +1,9 @@
+languageCode = "en"
+title = "Hori"
+theme = "hugo-theme-monochrome"
+defaultContentLanguage = "en"
+enableEmoji = false
+enableGitInfo = false
+
+[pagination]
+pagerSize = 5
