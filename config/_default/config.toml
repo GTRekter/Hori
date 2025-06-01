@@ -7,7 +7,3 @@ enableGitInfo = false
 
 [pagination]
 pagerSize = 5
-
-[caches]
-  [caches.images]
-    dir = ':cacheDir/images'
