@@ -16,4 +16,4 @@ Most tutorials stop at the “happy path.”
 Each module is hands-on, self-contained, and designed to run on a local **k3d** cluster.  
 Copy, paste, and experiment at your own pace.
 
-[Website](http://ivanporta.net//Hori)
+[Website](https://ivanporta.net/Hori/)
