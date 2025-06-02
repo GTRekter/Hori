@@ -23,7 +23,7 @@
     <title>Proxy-Init - Hori</title>
 
     
-    <meta name="description" content="Lorem Ipsum Dolor Si Amet" />
+    <meta name="description" content="Deep dive into Linkerd’s proxy-init container—how it injects iptables rules to steer pod traffic through the mesh and how to inspect those rules in Kubernetes." />
     
 
     
@@ -106,8 +106,6 @@
             </label>
             <div id="sidebar">
                 <ul><li>
-                            <a href="/setup/">Setup</a></li><li>
-                            <a href="/changelog/">Changelog</a></li><li>
                             <a href="/modules/">Modules</a>
     <ul>
         
@@ -157,7 +155,8 @@
             
         
     </ul>
-</li></ul>
+</li><li>
+                            <a href="/changelog/">Changelog</a></li></ul>
             </div>
         </div>
     
@@ -253,7 +252,7 @@
                             </li>
                             
                             <li class="pure-menu-item">
-                                <a href="//localhost:1313/zh-tw/" class="pure-menu-link">正體中文</a>
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
                             </li>
                             
                         </ul>
@@ -264,15 +263,7 @@
     </div>
 </header>
 <nav id="navbar" class="pure-menu">
-    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
-                    
-                        <a href="/setup/" class="pure-menu-link">Setup</a>
-                    
-                </li><li class="navbar-item pure-menu-item ">
-                    
-                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
-                    
-                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
                     
                         <a href="/modules/" class="pure-menu-link">Modules</a>
                     
@@ -323,6 +314,10 @@
     
 
 </ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
                 </li></ul>
 </nav>
 <main>
@@ -337,7 +332,23 @@
 <article class="line-numbers">
     
     
-    <p>The <code>linkerd-init</code> container is added to each meshed pod as a Kubernetes init container that runs before any other containers start. It configures <code>iptables</code> rules that redirect all TCP traffic to and from the pod through the Linkerd proxy.</p>
+    
+<h1 id="proxy-init" class="header-anchor-wrapper">Proxy-Init
+  <a href="#proxy-init" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<p>The <code>linkerd-init</code> container is added to each meshed pod as a Kubernetes init container that runs before any other containers start. It configures <code>iptables</code> rules that redirect all TCP traffic to and from the pod through the Linkerd proxy.</p>
 
 <h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
   <a href="#prerequisites" class="header-anchor-link">

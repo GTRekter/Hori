@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>소개 on Hori</title>
+    <link>//localhost:1313/ko/</link>
+    <description>Recent content in 소개 on Hori</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linkerd CLI</title>
+      <link>//localhost:1313/ko/modules/cli/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/cli/</guid>
+      <description>&lt;h1 id=&#34;linkerd-cli&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd CLI
+  &lt;a href=&#34;#linkerd-cli&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd 유지관리자들은 명령줄에서 Linkerd CRD, 제어 플레인 컴포넌트, 확장 기능을 손쉽게 설치·관리할 수 있도록 풍부한 CLI를 제공합니다.&lt;/p&gt;
+
+&lt;h1 id=&#34;사전-요구-사항&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 요구 사항
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unix-스타일 셸이 가능한 macOS/Linux/Windows&lt;/li&gt;
+&lt;li&gt;로컬 쿠버네티스 클러스터용 k3d(v5+)&lt;/li&gt;
+&lt;li&gt;kubectl(v1.25+)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-로컬-쿠버네티스-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 로컬 쿠버네티스 클러스터 생성
+  &lt;a href=&#34;#1-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 사용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>인증서</title>
+      <link>//localhost:1313/ko/modules/certificates/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/certificates/</guid>
+      <description>&lt;h1 id=&#34;인증서&#34; class=&#34;header-anchor-wrapper&#34;&gt;인증서
+  &lt;a href=&#34;#%ec%9d%b8%ec%a6%9d%ec%84%9c&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd는 메시 네트워크에 포함된 파드 간의 모든 TCP 트래픽에 대해 자동으로 mTLS를 활성화합니다. 이를 위해 제어 플레인이 정상적으로 동작하려면 여러 인증서가 준비되어 있어야 합니다. 설치 과정에서 직접 제공할 수도 있고, Cert-Manager나 Trust-Manager 같은 서드파티 도구를 사용할 수도 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;//localhost:1313/modules/certificates/hierarchy.jpg&#34; alt=&#34;Certificate Hierarchy&#34;&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;사전-요구-사항&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 요구 사항
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unix-스타일 셸이 가능한 macOS/Linux/Windows&lt;/li&gt;
+&lt;li&gt;로컬 쿠버네티스 클러스터용 k3d(v5+)&lt;/li&gt;
+&lt;li&gt;kubectl(v1.25+)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-구성-파일-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 구성 파일 생성
+  &lt;a href=&#34;#1-%ea%b5%ac%ec%84%b1-%ed%8c%8c%ec%9d%bc-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-로컬-쿠버네티스-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. 로컬 쿠버네티스 클러스터 생성
+  &lt;a href=&#34;#2-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>컨트롤 플레인</title>
+      <link>//localhost:1313/ko/modules/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/control-plane/</guid>
+      <description>&lt;h1 id=&#34;컨트롤-플레인&#34; class=&#34;header-anchor-wrapper&#34;&gt;컨트롤 플레인
+  &lt;a href=&#34;#%ec%bb%a8%ed%8a%b8%eb%a1%a4-%ed%94%8c%eb%a0%88%ec%9d%b8&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd 서비스 메시의 아키텍처는 두 계층으로 구성됩니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;제어 플레인(Control Plane):&lt;/strong&gt; destination, policy, identity, sp-validator, proxy-injector 컨트롤러로 이루어져 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;데이터 플레인(Data Plane):&lt;/strong&gt; 애플리케이션과 동일한 파드 안에서 함께 실행되는 프록시들이 모든 인바운드/아웃바운드 통신을 처리합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;제어 플레인과 프록시는 gRPC로 통신하며, 프록시 간 통신은 HTTP/2를 사용합니다.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>타임아웃</title>
+      <link>//localhost:1313/ko/modules/timeouts/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/timeouts/</guid>
+      <description>&lt;h1 id=&#34;타임아웃&#34; class=&#34;header-anchor-wrapper&#34;&gt;타임아웃
+  &lt;a href=&#34;#%ed%83%80%ec%9e%84%ec%95%84%ec%9b%83&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd는 메시 내 서비스 간 HTTP 요청 및 TCP 연결의 수명을 세밀하게 제어할 수 있도록 다양한 타임아웃 설정을 제공합니다. 쿠버네티스 서비스 애너테이션을 통해 다음 세 가지 기본 타임아웃 정책을 설정할 수 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/request:&lt;/strong&gt; 클라이언트가 요청을 전송한 순간부터 서버가 요청 본문의 첫 바이트를 수신할 때까지의 최대 시간&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/response:&lt;/strong&gt; 서버 응답 헤더의 첫 바이트를 받은 순간부터 전체 응답 본문이 전달될 때까지의 최대 시간&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;timeout.linkerd.io/idle:&lt;/strong&gt; 요청·응답 데이터 프레임 사이에 트래픽이 없을 때 연결을 닫기 전까지 허용되는 최대 유휴 시간&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;사전-요구-사항&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 요구 사항
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unix-스타일 셸이 가능한 macOS/Linux/Windows&lt;/li&gt;
+&lt;li&gt;로컬 쿠버네티스 클러스터용 k3d(v5+)&lt;/li&gt;
+&lt;li&gt;kubectl(v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm(v3+)&lt;/li&gt;
+&lt;li&gt;인증서 생성을 위한 Smallstep(step) CLI&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-구성-파일-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 구성 파일 생성
+  &lt;a href=&#34;#1-%ea%b5%ac%ec%84%b1-%ed%8c%8c%ec%9d%bc-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; application.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  namespace: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: [&amp;quot;sleep&amp;quot;, &amp;quot;infinity&amp;quot;]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      containers:
+        - name: http-app
+          image: kong/httpbin:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  namespace: simple-app
+spec:
+  selector:
+    app: server
+    version: v1
+  ports:
+    - port: 80
+      targetPort: 80
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-로컬-쿠버네티스-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. 로컬 쿠버네티스 클러스터 생성
+  &lt;a href=&#34;#2-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>프록시 초기화</title>
+      <link>//localhost:1313/ko/modules/proxy-init/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/proxy-init/</guid>
+      <description>&lt;h1 id=&#34;프록시-초기화&#34; class=&#34;header-anchor-wrapper&#34;&gt;프록시 초기화
+  &lt;a href=&#34;#%ed%94%84%eb%a1%9d%ec%8b%9c-%ec%b4%88%ea%b8%b0%ed%99%94&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;linkerd-init&lt;/code&gt; 컨테이너는 메시 네트워크에 주입된 모든 파드에 쿠버네티스 &lt;strong&gt;Init 컨테이너&lt;/strong&gt;로 추가되며, 애플리케이션 컨테이너들보다 먼저 실행됩니다. 이 컨테이너는 &lt;code&gt;iptables&lt;/code&gt; 규칙을 설정해 파드로 들어오고 나가는 모든 TCP 트래픽을 Linkerd 프록시로 우회시킵니다.&lt;/p&gt;
+
+&lt;h1 id=&#34;사전-요구-사항&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 요구 사항
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unix-스타일 셸이 가능한 macOS/Linux/Windows&lt;/li&gt;
+&lt;li&gt;로컬 쿠버네티스 클러스터용 k3d(v5+)&lt;/li&gt;
+&lt;li&gt;kubectl(v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm(v3+)&lt;/li&gt;
+&lt;li&gt;인증서 생성을 위한 Smallstep(step) CLI&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-구성-파일-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 구성 파일 생성
+  &lt;a href=&#34;#1-%ea%b5%ac%ec%84%b1-%ed%8c%8c%ec%9d%bc-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-로컬-쿠버네티스-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. 로컬 쿠버네티스 클러스터 생성
+  &lt;a href=&#34;#2-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Changelog</title>
+      <link>//localhost:1313/ko/changelog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/changelog/</guid>
+      <description>&lt;h1 id=&#34;changelog&#34; class=&#34;header-anchor-wrapper&#34;&gt;Changelog
+  &lt;a href=&#34;#changelog&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;v010-20250501&#34; class=&#34;header-anchor-wrapper&#34;&gt;v0.1.0 (2025/05/01)
+  &lt;a href=&#34;#v010-20250501&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Initial release.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

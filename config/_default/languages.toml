@@ -4,8 +4,8 @@ languageName = "English"
 languageCode = "en"
 weight = 1
 
-[zh-tw]
-contentDir = "content/zh-tw"
-languageName = "正體中文"
-languageCode = "zh-tw"
+[ko]
+contentDir = "content/ko"
+languageName = "한국어"
+languageCode = "ko"
 weight = 2

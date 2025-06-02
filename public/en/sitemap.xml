@@ -6,8 +6,8 @@
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-tw"
-                href="//localhost:1313/zh-tw/"
+                hreflang="ko"
+                href="//localhost:1313/ko/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -15,12 +15,38 @@
                 href="//localhost:1313/"
                 />
   </url><url>
+    <loc>//localhost:1313/tags/architecture/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/architecture/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/architecture/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/certificates/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/certificates/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/certificates/"
+                />
+  </url><url>
     <loc>//localhost:1313/modules/certificates/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-tw"
-                href="//localhost:1313/zh-tw/modules/certificates/"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/certificates/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -28,40 +54,207 @@
                 href="//localhost:1313/modules/certificates/"
                 />
   </url><url>
-    <loc>//localhost:1313/modules/control-plane/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/index/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/modules/cli/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/markdown/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/modules/</loc>
+    <loc>//localhost:1313/tags/cli/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-tw"
-                href="//localhost:1313/zh-tw/modules/"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/cli/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/modules/"
+                href="//localhost:1313/tags/cli/"
+                />
+  </url><url>
+    <loc>//localhost:1313/modules/control-plane/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/control-plane/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/control-plane/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/control-plane/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/control-plane/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/control-plane/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/crd/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/crd/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/crd/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/deep-dive/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/deep-dive/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/deep-dive/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/identity/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/identity/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/identity/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/index/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/index/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/index/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/iptables/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/iptables/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/iptables/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/kubernetes/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/kubernetes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/kubernetes/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/linkerd/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/linkerd/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/linkerd/"
+                />
+  </url><url>
+    <loc>//localhost:1313/modules/cli/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/cli/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/cli/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/mtls/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/mtls/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/mtls/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/proxy-init/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/proxy-init/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/proxy-init/"
                 />
   </url><url>
     <loc>//localhost:1313/modules/proxy-init/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/proxy-init/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/proxy-init/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/service-annotations/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/service-annotations/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/service-annotations/"
+                />
   </url><url>
     <loc>//localhost:1313/tags/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-tw"
-                href="//localhost:1313/zh-tw/tags/"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -69,17 +262,63 @@
                 href="//localhost:1313/tags/"
                 />
   </url><url>
-    <loc>//localhost:1313/tags/text/</loc>
+    <loc>//localhost:1313/tags/timeouts/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/timeouts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/timeouts/"
+                />
   </url><url>
     <loc>//localhost:1313/modules/timeouts/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/timeouts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/timeouts/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/tutorial/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/tutorial/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/tutorial/"
+                />
+  </url><url>
+    <loc>//localhost:1313/modules/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/"
+                />
   </url><url>
     <loc>//localhost:1313/categories/</loc>
     <xhtml:link
                 rel="alternate"
-                hreflang="zh-tw"
-                href="//localhost:1313/zh-tw/categories/"
+                hreflang="ko"
+                href="//localhost:1313/ko/categories/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -88,7 +327,15 @@
                 />
   </url><url>
     <loc>//localhost:1313/changelog/</loc>
-  </url><url>
-    <loc>//localhost:1313/setup/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/changelog/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/changelog/"
+                />
   </url>
 </urlset>

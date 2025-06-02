@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Index on Hori</title>
+    <link>//localhost:1313/ko/tags/index/</link>
+    <description>Recent content in Index on Hori</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/index/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>모듈</title>
+      <link>//localhost:1313/ko/modules/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/</guid>
+      <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -23,7 +23,7 @@
     <title>Timeouts - Hori</title>
 
     
-    <meta name="description" content="Lorem Ipsum Dolor Si Amet" />
+    <meta name="description" content="Practical guide to configuring request, response, and idle timeouts in Linkerd using Kubernetes service annotations—complete with hands-on examples." />
     
 
     
@@ -106,8 +106,6 @@
             </label>
             <div id="sidebar">
                 <ul><li>
-                            <a href="/setup/">Setup</a></li><li>
-                            <a href="/changelog/">Changelog</a></li><li>
                             <a href="/modules/">Modules</a>
     <ul>
         
@@ -157,7 +155,8 @@
             
         
     </ul>
-</li></ul>
+</li><li>
+                            <a href="/changelog/">Changelog</a></li></ul>
             </div>
         </div>
     
@@ -253,7 +252,7 @@
                             </li>
                             
                             <li class="pure-menu-item">
-                                <a href="//localhost:1313/zh-tw/" class="pure-menu-link">正體中文</a>
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
                             </li>
                             
                         </ul>
@@ -264,15 +263,7 @@
     </div>
 </header>
 <nav id="navbar" class="pure-menu">
-    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
-                    
-                        <a href="/setup/" class="pure-menu-link">Setup</a>
-                    
-                </li><li class="navbar-item pure-menu-item ">
-                    
-                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
-                    
-                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
                     
                         <a href="/modules/" class="pure-menu-link">Modules</a>
                     
@@ -323,6 +314,10 @@
     
 
 </ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
                 </li></ul>
 </nav>
 <main>
@@ -337,7 +332,23 @@
 <article class="line-numbers">
     
     
-    <p>Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:</p>
+    
+<h1 id="timeouts" class="header-anchor-wrapper">Timeouts
+  <a href="#timeouts" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<p>Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:</p>
 <ul>
 <li><strong>timeout.linkerd.io/request:</strong> Maximum time from when a request is sent until the first byte of the request body arrives at the server.</li>
 <li><strong>timeout.linkerd.io/response:</strong> Maximum time from when the first byte of the response header is received until the entire response body is delivered.</li>
@@ -481,8 +492,8 @@ spec:
 EOF
 </code></pre>
 
-<h2 id="1-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">1. Create a Local Kubernetes Cluster
-  <a href="#1-create-a-local-kubernetes-cluster" class="header-anchor-link">
+<h2 id="2-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">2. Create a Local Kubernetes Cluster
+  <a href="#2-create-a-local-kubernetes-cluster" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -501,8 +512,8 @@ EOF
   -c ./cluster.yaml
 </code></pre>
 
-<h2 id="2-generate-identity-certificates" class="header-anchor-wrapper">2. Generate Identity Certificates
-  <a href="#2-generate-identity-certificates" class="header-anchor-link">
+<h2 id="3-generate-identity-certificates" class="header-anchor-wrapper">3. Generate Identity Certificates
+  <a href="#3-generate-identity-certificates" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -530,8 +541,8 @@ step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt
     --ca-key ./certificates/ca.key
 </code></pre>
 
-<h2 id="3-install-linkerd-via-helm" class="header-anchor-wrapper">3. Install Linkerd via Helm
-  <a href="#3-install-linkerd-via-helm" class="header-anchor-link">
+<h2 id="4-install-linkerd-via-helm" class="header-anchor-wrapper">4. Install Linkerd via Helm
+  <a href="#4-install-linkerd-via-helm" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -557,8 +568,8 @@ helm install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 </code></pre>
 
-<h2 id="4-deploy-the-sample-application" class="header-anchor-wrapper">4. Deploy the Sample Application
-  <a href="#4-deploy-the-sample-application" class="header-anchor-link">
+<h2 id="5-deploy-the-sample-application" class="header-anchor-wrapper">5. Deploy the Sample Application
+  <a href="#5-deploy-the-sample-application" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -572,7 +583,6 @@ helm install linkerd-control-plane \
   </a>
 </h2>
 
-<p>Assuming your app is kustomized under ./application, deploy with:</p>
 <pre><code>kubectl apply -f ./application.yaml
 </code></pre>
 <p>You can then validate that the traffic is going from the client&rsquo;s pod to server&rsquo;s deployment</p>
@@ -586,7 +596,7 @@ helm install linkerd-control-plane \
 '
 </code></pre>
 
-<h2 id="timeout-scenarios" class="header-anchor-wrapper">Timeout Scenarios
+<h1 id="timeout-scenarios" class="header-anchor-wrapper">Timeout Scenarios
   <a href="#timeout-scenarios" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
@@ -599,7 +609,7 @@ helm install linkerd-control-plane \
 
 </svg>
   </a>
-</h2>
+</h1>
 
 <p>Below are examples of how to annotate your server service and test each timeout policy.</p>
 

@@ -1,0 +1,41 @@
+[[navbar]]
+  identifier = "modules"
+  name = "모듈"
+  url = "/ko/modules/"
+  weight = 1
+  [[navbar]]
+    identifier = "certificates"
+    name = "인증서"
+    url = "/ko/modules/certificates"
+    parent = "modules"
+    weight = 1
+  [[navbar]]
+    identifier = "proxy-init"
+    name = "프록시 초기화"
+    url = "/ko/modules/proxy-init"
+    parent = "modules"
+    weight = 2
+  [[navbar]]
+    identifier = "control-plane"
+    name = "컨트롤 플레인"
+    url = "/ko/modules/control-plane"
+    parent = "modules"
+    weight = 3
+  [[navbar]]
+    identifier = "timeouts"
+    name = "타임아웃"
+    url = "/ko/modules/timeouts"
+    parent = "modules"
+    weight = 4
+  [[navbar]]
+    identifier = "linkerd-cli"
+    name = "Linkerd CLI"
+    url = "/ko/modules/cli"
+    parent = "modules"
+    weight = 4
+
+[[navbar]]
+  identifier = "changelog"
+  name = "변경 로그"
+  url = "/ko/changelog/"
+  weight = 2

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Control-Plane on Hori</title>
+    <link>//localhost:1313/ko/tags/control-plane/</link>
+    <description>Recent content in Control-Plane on Hori</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/control-plane/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>컨트롤 플레인</title>
+      <link>//localhost:1313/ko/modules/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/modules/control-plane/</guid>
+      <description>&lt;h1 id=&#34;컨트롤-플레인&#34; class=&#34;header-anchor-wrapper&#34;&gt;컨트롤 플레인
+  &lt;a href=&#34;#%ec%bb%a8%ed%8a%b8%eb%a1%a4-%ed%94%8c%eb%a0%88%ec%9d%b8&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd 서비스 메시의 아키텍처는 두 계층으로 구성됩니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;제어 플레인(Control Plane):&lt;/strong&gt; destination, policy, identity, sp-validator, proxy-injector 컨트롤러로 이루어져 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;데이터 플레인(Data Plane):&lt;/strong&gt; 애플리케이션과 동일한 파드 안에서 함께 실행되는 프록시들이 모든 인바운드/아웃바운드 통신을 처리합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;제어 플레인과 프록시는 gRPC로 통신하며, 프록시 간 통신은 HTTP/2를 사용합니다.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

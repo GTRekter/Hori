@@ -1,0 +1,672 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linkerd CLI - Hori</title>
+
+    
+    <meta name="description" content="Linkerd CLI 설치 및 사용 실습 튜토리얼—Kubernetes에서 CRD 설치, 제어 플레인 설정, 명령어 탐색까지 다룹니다." />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/setup/">Setup</a></li><li>
+                            <a href="/changelog/">Changelog</a></li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/control-plane">Control Plane</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/kr/" class="pure-menu-link"></a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/setup/" class="pure-menu-link">Setup</a>
+                    
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/control-plane" class="pure-menu-link">Control Plane</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+</ul>
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    <p>Linkerd 유지관리자들은 명령줄에서 Linkerd CRD, 제어 플레인 컴포넌트, 확장 기능을 손쉽게 설치·관리할 수 있도록 풍부한 CLI를 제공합니다.</p>
+
+<h1 id="사전-요구-사항" class="header-anchor-wrapper">사전 요구 사항
+  <a href="#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<ul>
+<li>Unix-스타일 셸이 가능한 macOS/Linux/Windows</li>
+<li>로컬 쿠버네티스 클러스터용 k3d(v5+)</li>
+<li>kubectl(v1.25+)</li>
+</ul>
+
+<h1 id="튜토리얼" class="header-anchor-wrapper">튜토리얼
+  <a href="#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+
+<h2 id="1-로컬-쿠버네티스-클러스터-생성" class="header-anchor-wrapper">1. 로컬 쿠버네티스 클러스터 생성
+  <a href="#1-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p><code>cluster.yaml</code>을 사용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:</p>
+<pre><code>k3d cluster create --kubeconfig-update-default \
+  -c ./cluster.yaml
+</code></pre>
+
+<h2 id="2-linkerd-cli-설정" class="header-anchor-wrapper">2. Linkerd CLI 설정
+  <a href="#2-linkerd-cli-%ec%84%a4%ec%a0%95" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd CLI에는 설치할 버전과 바이너리가 설치될 경로를 지정할 수 있는 두 가지 매개변수가 있습니다:</p>
+<pre><code>LINKERD2_VERSION=${LINKERD2_VERSION:-edge-25.5.3}
+INSTALLROOT=${INSTALLROOT:-&quot;${HOME}/.linkerd2&quot;}
+</code></pre>
+<p>CLI를 설치하려면 아래 명령을 실행하여 설치 스크립트를 다운로드하고 로컬에서 실행합니다:</p>
+<pre><code>curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install-edge | sh
+</code></pre>
+<p>설치가 완료되면 실행 파일을 <code>PATH</code> 환경 변수에 추가하는 것을 잊지 마세요:</p>
+<pre><code>export PATH=$HOME/.linkerd2/bin:$PATH
+</code></pre>
+<p>설치 스크립트를 살펴보면 <code>uname</code> 명령으로 OS와 아키텍처를 식별한 뒤, 환경 변수를 활용해 GitHub에서 Linkerd 릴리스를 임시 디렉터리에 다운로드하는 것을 확인할 수 있습니다:</p>
+<pre><code>OS=$(uname -s)
+arch=$(uname -m)
+...
+tmpdir=$(mktemp -d /tmp/linkerd2.XXXXXX)
+srcfile=&quot;linkerd2-cli-${LINKERD2_VERSION}-${OS}&quot;
+if [ -n &quot;${cli_arch}&quot; ]; then
+  srcfile=&quot;${srcfile}-${cli_arch}&quot;
+fi
+dstfile=&quot;${INSTALLROOT}/bin/linkerd-${LINKERD2_VERSION}&quot;
+url=&quot;https://github.com/linkerd/linkerd2/releases/download/${LINKERD2_VERSION}/${srcfile}&quot;
+</code></pre>
+
+<h2 id="3-cli-탐색" class="header-anchor-wrapper">3. CLI 탐색
+  <a href="#3-cli-%ed%83%90%ec%83%89" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>CLI는 다양한 기능을 제공하며, 유지관리자들은 지속적으로 개선하고 있습니다. 사용 가능한 모든 명령은 <code>linkerd help</code>로 확인할 수 있습니다:</p>
+<pre><code>linkerd help  
+linkerd manages the Linkerd service mesh.
+
+Usage:
+  linkerd [command]
+
+Available Commands:
+  authz        List authorizations for a resource
+  check        Check the Linkerd installation for potential problems
+  completion   Output shell completion code for the specified shell (bash, zsh or fish)
+  diagnostics  Commands used to diagnose Linkerd components
+  help         Help about any command
+  identity     Display the certificate(s) of one or more selected pod(s)
+  inject       Add the Linkerd proxy to a Kubernetes config
+  install      Output Kubernetes configs to install Linkerd
+  install-cni  Output Kubernetes configs to install Linkerd CNI
+  jaeger       jaeger manages the jaeger extension of Linkerd service mesh
+  multicluster Manages the multicluster setup for Linkerd
+  profile      Output service profile config for Kubernetes
+  prune        Output extraneous Kubernetes resources in the linkerd control plane
+  uninject     Remove the Linkerd proxy from a Kubernetes config
+  uninstall    Output Kubernetes resources to uninstall Linkerd control plane
+  upgrade      Output Kubernetes configs to upgrade an existing Linkerd control plane
+  version      Print the client and server version information
+  viz          viz manages the linkerd-viz extension of Linkerd service mesh
+</code></pre>
+<p>각 명령은 자체 하위 명령을 가지고 있습니다. <code>linkerd &lt;command&gt; --help</code>를 실행하면 확인할 수 있습니다. 예를 들어:</p>
+<pre><code>linkerd authz --help
+List authorizations for a resource.
+
+Usage:
+  linkerd authz [flags] resource
+
+Flags:
+  -h, --help               help for authz
+  -n, --namespace string   Namespace of resource
+
+Global Flags:
+      --api-addr string            Override kubeconfig and communicate directly with the control plane at host:port (mostly for testing)
+      --as string                  Username to impersonate for Kubernetes operations
+      --as-group stringArray       Group to impersonate for Kubernetes operations
+      --cni-namespace string       Namespace in which the Linkerd CNI plugin is installed (default &quot;linkerd-cni&quot;)
+      --context string             Name of the kubeconfig context to use
+      --kubeconfig string          Path to the kubeconfig file to use for CLI requests
+  -L, --linkerd-namespace string   Namespace in which Linkerd is installed ($LINKERD_NAMESPACE) (default &quot;linkerd&quot;)
+      --verbose                    Turn on debug logging
+</code></pre>
+
+<h2 id="4-클러스터에-linkerd-설치" class="header-anchor-wrapper">4. 클러스터에 Linkerd 설치
+  <a href="#4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0%ec%97%90-linkerd-%ec%84%a4%ec%b9%98" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd를 설치하려면 먼저 제어 플레인에 필요한 CRD를 설치해야 합니다. API Gateway CRD, Linkerd CRD를 차례로 설치한 뒤, 제어 플레인을 설치합니다. <code>linkerd install</code> 명령은 YAML 매니페스트를 출력만 하므로, <code>kubectl apply</code>와 파이프해 적용해야 합니다.</p>
+<pre><code>kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
+linkerd install --crds | kubectl apply -f -
+linkerd install | kubectl apply -f -
+</code></pre>
+<p><strong>참고:</strong> 2.18 이전 버전의 Linkerd는 자체 API Gateway 버전을 제공했지만, 0.7 버전에 고정되어 있어 Kong Gateway와 같은 타사 도구가 다른 버전을 요구할 때 문제가 있었습니다. 이를 해결하기 위해 2.18부터 Linkerd는 1.0.0 이상의 Gateway API 버전을 지원하며, 사용자가 별도로 설치해야 합니다. Linkerd 2.18 이전 버전에서 API Gateway 1.2.0을 실행하면 정책 컨트롤러가 특정 gRPCRoute Gateway API 버전을 감시하므로 제어 플레인이 동작하지 않습니다.</p>
+<p>API 리소스를 확인하면 API Gateway와 Linkerd 리소스가 모두 표시됩니다.</p>
+<pre><code>kubectl api-resources 
+NAME                                SHORTNAMES                 APIVERSION                          NAMESPACED   KIND
+...
+gatewayclasses                      gc                         gateway.networking.k8s.io/v1        false        GatewayClass
+gateways                            gtw                        gateway.networking.k8s.io/v1        true         Gateway
+grpcroutes                                                     gateway.networking.k8s.io/v1        true         GRPCRoute
+httproutes                                                     gateway.networking.k8s.io/v1        true         HTTPRoute
+referencegrants                     refgrant                   gateway.networking.k8s.io/v1beta1   true         ReferenceGrant
+...
+serviceprofiles                     sp                         linkerd.io/v1alpha2                 true         ServiceProfile
+...
+authorizationpolicies               authzpolicy                policy.linkerd.io/v1alpha1          true         AuthorizationPolicy
+egressnetworks                                                 policy.linkerd.io/v1alpha1          true         EgressNetwork
+httplocalratelimitpolicies                                     policy.linkerd.io/v1alpha1          true         HTTPLocalRateLimitPolicy
+httproutes                                                     policy.linkerd.io/v1beta3           true         HTTPRoute
+meshtlsauthentications              meshtlsauthn               policy.linkerd.io/v1alpha1          true         MeshTLSAuthentication
+networkauthentications              netauthn,networkauthn      policy.linkerd.io/v1alpha1          true         NetworkAuthentication
+serverauthorizations                saz,serverauthz,srvauthz   policy.linkerd.io/v1beta1           true         ServerAuthorization
+servers                             srv                        policy.linkerd.io/v1beta3           true         Server
+...
+externalworkloads                                              workload.linkerd.io/v1beta1         true         ExternalWorkload
+</code></pre>
+<p>CRD 역시 동일하게 여러 API 버전을 제공할 수 있습니다. 예를 들어 다음과 같습니다.</p>
+<pre><code>kubectl get crds -A
+NAME                                           CREATED AT
+addons.k3s.cattle.io                           2025-05-20T04:54:40Z
+authorizationpolicies.policy.linkerd.io        2025-05-20T05:18:06Z
+egressnetworks.policy.linkerd.io               2025-05-20T05:18:07Z
+externalworkloads.workload.linkerd.io          2025-05-20T05:18:07Z
+gatewayclasses.gateway.networking.k8s.io       2025-05-20T05:16:36Z
+gateways.gateway.networking.k8s.io             2025-05-20T05:16:36Z
+grpcroutes.gateway.networking.k8s.io           2025-05-20T05:16:36Z
+httplocalratelimitpolicies.policy.linkerd.io   2025-05-20T05:18:07Z
+httproutes.gateway.networking.k8s.io           2025-05-20T05:16:36Z
+httproutes.policy.linkerd.io                   2025-05-20T05:18:07Z
+meshtlsauthentications.policy.linkerd.io       2025-05-20T05:18:07Z
+networkauthentications.policy.linkerd.io       2025-05-20T05:18:07Z
+referencegrants.gateway.networking.k8s.io      2025-05-20T05:16:36Z
+serverauthorizations.policy.linkerd.io         2025-05-20T05:18:07Z
+servers.policy.linkerd.io                      2025-05-20T05:18:07Z
+serviceprofiles.linkerd.io                     2025-05-20T05:18:07Z
+</code></pre>
+<p>중요한 점은 각 CRD가 동일한 API의 여러 버전을 제공할 수 있다는 것입니다. 이러한 버전들은 표에서 바로 보이지 않지만, CRD 리소스를 <code>describe</code> 해 보면 모두 확인할 수 있습니다.</p>
+<pre><code>kubectl describe crd servers.policy.linkerd.io
+Name:         servers.policy.linkerd.io
+Namespace:    
+Labels:       helm.sh/chart=linkerd-crds-0.0.0-undefined
+              linkerd.io/control-plane-ns=linkerd
+Annotations:  linkerd.io/created-by: linkerd/cli edge-25.5.3
+API Version:  apiextensions.k8s.io/v1
+Kind:         CustomResourceDefinition
+Metadata:
+  Creation Timestamp:  2025-05-20T05:18:07Z
+  Generation:          1
+  Resource Version:    961
+  UID:                 7b046714-27b4-4d19-8292-6651025ff071
+Spec:
+  Conversion:
+    Strategy:  None
+  Group:       policy.linkerd.io
+  Names:
+    Kind:       Server
+    List Kind:  ServerList
+    Plural:     servers
+    Short Names:
+      srv
+    Singular:  server
+  Scope:       Namespaced
+  Versions:
+    Deprecated:           true
+    Deprecation Warning:  policy.linkerd.io/v1alpha1 Server is deprecated; use policy.linkerd.io/v1beta1 Server
+    Name:                 v1alpha1
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    ...
+    Deprecated:           true
+    Deprecation Warning:  policy.linkerd.io/v1beta1 Server is deprecated; use policy.linkerd.io/v1beta3 Server
+    Name:                 v1beta1
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    ...
+    Name:           v1beta2
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    
+</code></pre>
+<p>마지막으로 linkerd 네임스페이스에서 동작 중인 배포 및 파드를 확인하면 <code>linkerd-destination</code>, <code>linkerd-identity</code>, <code>linkerd-proxy-injector</code>가 실행 중인 것을 볼 수 있습니다:</p>
+<pre><code>kubectl get deploy -n linkerd
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+linkerd-destination      1/1     1            1           28m
+linkerd-identity         1/1     1            1           28m
+linkerd-proxy-injector   1/1     1            1           28m
+
+kubectl get pods -n linkerd 
+NAME                                      READY   STATUS    RESTARTS   AGE
+linkerd-destination-75f4bc85cd-fswvp      4/4     Running   0          28m
+linkerd-identity-9bf7d8b86-zmkb2          2/2     Running   0          28m
+linkerd-proxy-injector-5d5687794c-4kmhs   2/2     Running   0          28m
+</code></pre>
+<p>이번 모듈에서는 여기까지 다루고, 이후 과정에서 다양한 명령을 더 자세히 살펴보겠습니다.</p>
+
+<h2 id="참고-자료" class="header-anchor-wrapper">참고 자료
+  <a href="#%ec%b0%b8%ea%b3%a0-%ec%9e%90%eb%a3%8c" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2.17/getting-started/">https://linkerd.io/2.17/getting-started/</a></li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

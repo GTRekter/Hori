@@ -1,20 +1,8 @@
 [[navbar]]
-  identifier = "setup"
-  name = "Setup"
-  url = "/setup/"
-  weight = 1
-
-[[navbar]]
-  identifier = "changelog"
-  name = "Changelog"
-  url = "/changelog/"
-  weight = 2
-
-[[navbar]]
   identifier = "modules"
   name = "Modules"
   url = "/modules/"
-  weight = 3
+  weight = 1
   [[navbar]]
     identifier = "certificates"
     name = "Certificates"
@@ -34,14 +22,20 @@
     parent = "modules"
     weight = 3
   [[navbar]]
-    identifier = "timeouts"
+    identifier = "en-timeouts"
     name = "Timeouts"
     url = "/modules/timeouts"
     parent = "modules"
     weight = 4
   [[navbar]]
-    identifier = "linkerd-cli"
+    identifier = "en-linkerd-cli"
     name = "Linkerd CLI"
     url = "/modules/cli"
     parent = "modules"
     weight = 4
+
+[[navbar]]
+  identifier = "changelog"
+  name = "Changelog"
+  url = "/changelog/"
+  weight = 2

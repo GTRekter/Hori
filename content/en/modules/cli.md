@@ -2,12 +2,17 @@
 author = "Ivan Porta"
 title = "Linkerd CLI"
 date = "2025-06-01"
-description = "Lorem Ipsum Dolor Si Amet"
+description = "Hands-on tutorial for installing and using the Linkerd CLI—covering CRD installation, control-plane setup, and command exploration on Kubernetes."
 tags = [
-    "markdown",
-    "text",
+  "linkerd",
+  "cli",
+  "kubernetes",
+  "crd",
+  "tutorial"
 ]
 +++
+
+# Linkerd CLI
 
 The Linkerd maintainers have developed a rich CLI that allows you to easily install Linkerd CRDs, control plane components, and manage extensions directly from the command line.
 

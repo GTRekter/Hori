@@ -1,0 +1,649 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='ko'><head>
+	<meta name="generator" content="Hugo 0.143.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hori</title>
+
+    
+    <meta name="description" content="저자, 강의 개설 이유, 그리고 여러분이 배우게 될 내용" />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    <script defer src="/js/search-ko.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/ko/modules/">모듈</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/ko/modules/certificates">인증서</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/ko/modules/proxy-init">프록시 초기화</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/ko/modules/control-plane">컨트롤 플레인</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/ko/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/ko/modules/timeouts">타임아웃</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/ko/changelog/">변경 로그</a></li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/ko/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">한국어</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/ko/modules/" class="pure-menu-link">모듈</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/ko/modules/certificates" class="pure-menu-link">인증서</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/ko/modules/proxy-init" class="pure-menu-link">프록시 초기화</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/ko/modules/control-plane" class="pure-menu-link">컨트롤 플레인</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/ko/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/ko/modules/timeouts" class="pure-menu-link">타임아웃</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/ko/changelog/" class="pure-menu-link">변경 로그</a>
+                    
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    
+<h2 id="-안녕하세요-저는-ivan-porta-입니다" class="header-anchor-wrapper">👋 안녕하세요, 저는 Ivan Porta 입니다
+  <a href="#-%ec%95%88%eb%85%95%ed%95%98%ec%84%b8%ec%9a%94-%ec%a0%80%eb%8a%94-ivan-porta-%ec%9e%85%eb%8b%88%eb%8b%a4" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>저는 <strong>Buoyant</strong>에서 근무하는 <strong>Customer Engineer</strong>로, 현재 <strong>대한민국</strong>에 살고 있습니다.<br>
+대기업부터 스타트업까지 다양한 조직이 <strong>Linkerd</strong>를 도입·운영하도록 돕고, 필요할 때는 내부 동작까지 파헤쳐 문제를 해결해 왔습니다.</p>
+<p><img src="/about/selfie.png" alt="About"></p>
+<hr>
+
+<h3 id="왜-이-강의를-만들었을까요" class="header-anchor-wrapper">왜 이 강의를 만들었을까요?
+  <a href="#%ec%99%9c-%ec%9d%b4-%ea%b0%95%ec%9d%98%eb%a5%bc-%eb%a7%8c%eb%93%a4%ec%97%88%ec%9d%84%ea%b9%8c%ec%9a%94" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>Linkerd는 <em>설치와 운영이 쉽다</em>는 명성으로 잘 알려져 있지만, 그 이면에는 정교한 설계가 숨어 있습니다.</p>
+<ul>
+<li><strong>애너테이션</strong> 하나로 프록시 동작과 컨트롤 플레인 정책까지 세밀하게 제어할 수 있습니다.</li>
+<li><strong>mTLS, 프로토콜 감지, 서킷 브레이킹, 레이트 리미팅, 멀티클러스터 통신</strong> 같은 기능은 프록시와 컨트롤 플레인 컨트롤러 간의 치밀한 연동으로 구현됩니다.</li>
+<li>그 밑바닥에는 CRD, 웹훅, Lease 등 <strong>쿠버네티스 리소스</strong>가 조용히 일을 처리하고 있죠.</li>
+</ul>
+<p>대부분의 튜토리얼은 ‘해피 패스’에서 멈춥니다.<br>
+<strong>이 강의는 다릅니다.</strong> 소스 코드와 Kubernetes API 호출까지 낱낱이 해부해</p>
+<ol>
+<li>Linkerd가 <em>왜</em> 그렇게 동작하는지 <strong>이해</strong>하고</li>
+<li>프로덕션 장애를 <strong>진단</strong>하며</li>
+<li>필요하다면 기능을 <strong>확장·통합</strong>할 수 있도록 돕습니다.</li>
+</ol>
+<p>모든 모듈은 <strong>k3d</strong> 로컬 클러스터에서 바로 실행 가능한 실습 중심으로 구성했습니다.<br>
+복사·붙여넣기 후 직접 실험해 보세요!</p>
+<hr>
+
+<h3 id="학습-내용" class="header-anchor-wrapper">학습 내용
+  <a href="#%ed%95%99%ec%8a%b5-%eb%82%b4%ec%9a%a9" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<table class="mc-table">
+  <thead>
+      <tr>
+          <th>주제</th>
+          <th>핵심 포인트</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>인증서 계층</td>
+          <td>Trust Anchor·Issuer·Proxy가 mTLS를 구현하는 과정</td>
+      </tr>
+      <tr>
+          <td>컨트롤 플레인 딥다이브</td>
+          <td>gRPC 조율, 리더 선출, 정책 집행 메커니즘</td>
+      </tr>
+      <tr>
+          <td>Proxy-Init &amp; iptables</td>
+          <td>트래픽을 투명하게 우회하는 방법과 디버깅 팁</td>
+      </tr>
+      <tr>
+          <td>타임아웃 정책</td>
+          <td>서비스 애너테이션으로 요청·응답·유휴 타임아웃 제어</td>
+      </tr>
+      <tr>
+          <td>CLI 마스터</td>
+          <td>CRD 설치부터 운영 중 문제 해결까지 CLI 완전 정복</td>
+      </tr>
+  </tbody>
+</table>
+<p>…그리고 커리큘럼은 계속 확장됩니다.</p>
+<hr>
+
+<h3 id="연락하기" class="header-anchor-wrapper">연락하기
+  <a href="#%ec%97%b0%eb%9d%bd%ed%95%98%ea%b8%b0" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>피드백·질문·아이디어가 있다면 언제든 환영합니다!<br>
+강의 저장소에 이슈를 남기거나 <strong><a href="https://linkerd.slack.com/archives/D07M5GLPVLK">Slack(@gtrekter)</a></strong> 로 메시지를 주세요.<br>
+함께 서비스 메시의 내부를 더 투명하게 만들어 봅시다.</p>
+<div class="icon">
+    
+        <a rel="noopener" target="_blank" href="https://github.com/GTRekter/Hori" aria-label="github">
+    
+        
+            
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+
+
+        
+    
+        </a>
+    
+</div>
+
+
+</article>
+</div>
+
+
+
+
+
+<div class="postcard-layout content-margin">
+    
+        <a href="//localhost:1313/ko/modules/cli/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>Linkerd CLI</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>Linkerd CLI Linkerd 유지관리자들은 명령줄에서 Linkerd CRD, 제어 플레인 컴포넌트, 확장 기능을 손쉽게 설치·관리할 수 있도록 풍부한 CLI를 제공합니다.
+사전 요구 사항 Unix-스타일 셸이 가능한 macOS/Linux/Windows 로컬 쿠버네티스 클러스터용 k3d(v5+) kubectl(v1.25+) 튜토리얼 1. 로컬 쿠버네티스 클러스터 생성 cluster.yaml을 사용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
+    
+        <a href="//localhost:1313/ko/modules/certificates/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>인증서</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>인증서 Linkerd는 메시 네트워크에 포함된 파드 간의 모든 TCP 트래픽에 대해 자동으로 mTLS를 활성화합니다. 이를 위해 제어 플레인이 정상적으로 동작하려면 여러 인증서가 준비되어 있어야 합니다. 설치 과정에서 직접 제공할 수도 있고, Cert-Manager나 Trust-Manager 같은 서드파티 도구를 사용할 수도 있습니다.
+사전 요구 사항 Unix-스타일 셸이 가능한 macOS/Linux/Windows 로컬 쿠버네티스 클러스터용 k3d(v5+) kubectl(v1.25+) 튜토리얼 1. 구성 파일 생성 cat &lt;&lt; 'EOF' &gt; cluster.yaml apiVersion: k3d.io/v1alpha5 kind: Simple metadata: name: &quot;cluster&quot; servers: 1 agents: 0 image: rancher/k3s:v1.33.0-k3s1 network: playground options: k3s: extraArgs: - arg: --disable=traefik nodeFilters: [&quot;server:*&quot;] - arg: --cluster-cidr=10.23.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --service-cidr=10.247.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --debug nodeFilters: [&quot;server:*&quot;] ports: - port: 8081:80 nodeFilters: [&quot;loadbalancer&quot;] EOF 2. 로컬 쿠버네티스 클러스터 생성 cluster.yaml을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다.
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
+    
+        <a href="//localhost:1313/ko/modules/control-plane/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>컨트롤 플레인</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>컨트롤 플레인 Linkerd 서비스 메시의 아키텍처는 두 계층으로 구성됩니다.
+제어 플레인(Control Plane): destination, policy, identity, sp-validator, proxy-injector 컨트롤러로 이루어져 있습니다. 데이터 플레인(Data Plane): 애플리케이션과 동일한 파드 안에서 함께 실행되는 프록시들이 모든 인바운드/아웃바운드 통신을 처리합니다. 제어 플레인과 프록시는 gRPC로 통신하며, 프록시 간 통신은 HTTP/2를 사용합니다.
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
+    
+        <a href="//localhost:1313/ko/modules/timeouts/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>타임아웃</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>타임아웃 Linkerd는 메시 내 서비스 간 HTTP 요청 및 TCP 연결의 수명을 세밀하게 제어할 수 있도록 다양한 타임아웃 설정을 제공합니다. 쿠버네티스 서비스 애너테이션을 통해 다음 세 가지 기본 타임아웃 정책을 설정할 수 있습니다.
+timeout.linkerd.io/request: 클라이언트가 요청을 전송한 순간부터 서버가 요청 본문의 첫 바이트를 수신할 때까지의 최대 시간 timeout.linkerd.io/response: 서버 응답 헤더의 첫 바이트를 받은 순간부터 전체 응답 본문이 전달될 때까지의 최대 시간 timeout.linkerd.io/idle: 요청·응답 데이터 프레임 사이에 트래픽이 없을 때 연결을 닫기 전까지 허용되는 최대 유휴 시간 사전 요구 사항 Unix-스타일 셸이 가능한 macOS/Linux/Windows 로컬 쿠버네티스 클러스터용 k3d(v5+) kubectl(v1.25+) Helm(v3+) 인증서 생성을 위한 Smallstep(step) CLI 튜토리얼 1. 구성 파일 생성 cat &lt;&lt; 'EOF' &gt; cluster.yaml apiVersion: k3d.io/v1alpha5 kind: Simple metadata: name: &quot;cluster&quot; servers: 1 agents: 0 image: rancher/k3s:v1.33.0-k3s1 network: playground options: k3s: extraArgs: - arg: --disable=traefik nodeFilters: [&quot;server:*&quot;] - arg: --cluster-cidr=10.23.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --service-cidr=10.247.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --debug nodeFilters: [&quot;server:*&quot;] ports: - port: 8081:80 nodeFilters: [&quot;loadbalancer&quot;] EOF cat &lt;&lt; 'EOF' &gt; application.yaml apiVersion: v1 kind: Pod metadata: name: client namespace: simple-app annotations: linkerd.io/inject: enabled spec: containers: - name: curl image: curlimages/curl:latest command: [&quot;sleep&quot;, &quot;infinity&quot;] --- apiVersion: v1 kind: Namespace metadata: name: simple-app annotations: linkerd.io/inject: enabled --- apiVersion: apps/v1 kind: Deployment metadata: name: server namespace: simple-app spec: replicas: 1 selector: matchLabels: app: server version: v1 template: metadata: labels: app: server version: v1 spec: containers: - name: http-app image: kong/httpbin:latest ports: - containerPort: 80 --- apiVersion: v1 kind: Service metadata: name: server namespace: simple-app spec: selector: app: server version: v1 ports: - port: 80 targetPort: 80 EOF 2. 로컬 쿠버네티스 클러스터 생성 cluster.yaml을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
+    
+        <a href="//localhost:1313/ko/modules/proxy-init/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>프록시 초기화</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>프록시 초기화 linkerd-init 컨테이너는 메시 네트워크에 주입된 모든 파드에 쿠버네티스 Init 컨테이너로 추가되며, 애플리케이션 컨테이너들보다 먼저 실행됩니다. 이 컨테이너는 iptables 규칙을 설정해 파드로 들어오고 나가는 모든 TCP 트래픽을 Linkerd 프록시로 우회시킵니다.
+사전 요구 사항 Unix-스타일 셸이 가능한 macOS/Linux/Windows 로컬 쿠버네티스 클러스터용 k3d(v5+) kubectl(v1.25+) Helm(v3+) 인증서 생성을 위한 Smallstep(step) CLI 튜토리얼 1. 구성 파일 생성 cat &lt;&lt; 'EOF' &gt; cluster.yaml apiVersion: k3d.io/v1alpha5 kind: Simple metadata: name: &quot;cluster&quot; servers: 1 agents: 0 image: rancher/k3s:v1.33.0-k3s1 network: playground options: k3s: extraArgs: - arg: --disable=traefik nodeFilters: [&quot;server:*&quot;] - arg: --cluster-cidr=10.23.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --service-cidr=10.247.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --debug nodeFilters: [&quot;server:*&quot;] ports: - port: 8081:80 nodeFilters: [&quot;loadbalancer&quot;] EOF 2. 로컬 쿠버네티스 클러스터 생성 cluster.yaml을 이용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
+    
+    
+    <ul class="pagination pagination-default">
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item disabled">
+        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item">
+        <a href="/ko/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/ko/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/ko/page/2/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
+</div>
+
+
+
+
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

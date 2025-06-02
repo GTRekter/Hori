@@ -1,0 +1,635 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Control Plane - Hori</title>
+
+    
+    <meta name="description" content="Deep dive into Linkerd’s control-plane architecture—destination, identity, policy, and proxy-injector controllers—and how they coordinate gRPC traffic and leader election in Kubernetes." />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/setup/">Setup</a></li><li>
+                            <a href="/changelog/">Changelog</a></li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/control-plane">Control Plane</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/kr/" class="pure-menu-link"></a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/setup/" class="pure-menu-link">Setup</a>
+                    
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/control-plane" class="pure-menu-link">Control Plane</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+</ul>
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    <p>Linkerd Service Mesh has a two layer archtitecture with:</p>
+<ul>
+<li><strong>Control Plane:</strong> composed by the destination, policy, identity, sp-validatior and proxy-injector controllers</li>
+<li><strong>Data Plane:</strong> composed by the proxies running alongside the applications in the same pod and taking care of managin all the inbound/outbound communications.</li>
+</ul>
+<p>The Control Plane and the proxies communicate via gRPC, while the proxies communivate via HTTP/2.</p>
+
+<h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
+  <a href="#prerequisites" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<ul>
+<li>macOS/Linux/Windows with a Unix‑style shell</li>
+<li>k3d (v5+) for local Kubernetes clusters</li>
+<li>kubectl (v1.25+)</li>
+<li>Helm (v3+)</li>
+<li>Smallstep (step) CLI for certificate generation</li>
+</ul>
+
+<h1 id="tutorial" class="header-anchor-wrapper">Tutorial
+  <a href="#tutorial" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+
+<h2 id="1-create-the-configuration-files" class="header-anchor-wrapper">1. Create the configuration files
+  <a href="#1-create-the-configuration-files" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>cat &lt;&lt; 'EOF' &gt; audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    resources:
+      - group: &quot;&quot;
+        resources: [&quot;*&quot;]
+  - level: RequestResponse
+    resources:
+      - group: &quot;linkerd.io&quot;
+        resources: [&quot;*&quot;]
+      - group: &quot;policy.linkerd.io&quot;
+        resources: [&quot;*&quot;]
+      - group: &quot;gateway.networking.k8s.io&quot;
+        resources: [&quot;*&quot;]
+  - level: None
+EOF
+cat &lt;&lt; 'EOF' &gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &quot;cluster&quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --debug
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
+        nodeFilters: [&quot;server:*&quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&quot;loadbalancer&quot;]
+volumes:
+  - volume: &quot;&lt;LOCAL-FULL-PATH&gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&quot;
+    nodeFilters: [&quot;server:*&quot;]
+EOF
+</code></pre>
+
+<h2 id="2-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">2. Create a Local Kubernetes Cluster
+  <a href="#2-create-a-local-kubernetes-cluster" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:</p>
+<pre><code>k3d cluster create --kubeconfig-update-default \
+  -c ./cluster.yaml
+</code></pre>
+
+<h2 id="3-generate-identity-certificates" class="header-anchor-wrapper">3. Generate Identity Certificates
+  <a href="#3-generate-identity-certificates" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd requires a trust anchor (root CA) and an issuer (intermediate CA) for mTLS identity.</p>
+<pre><code>step certificate create root.linkerd.cluster.local ./certificates/ca.crt ./certificates/ca.key \
+    --profile root-ca \
+    --no-password \
+    --insecure
+step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt ./certificates/issuer.key \
+    --profile intermediate-ca \
+    --not-after 8760h \
+    --no-password \
+    --insecure \
+    --ca ./certificates/ca.crt \
+    --ca-key ./certificates/ca.key
+</code></pre>
+
+<h2 id="4-install-linkerd-via-helm" class="header-anchor-wrapper">4. Install Linkerd via Helm
+  <a href="#4-install-linkerd-via-helm" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>helm repo add linkerd-edge https://helm.linkerd.io/edge
+helm repo update
+helm install linkerd-crds linkerd-edge/linkerd-crds \
+  -n linkerd --create-namespace --set installGatewayAPI=true
+helm upgrade --install linkerd-control-plane \
+  -n linkerd \
+  --set-file identityTrustAnchorsPEM=./certificates/ca.crt \
+  --set-file identity.issuer.tls.crtPEM=./certificates/issuer.crt \
+  --set-file identity.issuer.tls.keyPEM=./certificates/issuer.key \
+  --set controllerLogLevel=debug \
+  --set policyController.logLevel=debug \
+  --set policyController.logLevel=debug \
+  linkerd-edge/linkerd-control-plane
+</code></pre>
+
+<h2 id="5-linkerd-destination" class="header-anchor-wrapper">5. Linkerd Destination
+  <a href="#5-linkerd-destination" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd destination index the data retrieved by the Kuberentes API so that when a proxy is asking for these informations they are available.</p>
+<pre><code>kubectl logs -n linkerd deploy/linkerd-destination -c destination --follow
+...
+time=&quot;2025-05-19T08:52:47Z&quot; level=debug msg=&quot;Adding ES default/kubernetes&quot; addr=&quot;:8086&quot; component=service-publisher ns=default svc=kubernetes
+...
+time=&quot;2025-05-19T08:52:47Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-dst-g7mvf&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst
+...
+time=&quot;2025-05-19T08:52:47Z&quot; level=info  msg=&quot;caches synced&quot;
+...
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/nodes?allowWatchBookmarks=true&amp;resourceVersion=10726&amp;timeout=5m7s&amp;timeoutSeconds=307&amp;watch=true 200 OK in 2 milliseconds&quot;
+</code></pre>
+<p>Linkerd’s destination component doesn’t poll the API server with repeated GET calls—instead it opens long-lived watch streams (parameter &amp;watch=0) so it can receive change events as they happen. Destination maintains an in-memory cache of which pods back which services and gets notified instantly of adds/updates/deletes. If you check the logs of the Requests to the Kubernetes API collected via the Audit mode, you will see the enstablish of the connection.</p>
+<pre><code>docker exec -it k3d-cluster-server-0 sh -c 'grep linkerd /var/log/kubernetes/audit/audit.log'
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;6780ab29-bdb9-4f60-9ac4-906f8901c0ac&quot;,&quot;stage&quot;:&quot;ResponseComplete&quot;,&quot;requestURI&quot;:&quot;/api/v1/services?allowWatchBookmarks=true\u0026resourceVersion=745\u0026timeout=6m45s\u0026timeoutSeconds=405\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;services&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;responseStatus&quot;:{&quot;metadata&quot;:{},&quot;code&quot;:200},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:37:51.360338Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:36.347050Z&quot;,&quot;annotations&quot;:{&quot;authorization.k8s.io/decision&quot;:&quot;allow&quot;,&quot;authorization.k8s.io/reason&quot;:&quot;RBAC: allowed by ClusterRoleBinding \&quot;linkerd-linkerd-destination\&quot; of ClusterRole \&quot;linkerd-linkerd-destination\&quot; to ServiceAccount \&quot;linkerd-destination/linkerd\&quot;&quot;}}
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;28ab3987-e67b-4cda-8e0d-1e8754bbb125&quot;,&quot;stage&quot;:&quot;RequestReceived&quot;,&quot;requestURI&quot;:&quot;/api/v1/services?allowWatchBookmarks=true\u0026resourceVersion=1115\u0026timeout=7m38s\u0026timeoutSeconds=458\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;services&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:44:36.348992Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:36.348992Z&quot;}
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;28ab3987-e67b-4cda-8e0d-1e8754bbb125&quot;,&quot;stage&quot;:&quot;ResponseStarted&quot;,&quot;requestURI&quot;:&quot;/api/v1/services?allowWatchBookmarks=true\u0026resourceVersion=1115\u0026timeout=7m38s\u0026timeoutSeconds=458\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;services&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;responseStatus&quot;:{&quot;metadata&quot;:{},&quot;code&quot;:200},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:44:36.348992Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:36.350388Z&quot;,&quot;annotations&quot;:{&quot;authorization.k8s.io/decision&quot;:&quot;allow&quot;,&quot;authorization.k8s.io/reason&quot;:&quot;RBAC: allowed by ClusterRoleBinding \&quot;linkerd-linkerd-destination\&quot; of ClusterRole \&quot;linkerd-linkerd-destination\&quot; to ServiceAccount \&quot;linkerd-destination/linkerd\&quot;&quot;}}
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;7e656540-35ea-460e-afe1-2ba7eae26912&quot;,&quot;stage&quot;:&quot;ResponseComplete&quot;,&quot;requestURI&quot;:&quot;/api/v1/endpoints?allowWatchBookmarks=true\u0026resourceVersion=747\u0026timeout=6m47s\u0026timeoutSeconds=407\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;endpoints&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;responseStatus&quot;:{&quot;metadata&quot;:{},&quot;code&quot;:200},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:37:51.360352Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:38.348080Z&quot;,&quot;annotations&quot;:{&quot;authorization.k8s.io/decision&quot;:&quot;allow&quot;,&quot;authorization.k8s.io/reason&quot;:&quot;RBAC: allowed by ClusterRoleBinding \&quot;linkerd-linkerd-destination\&quot; of ClusterRole \&quot;linkerd-linkerd-destination\&quot; to ServiceAccount \&quot;linkerd-destination/linkerd\&quot;&quot;,&quot;k8s.io/deprecated&quot;:&quot;true&quot;}}
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;617cc8c5-69f6-407f-96e9-478cd2decd6c&quot;,&quot;stage&quot;:&quot;RequestReceived&quot;,&quot;requestURI&quot;:&quot;/api/v1/endpoints?allowWatchBookmarks=true\u0026resourceVersion=1119\u0026timeout=6m49s\u0026timeoutSeconds=409\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;endpoints&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:44:38.349086Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:38.349086Z&quot;}
+...
+{&quot;kind&quot;:&quot;Event&quot;,&quot;apiVersion&quot;:&quot;audit.k8s.io/v1&quot;,&quot;level&quot;:&quot;RequestResponse&quot;,&quot;auditID&quot;:&quot;617cc8c5-69f6-407f-96e9-478cd2decd6c&quot;,&quot;stage&quot;:&quot;ResponseStarted&quot;,&quot;requestURI&quot;:&quot;/api/v1/endpoints?allowWatchBookmarks=true\u0026resourceVersion=1119\u0026timeout=6m49s\u0026timeoutSeconds=409\u0026watch=true&quot;,&quot;verb&quot;:&quot;watch&quot;,&quot;user&quot;:{&quot;username&quot;:&quot;system:serviceaccount:linkerd:linkerd-destination&quot;,&quot;uid&quot;:&quot;48a11242-4481-40fb-a400-71bab76ceb26&quot;,&quot;groups&quot;:[&quot;system:serviceaccounts&quot;,&quot;system:serviceaccounts:linkerd&quot;,&quot;system:authenticated&quot;],&quot;extra&quot;:{&quot;authentication.kubernetes.io/credential-id&quot;:[&quot;JTI=17ab4926-813f-4ffe-9173-f288d07c1b31&quot;],&quot;authentication.kubernetes.io/node-name&quot;:[&quot;k3d-cluster-server-0&quot;],&quot;authentication.kubernetes.io/node-uid&quot;:[&quot;9aef01ef-f1d5-49ba-97e6-9c38c1101007&quot;],&quot;authentication.kubernetes.io/pod-name&quot;:[&quot;linkerd-destination-7d6c6c7775-49tpt&quot;],&quot;authentication.kubernetes.io/pod-uid&quot;:[&quot;150aeb23-56c8-4b3c-aa23-c40779154fd2&quot;]}},&quot;sourceIPs&quot;:[&quot;10.23.0.6&quot;],&quot;userAgent&quot;:&quot;controller/v0.0.0 (linux/arm64) kubernetes/$Format&quot;,&quot;objectRef&quot;:{&quot;resource&quot;:&quot;endpoints&quot;,&quot;apiVersion&quot;:&quot;v1&quot;},&quot;responseStatus&quot;:{&quot;metadata&quot;:{},&quot;code&quot;:200},&quot;requestReceivedTimestamp&quot;:&quot;2025-05-19T09:44:38.349086Z&quot;,&quot;stageTimestamp&quot;:&quot;2025-05-19T09:44:38.349832Z&quot;,&quot;annotations&quot;:{&quot;authorization.k8s.io/decision&quot;:&quot;allow&quot;,&quot;authorization.k8s.io/reason&quot;:&quot;RBAC: allowed by ClusterRoleBinding \&quot;linkerd-linkerd-destination\&quot; of ClusterRole \&quot;linkerd-linkerd-destination\&quot; to ServiceAccount \&quot;linkerd-destination/linkerd\&quot;&quot;}}
+</code></pre>
+<p>Linkerd’s destination controller uses a leader/follower model. It leverages Kubernetes’s native coordination.k8s.io/v1 leases API to perform leader election. By default it renews its lease every ~2 seconds—each successful PUT …/leases/&hellip; 200 OK confirms it remains the active leader. If it fails (e.g. due to a crash or network partition), the lease expires and another instance takes over.</p>
+<pre><code>time=&quot;2025-05-19T08:53:23Z&quot; level=info msg=&quot;PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 2 milliseconds&quot;
+...
+time=&quot;2025-05-19T08:53:25Z&quot; level=info msg=&quot;PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 6 milliseconds&quot;
+</code></pre>
+
+<h2 id="6-linkerd-proxy-injector" class="header-anchor-wrapper">6. Linkerd Proxy-Injector
+  <a href="#6-linkerd-proxy-injector" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>It&rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is <code>linkerd.io/injected: enabled</code> then inject a Linkerd proxy and ProxyInit containers.</p>
+
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2-edge/reference/architecture/">https://linkerd.io/2-edge/reference/architecture/</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/</a></li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

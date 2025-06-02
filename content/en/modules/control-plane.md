@@ -2,12 +2,17 @@
 author = "Ivan Porta"
 title = "Control Plane"
 date = "2025-06-01"
-description = "Lorem Ipsum Dolor Si Amet"
+description = "Deep dive into Linkerd’s control-plane architecture—destination, identity, policy, and proxy-injector controllers—and how they coordinate gRPC traffic and leader election in Kubernetes."
 tags = [
-    "markdown",
-    "text",
+  "linkerd",
+  "control-plane",
+  "architecture",
+  "kubernetes",
+  "deep-dive"
 ]
 +++
+
+# Control Plane
 
 Linkerd Service Mesh has a two layer archtitecture with:
 - **Control Plane:** composed by the destination, policy, identity, sp-validatior and proxy-injector controllers

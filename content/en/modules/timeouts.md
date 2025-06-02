@@ -2,12 +2,17 @@
 author = "Ivan Porta"
 title = "Timeouts"
 date = "2025-06-01"
-description = "Lorem Ipsum Dolor Si Amet"
+description = "Practical guide to configuring request, response, and idle timeouts in Linkerd using Kubernetes service annotations—complete with hands-on examples."
 tags = [
-    "markdown",
-    "text",
+  "linkerd",
+  "timeouts",
+  "service-annotations",
+  "kubernetes",
+  "tutorial"
 ]
 +++
+
+# Timeouts
 
 Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:
 
@@ -111,7 +116,7 @@ spec:
 EOF
 ```
 
-## 1. Create a Local Kubernetes Cluster
+## 2. Create a Local Kubernetes Cluster
 
 Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:
 
@@ -120,7 +125,7 @@ k3d cluster create  --kubeconfig-update-default \
   -c ./cluster.yaml
 ```
 
-## 2. Generate Identity Certificates
+## 3. Generate Identity Certificates
 
 Linkerd requires a trust anchor (root CA) and an issuer (intermediate CA) for mTLS identity.
 
@@ -138,7 +143,7 @@ step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt
     --ca-key ./certificates/ca.key
 ```
 
-## 3. Install Linkerd via Helm
+## 4. Install Linkerd via Helm
 
 ```
 helm repo add linkerd-edge https://helm.linkerd.io/edge
@@ -153,9 +158,7 @@ helm install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 ```
 
-## 4. Deploy the Sample Application
-
-Assuming your app is kustomized under ./application, deploy with:
+## 5. Deploy the Sample Application
 
 ```
 kubectl apply -f ./application.yaml
@@ -174,7 +177,7 @@ kubectl exec -n simple-app client -c curl -- sh -c '\
 '
 ```
 
-## Timeout Scenarios
+# Timeout Scenarios
 
 Below are examples of how to annotate your server service and test each timeout policy.
 

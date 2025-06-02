@@ -1,8 +1,8 @@
 +++
-title = "Modules"
+title = "모듈"
 author = "Ivan Porta"
 tags = ["index"]
 type = "bookcase"
 +++
 
-Some posts from [hugoBasicExample](https://github.com/gohugoio/hugoBasicExample).
+Explore the deep-dive modules below to master each core component of Linkerd.

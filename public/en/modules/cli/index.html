@@ -1,0 +1,672 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linkerd CLI - Hori</title>
+
+    
+    <meta name="description" content="Hands-on tutorial for installing and using the Linkerd CLI—covering CRD installation, control-plane setup, and command exploration on Kubernetes." />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/setup/">Setup</a></li><li>
+                            <a href="/changelog/">Changelog</a></li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/control-plane">Control Plane</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/kr/" class="pure-menu-link"></a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/setup/" class="pure-menu-link">Setup</a>
+                    
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/control-plane" class="pure-menu-link">Control Plane</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+</ul>
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    <p>The Linkerd maintainers have developed a rich CLI that allows you to easily install Linkerd CRDs, control plane components, and manage extensions directly from the command line.</p>
+
+<h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
+  <a href="#prerequisites" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<ul>
+<li>macOS/Linux/Windows with a Unix‑style shell</li>
+<li>k3d (v5+) for local Kubernetes clusters</li>
+<li>kubectl (v1.25+)</li>
+</ul>
+
+<h1 id="tutorial" class="header-anchor-wrapper">Tutorial
+  <a href="#tutorial" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+
+<h2 id="1-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">1. Create a Local Kubernetes Cluster
+  <a href="#1-create-a-local-kubernetes-cluster" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Use k3d and the <code>cluster.yaml</code> to spin up a lightweight Kubernetes cluster:</p>
+<pre><code>k3d cluster create --kubeconfig-update-default \
+  -c ./cluster.yaml
+</code></pre>
+
+<h2 id="2-configure-the-linkerd-cli" class="header-anchor-wrapper">2. Configure the Linkerd CLI
+  <a href="#2-configure-the-linkerd-cli" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>The Linkerd CLI has two parameters you can define to specify the version to install and the path where the binaries will be installed:</p>
+<pre><code>LINKERD2_VERSION=${LINKERD2_VERSION:-edge-25.5.3}
+INSTALLROOT=${INSTALLROOT:-&quot;${HOME}/.linkerd2&quot;}
+</code></pre>
+<p>To install the CLI, execute the following command, which downloads and runs the installer script locally:</p>
+<pre><code>curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install-edge | sh
+</code></pre>
+<p>Once installed, don’t forget to add the executable to your PATH environment variable:</p>
+<pre><code>export PATH=$HOME/.linkerd2/bin:$PATH
+</code></pre>
+<p>If you inspect the installer script, you’ll see that it uses the <code>uname</code> command to identify the OS and Architecture and then use the environment variables to download the Linkerd release from GitHub into a temporary directory:</p>
+<pre><code>OS=$(uname -s)
+arch=$(uname -m)
+...
+tmpdir=$(mktemp -d /tmp/linkerd2.XXXXXX)
+srcfile=&quot;linkerd2-cli-${LINKERD2_VERSION}-${OS}&quot;
+if [ -n &quot;${cli_arch}&quot; ]; then
+  srcfile=&quot;${srcfile}-${cli_arch}&quot;
+fi
+dstfile=&quot;${INSTALLROOT}/bin/linkerd-${LINKERD2_VERSION}&quot;
+url=&quot;https://github.com/linkerd/linkerd2/releases/download/${LINKERD2_VERSION}/${srcfile}&quot;
+</code></pre>
+
+<h2 id="3-explore-the-cli" class="header-anchor-wrapper">3. Explore the CLI
+  <a href="#3-explore-the-cli" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>The CLI has a lot of functionality, and the maintainers are constantly working to enhance it. You can list all available commands by running <code>linkerd help</code>:</p>
+<pre><code>linkerd help  
+linkerd manages the Linkerd service mesh.
+
+Usage:
+  linkerd [command]
+
+Available Commands:
+  authz        List authorizations for a resource
+  check        Check the Linkerd installation for potential problems
+  completion   Output shell completion code for the specified shell (bash, zsh or fish)
+  diagnostics  Commands used to diagnose Linkerd components
+  help         Help about any command
+  identity     Display the certificate(s) of one or more selected pod(s)
+  inject       Add the Linkerd proxy to a Kubernetes config
+  install      Output Kubernetes configs to install Linkerd
+  install-cni  Output Kubernetes configs to install Linkerd CNI
+  jaeger       jaeger manages the jaeger extension of Linkerd service mesh
+  multicluster Manages the multicluster setup for Linkerd
+  profile      Output service profile config for Kubernetes
+  prune        Output extraneous Kubernetes resources in the linkerd control plane
+  uninject     Remove the Linkerd proxy from a Kubernetes config
+  uninstall    Output Kubernetes resources to uninstall Linkerd control plane
+  upgrade      Output Kubernetes configs to upgrade an existing Linkerd control plane
+  version      Print the client and server version information
+  viz          viz manages the linkerd-viz extension of Linkerd service mesh
+</code></pre>
+<p>Each of these commands has its own subcommands.  You can view them by running <code> linkerd &lt;command&gt; --help</code>. for example:</p>
+<pre><code>linkerd authz --help
+List authorizations for a resource.
+
+Usage:
+  linkerd authz [flags] resource
+
+Flags:
+  -h, --help               help for authz
+  -n, --namespace string   Namespace of resource
+
+Global Flags:
+      --api-addr string            Override kubeconfig and communicate directly with the control plane at host:port (mostly for testing)
+      --as string                  Username to impersonate for Kubernetes operations
+      --as-group stringArray       Group to impersonate for Kubernetes operations
+      --cni-namespace string       Namespace in which the Linkerd CNI plugin is installed (default &quot;linkerd-cni&quot;)
+      --context string             Name of the kubeconfig context to use
+      --kubeconfig string          Path to the kubeconfig file to use for CLI requests
+  -L, --linkerd-namespace string   Namespace in which Linkerd is installed ($LINKERD_NAMESPACE) (default &quot;linkerd&quot;)
+      --verbose                    Turn on debug logging
+</code></pre>
+
+<h2 id="4-install-linkerd-on-your-cluster" class="header-anchor-wrapper">4. Install Linkerd on Your Cluster
+  <a href="#4-install-linkerd-on-your-cluster" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>To install Linkerd, you must first install the CRDs required by the control plane, starting with the API Gateway CRDs, then the Linkerd CRDs, and finally the control plane itself. The <code>linkerd install</code> command output the YAML manifest but do not apply it directly. You will need to pipe the output to <code>kubectl apply</code>.</p>
+<pre><code>kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
+linkerd install --crds | kubectl apply -f -
+linkerd install | kubectl apply -f -
+</code></pre>
+<p><strong>Note:</strong> Prior to 2.18, Linkerd provided its own version of the API Gateway, but it was limited by dependencies tied to version 0.7, which posed an issue when third-party tools like Kong Gateway required a different version. To solve this, the maintainers decoupled them so that, starting with 2.18, Linkerd supports Gateway API versions from 1.0.0 onward and will require users to install it separatly. Running API Gateway 1.2.0 on a Linkerd version prior to 2.18 will break the control plane, since the policy controller watches for a specific version of the gRPCRoute Gateway API, which is not provided in 1.2.0.</p>
+<p>If we check the API Resouces we will see both API Gateway and Linkerd resources.</p>
+<pre><code>kubectl api-resources 
+NAME                                SHORTNAMES                 APIVERSION                          NAMESPACED   KIND
+...
+gatewayclasses                      gc                         gateway.networking.k8s.io/v1        false        GatewayClass
+gateways                            gtw                        gateway.networking.k8s.io/v1        true         Gateway
+grpcroutes                                                     gateway.networking.k8s.io/v1        true         GRPCRoute
+httproutes                                                     gateway.networking.k8s.io/v1        true         HTTPRoute
+referencegrants                     refgrant                   gateway.networking.k8s.io/v1beta1   true         ReferenceGrant
+...
+serviceprofiles                     sp                         linkerd.io/v1alpha2                 true         ServiceProfile
+...
+authorizationpolicies               authzpolicy                policy.linkerd.io/v1alpha1          true         AuthorizationPolicy
+egressnetworks                                                 policy.linkerd.io/v1alpha1          true         EgressNetwork
+httplocalratelimitpolicies                                     policy.linkerd.io/v1alpha1          true         HTTPLocalRateLimitPolicy
+httproutes                                                     policy.linkerd.io/v1beta3           true         HTTPRoute
+meshtlsauthentications              meshtlsauthn               policy.linkerd.io/v1alpha1          true         MeshTLSAuthentication
+networkauthentications              netauthn,networkauthn      policy.linkerd.io/v1alpha1          true         NetworkAuthentication
+serverauthorizations                saz,serverauthz,srvauthz   policy.linkerd.io/v1beta1           true         ServerAuthorization
+servers                             srv                        policy.linkerd.io/v1beta3           true         Server
+...
+externalworkloads                                              workload.linkerd.io/v1beta1         true         ExternalWorkload
+</code></pre>
+<p>The same applies to the CRDs using these APIs.</p>
+<pre><code>kubectl get crds -A
+NAME                                           CREATED AT
+addons.k3s.cattle.io                           2025-05-20T04:54:40Z
+authorizationpolicies.policy.linkerd.io        2025-05-20T05:18:06Z
+egressnetworks.policy.linkerd.io               2025-05-20T05:18:07Z
+externalworkloads.workload.linkerd.io          2025-05-20T05:18:07Z
+gatewayclasses.gateway.networking.k8s.io       2025-05-20T05:16:36Z
+gateways.gateway.networking.k8s.io             2025-05-20T05:16:36Z
+grpcroutes.gateway.networking.k8s.io           2025-05-20T05:16:36Z
+httplocalratelimitpolicies.policy.linkerd.io   2025-05-20T05:18:07Z
+httproutes.gateway.networking.k8s.io           2025-05-20T05:16:36Z
+httproutes.policy.linkerd.io                   2025-05-20T05:18:07Z
+meshtlsauthentications.policy.linkerd.io       2025-05-20T05:18:07Z
+networkauthentications.policy.linkerd.io       2025-05-20T05:18:07Z
+referencegrants.gateway.networking.k8s.io      2025-05-20T05:16:36Z
+serverauthorizations.policy.linkerd.io         2025-05-20T05:18:07Z
+servers.policy.linkerd.io                      2025-05-20T05:18:07Z
+serviceprofiles.linkerd.io                     2025-05-20T05:18:07Z
+</code></pre>
+<p>One important thing to highlight is that each CRD might serve multiple versions of the same API, which are not immeditly visible in the table. However, if we describe the CRD resource, you will see those multiple versions.</p>
+<pre><code>kubectl describe crd servers.policy.linkerd.io
+Name:         servers.policy.linkerd.io
+Namespace:    
+Labels:       helm.sh/chart=linkerd-crds-0.0.0-undefined
+              linkerd.io/control-plane-ns=linkerd
+Annotations:  linkerd.io/created-by: linkerd/cli edge-25.5.3
+API Version:  apiextensions.k8s.io/v1
+Kind:         CustomResourceDefinition
+Metadata:
+  Creation Timestamp:  2025-05-20T05:18:07Z
+  Generation:          1
+  Resource Version:    961
+  UID:                 7b046714-27b4-4d19-8292-6651025ff071
+Spec:
+  Conversion:
+    Strategy:  None
+  Group:       policy.linkerd.io
+  Names:
+    Kind:       Server
+    List Kind:  ServerList
+    Plural:     servers
+    Short Names:
+      srv
+    Singular:  server
+  Scope:       Namespaced
+  Versions:
+    Deprecated:           true
+    Deprecation Warning:  policy.linkerd.io/v1alpha1 Server is deprecated; use policy.linkerd.io/v1beta1 Server
+    Name:                 v1alpha1
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    ...
+    Deprecated:           true
+    Deprecation Warning:  policy.linkerd.io/v1beta1 Server is deprecated; use policy.linkerd.io/v1beta3 Server
+    Name:                 v1beta1
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    ...
+    Name:           v1beta2
+    Schema:
+      openAPIV3Schema:
+      ...
+    Served:    true
+    Storage:   false
+    
+</code></pre>
+<p>Finally, if you check the deployments and pods running in the linkerd namespace, you will see the <code>linkerd-destination</code>, <code>linkerd-identity</code>, and <code>linkerd-proxy-injector</code> running:</p>
+<pre><code>kubectl get deploy -n linkerd
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+linkerd-destination      1/1     1            1           28m
+linkerd-identity         1/1     1            1           28m
+linkerd-proxy-injector   1/1     1            1           28m
+
+kubectl get pods -n linkerd 
+NAME                                      READY   STATUS    RESTARTS   AGE
+linkerd-destination-75f4bc85cd-fswvp      4/4     Running   0          28m
+linkerd-identity-9bf7d8b86-zmkb2          2/2     Running   0          28m
+linkerd-proxy-injector-5d5687794c-4kmhs   2/2     Running   0          28m
+</code></pre>
+<p>During the course, we will dig more into the various commands. But for this first module, we will stop here.</p>
+
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2.17/getting-started/">https://linkerd.io/2.17/getting-started/</a></li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

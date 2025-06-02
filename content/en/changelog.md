@@ -1,11 +1,11 @@
 ---
-title: 'Changelog'
+title: '변경 로그'
 toc: false
 ---
 
-# Changelog
+# 변경 로그
 
 ## v0.1.0 (2025/05/01)
 
-Initial release.
+최초 릴리스.
 

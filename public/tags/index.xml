@@ -8,6 +8,69 @@
     <language>en</language>
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Architecture</title>
+      <link>//localhost:1313/tags/architecture/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Certificates</title>
+      <link>//localhost:1313/tags/certificates/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/certificates/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cli</title>
+      <link>//localhost:1313/tags/cli/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/cli/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Control-Plane</title>
+      <link>//localhost:1313/tags/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/control-plane/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Crd</title>
+      <link>//localhost:1313/tags/crd/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/crd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deep-Dive</title>
+      <link>//localhost:1313/tags/deep-dive/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/deep-dive/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Identity</title>
+      <link>//localhost:1313/tags/identity/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/identity/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Index</title>
       <link>//localhost:1313/tags/index/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
@@ -17,20 +80,74 @@
     </item>
     
     <item>
-      <title>Markdown</title>
-      <link>//localhost:1313/tags/markdown/</link>
+      <title>Iptables</title>
+      <link>//localhost:1313/tags/iptables/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/tags/markdown/</guid>
+      <guid>//localhost:1313/tags/iptables/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Text</title>
-      <link>//localhost:1313/tags/text/</link>
+      <title>Kubernetes</title>
+      <link>//localhost:1313/tags/kubernetes/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/tags/text/</guid>
+      <guid>//localhost:1313/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linkerd</title>
+      <link>//localhost:1313/tags/linkerd/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/linkerd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MTLS</title>
+      <link>//localhost:1313/tags/mtls/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/mtls/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Proxy-Init</title>
+      <link>//localhost:1313/tags/proxy-init/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/proxy-init/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Service-Annotations</title>
+      <link>//localhost:1313/tags/service-annotations/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/service-annotations/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Timeouts</title>
+      <link>//localhost:1313/tags/timeouts/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/timeouts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tutorial</title>
+      <link>//localhost:1313/tags/tutorial/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/tags/tutorial/</guid>
       <description></description>
     </item>
     

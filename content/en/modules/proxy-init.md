@@ -2,12 +2,17 @@
 author = "Ivan Porta"
 title = "Proxy-Init"
 date = "2025-06-01"
-description = "Lorem Ipsum Dolor Si Amet"
+description = "Deep dive into Linkerd’s proxy-init container—how it injects iptables rules to steer pod traffic through the mesh and how to inspect those rules in Kubernetes."
 tags = [
-    "markdown",
-    "text",
+  "linkerd",
+  "proxy-init",
+  "iptables",
+  "kubernetes",
+  "deep-dive"
 ]
 +++
+
+# Proxy-Init
 
 The `linkerd-init` container is added to each meshed pod as a Kubernetes init container that runs before any other containers start. It configures `iptables` rules that redirect all TCP traffic to and from the pod through the Linkerd proxy.
 

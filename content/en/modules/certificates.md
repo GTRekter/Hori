@@ -2,12 +2,17 @@
 author = "Ivan Porta"
 title = "Certificates"
 date = "2025-06-01"
-description = "Lorem Ipsum Dolor Si Amet"
+description = "Deep dive into Linkerd’s certificate hierarchy: how the control plane issues, stores, and renews mTLS identity across the mesh."
 tags = [
-    "markdown",
-    "text",
+  "linkerd",
+  "certificates",
+  "mTLS",
+  "identity",
+  "deep-dive"
 ]
 +++
+
+# Certificates
 
 Linkerd automatically enable mTLS for all TCP traffic between meshed pods. To do so, it relies on several certificates that should be in place for the control plane to work as expected. You can either provide them during the installation or using thirds party tools like Cert-Manager and Trust-Manager. 
 
