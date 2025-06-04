@@ -16,9 +16,9 @@
     parent = "modules"
     weight = 2
   [[navbar]]
-    identifier = "control-plane"
-    name = "Control Plane"
-    url = "/modules/control-plane"
+    identifier = "destination"
+    name = "Destination Controller"
+    url = "/modules/destination"
     parent = "modules"
     weight = 3
   [[navbar]]

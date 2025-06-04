@@ -16,10 +16,10 @@
     parent = "modules"
     weight = 2
   [[navbar]]
-    identifier = "control-plane"
-    name = "컨트롤 플레인"
-    url = "/ko/modules/control-plane"
-    parent = "modules"
+    identifier = "destination"
+    name = "Destination 컨트롤러"
+    url = "/modules/destination"
+    parent = "모듈"
     weight = 3
   [[navbar]]
     identifier = "timeouts"
