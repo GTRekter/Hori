@@ -16,7 +16,7 @@ tags = [
 
 Linkerd automatically enable mTLS for all TCP traffic between meshed pods. To do so, it relies on several certificates that should be in place for the control plane to work as expected. You can either provide them during the installation or using thirds party tools like Cert-Manager and Trust-Manager. 
 
-![Certificate Hierarchy](/modules/certificates/hierarchy.jpg)
+![Certificate Hierarchy](modules/certificates/hierarchy.jpg)
 
 
 # Prerequisites
@@ -231,7 +231,7 @@ fn refresh_in(config: &Config, expiry: SystemTime) -> Duration {
 
 The overall flow if the following:
 
-![mTLS Flow](/modules/certificates/mtls-flow.jpg)
+![mTLS Flow](modules/certificates/mtls-flow.jpg)
 
 # References
 

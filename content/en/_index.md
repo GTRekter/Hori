@@ -9,7 +9,7 @@ description: "Who I am, why this course exists, and what you can expect to learn
 I’m a **Customer Engineer at Buoyant** living in  **South Korea**.  
 Over the years I’ve helped large and small organizations adopt **Linkerd**, tune it for production traffic, and even peek under the hood when things got interesting.
 
-![About](/about/selfie.png)
+![About](about/selfie.png)
 
 ---
 

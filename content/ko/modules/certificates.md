@@ -17,7 +17,7 @@ tags = [
 
 Linkerd는 메시 네트워크에 포함된 파드 간의 모든 TCP 트래픽에 대해 자동으로 mTLS를 활성화합니다. 이를 위해 제어 플레인이 정상적으로 동작하려면 여러 인증서가 준비되어 있어야 합니다. 설치 과정에서 직접 제공할 수도 있고, Cert-Manager나 Trust-Manager 같은 서드파티 도구를 사용할 수도 있습니다. 
 
-![Certificate Hierarchy](/modules/certificates/hierarchy.jpg)
+![Certificate Hierarchy](modules/certificates/hierarchy.jpg)
 
 
 # 사전 요구 사항
@@ -241,7 +241,7 @@ fn refresh_in(config: &Config, expiry: SystemTime) -> Duration {
 
 전체 흐름은 다음과 같습니다.
 
-![mTLS Flow](/modules/certificates/mtls-flow.jpg)
+![mTLS Flow](modules/certificates/mtls-flow.jpg)
 
 # 참고 자료
 
