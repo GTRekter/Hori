@@ -1,8 +1,8 @@
 +++
 author = "Ivan Porta"
-title = "컨트롤 플레인"
+title = "Control Plane"
 date = "2025-06-01"
-description = "Linkerd의 Destination 컨트롤러에 대한 심층 분석—인포머를 어떻게 활용하고 EndpointSlice를 감시하며 리더 선출을 수행해 Kubernetes에서 서비스 디스커버리를 제공하는지."
+description = "Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes."
 tags = [
   "linkerd",
   "control-plane",
@@ -14,21 +14,21 @@ tags = [
 
 # Destination
 
-Linkerd 제어 플레인의 Destination 컨트롤러는 서비스 디스커버리와 라우팅을 담당합니다. 이 컨트롤러는 Kubernetes 리소스(Services, EndpointSlices, Pods, ExternalWorkloads 등)를 공유 인포머(shared informers)를 통해 감시하고, 엔드포인트의 로컬 캐시를 구축하며, 데이터 플레인 프록시로부터의 gRPC 요청을 제공합니다.
+The Destination controller in Linkerd’s control plane is responsible for service discovery and routing. It watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies. 
 
-# 사전 준비
+# Prerequisites
 
-- macOS/Linux/Windows에서 유닉스 스타일 셸 사용 가능
-- 로컬 Kubernetes 클러스터용 k3d (v5+) 설치
-- kubectl (v1.25+) 설치
-- Helm (v3+) 설치
-- 인증서 생성을 위한 Smallstep (step) CLI
+- macOS/Linux/Windows with a Unix‑style shell
+- k3d (v5+) for local Kubernetes clusters
+- kubectl (v1.25+)
+- Helm (v3+)
+- Smallstep (step) CLI for certificate generation
 
-# 튜토리얼
+# Tutorial
 
-## 1. 설정 파일 생성
+## 1. Create the configuration files
 
-```bash
+```
 cat << 'EOF' > audit-policy.yaml
 apiVersion: audit.k8s.io/v1
 kind: Policy
@@ -80,25 +80,24 @@ volumes:
 EOF
 ```
 
-## 2. 로컬 Kubernetes 클러스터 생성
+## 2. Create a Local Kubernetes Cluster
 
-k3d와 앞서 만든 cluster.yaml을 사용하여 경량 Kubernetes 클러스터를 시작합니다:
+Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:
 
 ```
 k3d cluster create --kubeconfig-update-default \
   -c ./cluster.yaml
 ```
 
-## 3. 인증서 생성
+## 3. Generate Identity Certificates
 
-Linkerd는 mTLS 식별을 위해 트러스트 앵커(root CA)와 발급자(intermediate CA)가 필요합니다.
+Linkerd requires a trust anchor (root CA) and an issuer (intermediate CA) for mTLS identity.
 
 ```
 step certificate create root.linkerd.cluster.local ./certificates/ca.crt ./certificates/ca.key \
     --profile root-ca \
     --no-password \
     --insecure
-
 step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt ./certificates/issuer.key \
     --profile intermediate-ca \
     --not-after 8760h \
@@ -108,14 +107,13 @@ step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt
     --ca-key ./certificates/ca.key
 ```
 
-## 4. Helm으로 Linkerd 설치
+## 4. Install Linkerd via Helm
 
 ```
 helm repo add linkerd-edge https://helm.linkerd.io/edge
 helm repo update
 helm install linkerd-crds linkerd-edge/linkerd-crds \
   -n linkerd --create-namespace --set installGatewayAPI=true
-
 helm upgrade --install linkerd-control-plane \
   -n linkerd \
   --set-file identityTrustAnchorsPEM=./certificates/ca.crt \
@@ -126,11 +124,11 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 ```
 
-## 5. Linkerd Destination
+## 5. Linkerd Destination 
 
-### Kubernetes API와의 상호작용
+### Interactions with the Kuberentes API
 
-Destination이 시작되면, `k8s.io/client-go` Go 모듈을 사용하여 관심 있는 모든 리소스 종류(CronJobs, Pods, Services 등)에 대해 하나의 공유 인포머(shared informer)를 생성하고, API 구조체에 해당 핸들을 저장하며, 각 인포머가 동기화되었는지 확인하는 체크(HasSynced)를 기록하고, 현재 캐시의 키 개수를 나타내는 Prometheus 게이지를 등록합니다.
+When Destination starts, it use the `k8s.io/client-go` GO module to build one shared informer for every resource kinds it cares about (CronJobs, Pods, Services, etc.) and stores the handle in the API struct, as well as check and records a HasSynced check for each, and registers a Prometheus gauge that reports the current key count per cache. 
 
 ```
 func newAPI(
@@ -259,7 +257,7 @@ func newAPI(
 }
 ```
 
-`Sync` 함수가 호출되면, 각 인포머는 초기 스냅샷을 가져오기 위해 API 서버에 요청하고, 이후 변경 이벤트를 실시간으로 수신하기 위해 장기 워치 스트림(`watch=0`)을 엽니다. `ResyncTime = 10 * time.Minute`으로 정의된 10분 동안 이벤트가 도착하지 않으면, Kubernetes API 서버에 전체 스냅샷 재요청을 보냅니다.
+When the `Sync` function is called, each informer request to get the initial snapshot, and then opens long-lived watch streams (parameter `watch=0`) so it can receive change events as they happen. If no events arrive withing 10 minutes (defined by the constant `ResyncTime = 10 * time.Minute`), it will requets a new compelte snapshot to the Kubernetes API Server.
 
 ```
 kubectl logs -n linkerd deploy/linkerd-destination -c destination --follow
@@ -278,9 +276,10 @@ time="2025-05-19T09:10:15Z" level=info msg="GET https://10.247.0.1:443/api/v1/no
 time="2025-05-19T09:10:15Z" level=info msg="GET https://10.247.0.1:443/api/v1/namespaces/linkerd/secrets?allowWatchBookmarks=true&resourceVersion=740&timeout=9m7s&timeoutSeconds=547&watch=true 200 OK in 0 milliseconds"
 ```
 
-각 인포머는 Kubernetes API 서버에서 반환된 데이터를 저장하는 스레드 안전한 로컬 캐시를 소유합니다.
+Each informer owns a thread-safe local cache where it store the data returned by the Kubernetes API Server. 
 
-인포머 자체만으로는 캐시가 업데이트될 때 비즈니스 로직에 알림을 보내지 않으며, 단지 로컬 캐시를 채우고 이를 쿼리할 수 있게 합니다. 그래서 컨트롤러 소스 코드에는 관련 인포머 위에 여러 워처(watcher)가 있으며, 인포머에 이벤트 핸들러(event handlers)를 등록하여 캐시가 업데이트될 때 실제로 알림을 받도록 구현되어 있습니다.
+
+By itself, an informer does not actually notify your business logic when things change; it only populates a local cache and lets you query it. For this reason the Controller's source code has several watchers on top of the related informers that registers event handlers on those informers, so it actually gets notified when the cache is updated.
 
 ```
 func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *logging.Entry, enableEndpointSlices bool, cluster string) (*EndpointsWatcher, error) {
@@ -336,7 +335,7 @@ func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *log
 }
 ```
 
-알림을 받으면, 동작에 따라 새 버전과 이전 버전 사이의 차분(diff)을 생성하고, 리스너(listener)에게 증분 변경만 전달하여 업데이트를 반영합니다.
+Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers  so that see only the incremental change.
 
 ```
 func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
@@ -364,7 +363,7 @@ func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
 }
 ```
 
-관련 로그 메시지를 확인할 수 있습니다:
+You will be able to see the related logs message
 
 ```
 time="2025-06-03T15:39:09Z" level=debug msg="Updating service for kube-system/kube-dns" addr=":8086" component=service-publisher ns=kube-system svc=kube-dns
@@ -379,7 +378,7 @@ time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linker
 time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linkerd-sp-validator" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-EndpointSlice와 Endpoints도 마찬가지로 처리됩니다. 중요한 점은 `ew.enableEndpointSlices` 값을 기준으로 둘 중 하나만 감시한다는 것입니다. 이 값은 컨테이너의 매개변수 `-enable-endpoint-slices`로 전달되며, 기본값은 true입니다.
+The same will happen for EndpointSlices and Endpoints. It's important to understant that it won't watch both of them. Depending on `ew.enableEndpointSlices` it will watch one or the other. This value is received as parameter from the container `-enable-endpoint-slices` and by default is set to `true`.
 
 ```
 func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {
@@ -410,7 +409,7 @@ func (ew *EndpointsWatcher) addEndpointSlice(obj interface{}) {
 }
 ```
 
-관련 로그:
+With their related logs
 
 ```
 time="2025-06-03T15:39:09Z" level=debug msg="Adding ES default/kubernetes" addr=":8086" component=service-publisher ns=default svc=kubernetes
@@ -426,9 +425,9 @@ time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-proxy-inj
 time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-sp-validator-g7vgx" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-### 외부 워크로드(External Workloads)
+### External Workloads
 
-Linkerd의 Destination 서브시스템은 클러스터 외부에서 실행되는 워크로드를 나타내는 ExternalWorkload 리소스를 관리합니다. 일반적인 Pod과 달리 내부 IP가 Kubernetes 리소스에 존재하지 않으므로, 워크로드 IP는 ExternalWorkload.spec.workloadIPs 필드에 정의되어 있습니다.
+Linkerd’s destination subsystem manages `ExternalWorkload` resources to represent workloads running outside the cluster. Unlike normal Pods, these workloads are not native Kubernetes objects; their IPs live in the `ExternalWorkload.spec.workloadIPs` field.
 
 ```
 kubectl get externalworkload -n simple-app   external-simple-app-v1-0e340584 -o yaml
@@ -451,7 +450,7 @@ spec:
 ...
 ```
 
-`ExternalWorkload`가 생성, 업데이트, 삭제될 때 Linkerd 컨트롤러는 해당 리소스를 감시하기 위해 인포머를 설정하고, 핸들러의 관련 함수(add, update, delete)를 호출합니다.
+When an `ExternalWorkload` is created, updated, or deleted, Linkerd’s controller sets up informers to catch those events and invoke the related function in the handler.
 
 ```
 func (ec *EndpointsController) addHandlers() error {
@@ -468,7 +467,7 @@ func (ec *EndpointsController) addHandlers() error {
 }
 ```
 
-어떤 Service에 특정 `ExternalWorkload`를 포함시켜야 하는지 결정하기 위해, 컨트롤러는 레이블 셀렉터(label-selector) 매칭을 사용하여 `<namespace>/<service-name>` 목록을 생성합니다. 이를 통해 어떤 Service를 다시 동기화해야 하는지 알 수 있습니다.
+To decide which Services should include a given `ExternalWorkload`, the controller uses a label‐selector match to create a list of `<namespace>/<service-name>` so that it will know exactly which Services need to be re‐synced.
 
 ```
 func (ec *EndpointsController) getExternalWorkloadSvcMembership(workload *ewv1beta1.ExternalWorkload) (sets.Set[string], error) {
@@ -493,7 +492,7 @@ func (ec *EndpointsController) getExternalWorkloadSvcMembership(workload *ewv1be
 }
 ```
 
-`ExternalWorkload`가 업데이트되면 IP와 레이블 모두를 재평가하며, 실제로 변경이 발생했을 때만 영향을 받는 Service들을 다시 큐(queue)에 넣습니다.
+When an `ExternalWorkload` is updated, it re‐evaluate both its IPs and its labels. Only if something actually changed do it will re‐enqueue the affected Services.
 
 ```
 func (ec *EndpointsController) getServicesToUpdateOnExternalWorkloadChange(old, cur interface{}) sets.Set[string] {
@@ -531,7 +530,7 @@ func (ec *EndpointsController) getServicesToUpdateOnExternalWorkloadChange(old, 
 }
 ```
 
-Service가 큐에 추가되면, 백그라운드 워커가 하나씩 처리합니다.
+Once Services are enqueued, a background worker handles them one at a time.
 
 ```
 func (ec *EndpointsController) processQueue() {
@@ -548,7 +547,7 @@ func (ec *EndpointsController) processQueue() {
 }
 ```
 
-`s‍yncService` 메서드는 서비스의 타입이 `ExternalName`이 아닌 경우에만 `ExternalWorkload` CR에서 가져온 IP와 일치하도록 EndpointSlice 객체 세트를 보장합니다. Service의 셀렉터가 없으면 아무런 작업도 수행하지 않습니다.
+The `syncService` method ensures the set of EndpointSlice objects for a Service matches exactly the IPs from its corresponding ExternalWorkload CRs. It will consider only Services with a Type different than `ExternalName`.
 
 ```
 func (ec *EndpointsController) syncService(update string) error {
@@ -596,7 +595,7 @@ func (ec *EndpointsController) syncService(update string) error {
 }
 ```
 
-마지막으로, 정확히 생성·업데이트·삭제해야 할 EndpointSlice 객체를 계산하고 Kubernetes에 반영합니다.
+Fianlly, it will delegates the heavy lifting to the `reconcile` method. The goal of this method is to produce exactly the right set of `EndpointSlice` objects so that each Service’s external IPs (from `ExternalWorkload`) are reflected. It will immediately deletes any slices that advertise an `AddressType` the Service no longer supports, create three lists with the slices to Create, Update, or Delete.
 
 ```
 func (r *endpointsReconciler) reconcile(svc *corev1.Service, ews []*ewv1beta1.ExternalWorkload, existingSlices []*discoveryv1.EndpointSlice) error {
@@ -631,7 +630,7 @@ func (r *endpointsReconciler) reconcile(svc *corev1.Service, ews []*ewv1beta1.Ex
 }
 ```
 
-어떤 슬라이스를 생성(Create), 업데이트(Update), 삭제(Delete)해야 할지 알게 되면, 해당 변경 사항을 Kubernetes에 푸시합니다.
+Once we know exactly which slices need to be created, updated, or deleted, we push those changes to Kubernetes.
 
 ```
 func (r *endpointsReconciler) finalize(svc *corev1.Service, slicesToCreate, slicesToUpdate, slicesToDelete []*discoveryv1.EndpointSlice) error {
@@ -687,7 +686,7 @@ func (r *endpointsReconciler) finalize(svc *corev1.Service, slicesToCreate, slic
 }
 ```
 
-Destination 컨트롤러 복제본이 여러 개 실행될 수 있으므로, 여러 인스턴스 중 오직 하나만 EndpointSlice 객체를 쓰도록 리더 선출 패턴을 사용합니다. Kubernetes Lease 객체를 사용하여 다음과 같은 설정으로 리더십을 조율합니다.
+Because multiple `destination` controller replicas may run, Linekrd use a leader election pattern to ensure only one instance writes `EndpointSlice` objects at a time. It uses a Kubernetes `Lease` object to coordinate leadership with the following configuration.
 
 ```
 ec.lec = leaderelection.LeaderElectionConfig{
@@ -698,7 +697,7 @@ ec.lec = leaderelection.LeaderElectionConfig{
         },
         Client: k8sAPI.Client.CoordinationV1(),
         LockConfig: resourcelock.ResourceLockConfig{
-            Identity: hostname,  // 인스턴스마다 고유한 ID
+            Identity: hostname,  // unique ID per instance
         },
     },
     LeaseDuration: 30 * time.Second,
@@ -711,7 +710,7 @@ ec.lec = leaderelection.LeaderElectionConfig{
 }
 ```
 
-리더가 주기적으로 갱신을 계속하는 동안 ExternalWorkload 변경 사항을 계속 리컨실(reconcile)하며, 리더가 실패하면 다른 복제본이 리더가 되어 쓰기 작업을 이어받습니다. 다음과 같은 주기적인 갱신 로그를 확인할 수 있습니다:
+As long as the leader continues to renew, it keeps reconciling ExternalWorkload changes. If it fails, another replica becomes leader and resumes write operations. You will be able to see an output with the periodic renewals.
 
 ```
 time="2025-05-19T08:53:23Z" level=info msg="PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 2 milliseconds"
@@ -719,7 +718,7 @@ time="2025-05-19T08:53:23Z" level=info msg="PUT https://10.247.0.1:443/apis/coor
 time="2025-05-19T08:53:25Z" level=info msg="PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 6 milliseconds"
 ```
 
-# 참고 문헌
+## References
 
 - https://linkerd.io/2-edge/reference/architecture/
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
@@ -730,3 +729,5 @@ time="2025-05-19T08:53:25Z" level=info msg="PUT https://10.247.0.1:443/apis/coor
 - https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_reconciler.go
 - https://github.com/linkerd/linkerd2/blob/main/controller/k8s/k8s.go
 - https://github.com/linkerd/linkerd2/blob/main/controller/k8s/api.go
+- https://pkg.go.dev/k8s.io/client-go
+- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/
