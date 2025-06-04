@@ -8,21 +8,21 @@
     <language>en</language>
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/tags/index/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>모듈</title>
+      <title>Control Plane</title>
       <link>//localhost:1313/control-plane/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>//localhost:1313/control-plane/</guid>
-      <description>&lt;p&gt;Explore the deep-dive modules below to master each core component of Linkerd.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Below, explore the modules that allow you to dive deep into each core component of Linkerd’s control plane. Through each module, you can fully understand the architecture, components, and operation of the control plane.&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>모듈</title>
+      <title>Data Plane</title>
       <link>//localhost:1313/data-plane/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>//localhost:1313/data-plane/</guid>
-      <description>&lt;p&gt;Explore the deep-dive modules below to master each core component of Linkerd.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Below, explore the modules that allow you to dive deep into each core component of Linkerd’s data plane. Through each module, you can fully understand the architecture, components, and operation of the data plane.&lt;/p&gt;</description>
     </item>
     
     <item>

@@ -561,10 +561,10 @@ EOF
     
     <item>
       <title>컨트롤 플레인</title>
-      <link>//localhost:1313/modules/proxy-injector/</link>
+      <link>//localhost:1313/control-plane/proxy-injector/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/modules/proxy-injector/</guid>
+      <guid>//localhost:1313/control-plane/proxy-injector/</guid>
       <description>&lt;h2 id=&#34;linkerd-proxy-injector&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd Proxy-Injector
   &lt;a href=&#34;#linkerd-proxy-injector&#34; class=&#34;header-anchor-link&#34;&gt;
     &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;

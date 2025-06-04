@@ -1,5 +1,5 @@
 [[navbar]]
-  identifier = "control-plane"
+  identifier = "en-control-plane"
   name = "Control Plane"
   url = "/control-plane/"
   weight = 1
@@ -7,47 +7,47 @@
     identifier = "en-destination"
     name = "Destination Controller"
     url = "/control-plane/destination"
-    parent = "control-plane"
+    parent = "en-control-plane"
     weight = 1
 
 [[navbar]]
-  identifier = "data-plane"
+  identifier = "en-data-plane"
   name = "Data Plane"
   url = "/data-plane/"
   weight = 2
   [[navbar]]
-    identifier = "proxy-init"
+    identifier = "en-proxy-init"
     name = "Proxy-Init"
     url = "/data-plane/proxy-init"
-    parent = "data-plane"
+    parent = "en-data-plane"
     weight = 1
 
 [[navbar]]
-  identifier = "modules"
+  identifier = "en-modules"
   name = "Modules"
   url = "/modules/"
   weight = 3
   [[navbar]]
-    identifier = "certificates"
+    identifier = "en-certificates"
     name = "Certificates"
     url = "/modules/certificates"
-    parent = "modules"
+    parent = "en-modules"
     weight = 1
   [[navbar]]
     identifier = "en-timeouts"
     name = "Timeouts"
     url = "/modules/timeouts"
-    parent = "modules"
+    parent = "en-modules"
     weight = 2
   [[navbar]]
     identifier = "en-linkerd-cli"
     name = "Linkerd CLI"
     url = "/modules/cli"
-    parent = "modules"
+    parent = "en-modules"
     weight = 3
 
 [[navbar]]
-  identifier = "changelog"
+  identifier = "en-changelog"
   name = "Changelog"
   url = "/changelog/"
   weight = 4

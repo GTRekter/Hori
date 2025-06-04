@@ -153,5 +153,49 @@ EOF
 &lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>컨트롤 플레인</title>
+      <link>//localhost:1313/control-plane/proxy-injector/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/proxy-injector/</guid>
+      <description>&lt;h2 id=&#34;linkerd-proxy-injector&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd Proxy-Injector
+  &lt;a href=&#34;#linkerd-proxy-injector&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;It&amp;rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is &lt;code&gt;linkerd.io/injected: enabled&lt;/code&gt; then inject a Linkerd proxy and ProxyInit containers.&lt;/p&gt;
+
+&lt;h2 id=&#34;참고-자료&#34; class=&#34;header-anchor-wrapper&#34;&gt;참고 자료
+  &lt;a href=&#34;#%ec%b0%b8%ea%b3%a0-%ec%9e%90%eb%a3%8c&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://linkerd.io/2-edge/reference/architecture/&#34;&gt;https://linkerd.io/2-edge/reference/architecture/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/&#34;&gt;https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
   </channel>
 </rss>

@@ -145,7 +145,6 @@ func newAPI(
 	if l5dCrdClient != nil {
 		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
 	}
-
 	api := &API{
 		Client:                k8sClient,
 		L5dClient:             l5dCrdClient,
@@ -154,11 +153,9 @@ func newAPI(
 		sharedInformers:       sharedInformers,
 		l5dCrdSharedInformers: l5dCrdSharedInformers,
 	}
-
 	informerLabels := prometheus.Labels{
 		"cluster": cluster,
 	}
-
 	for _, resource := range resources {
 		switch resource {
 		case CJ:
@@ -336,7 +333,7 @@ func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *log
 }
 ```
 
-알림을 받으면, 동작에 따라 새 버전과 이전 버전 사이의 차분(diff)을 생성하고, 리스너(listener)에게 증분 변경만 전달하여 업데이트를 반영합니다.
+알림을 받으면, 동작에 따라 새 버전과 이전 버전 사이의 차분(diff)을 생성하고, 리스너(listener)에게 증분 변경만 전달하여 업데이트를 반영합니다. 중요한 점은 `ew.enableEndpointSlices` 값을 기준으로 둘 중 하나만 감시한다는 것입니다. 이 값은 컨테이너의 매개변수 `-enable-endpoint-slices`로 전달되며, 기본값은 true입니다.
 
 ```
 func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
@@ -379,7 +376,7 @@ time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linker
 time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linkerd-sp-validator" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-EndpointSlice와 Endpoints도 마찬가지로 처리됩니다. 중요한 점은 `ew.enableEndpointSlices` 값을 기준으로 둘 중 하나만 감시한다는 것입니다. 이 값은 컨테이너의 매개변수 `-enable-endpoint-slices`로 전달되며, 기본값은 true입니다.
+EndpointSlice와 Endpoints도 마찬가지로 처리됩니다. 
 
 ```
 func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {

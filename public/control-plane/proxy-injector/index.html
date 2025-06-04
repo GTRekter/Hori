@@ -20,8 +20,10 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Control Plane - Hori</title>
+    <title>컨트롤 플레인 - Hori</title>
 
+    
+    <meta name="description" content="Linkerd 컨트롤 플레인 아키텍처 심층 분석—destination, identity·policy, proxy-injector 컨트롤러가 Kubernetes에서 gRPC 트래픽과 리더 선출을 어떻게 조정하는지 살펴봅니다." />
     
 
     
@@ -264,7 +266,7 @@
     </div>
 </header>
 <nav id="navbar" class="pure-menu">
-    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover active">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
                     
                         <a href="/control-plane/" class="pure-menu-link">Control Plane</a>
                     
@@ -338,76 +340,53 @@
                 
 
 
-
-
-
-
-    
-
-
-
-
-
-
-
-<div class="content-margin">
-    <div class="my-8">
-        <h1>Control Plane</h1>
-        
+    <div class="content-margin">
 
 
 
 <article class="line-numbers">
     
     
-    <p>Below, explore the modules that allow you to dive deep into each core component of Linkerd’s control plane. Through each module, you can fully understand the architecture, components, and operation of the control plane.</p>
+    
+<h2 id="linkerd-proxy-injector" class="header-anchor-wrapper">Linkerd Proxy-Injector
+  <a href="#linkerd-proxy-injector" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>It&rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is <code>linkerd.io/injected: enabled</code> then inject a Linkerd proxy and ProxyInit containers.</p>
+
+<h2 id="참고-자료" class="header-anchor-wrapper">참고 자료
+  <a href="#%ec%b0%b8%ea%b3%a0-%ec%9e%90%eb%a3%8c" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2-edge/reference/architecture/">https://linkerd.io/2-edge/reference/architecture/</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/</a></li>
+</ul>
 
 </article>
-
-    </div>
-
-    
-        <div class="bookcase-layout content-margin">
-            
-                
-                
-
-
-
-<div class="bookcase-item">
-    <figure>
-        <img src="//localhost:1313/" class="bookcase-item-img-light">
-        <img src="//localhost:1313/" class="bookcase-item-img-dark">
-        <a href="/control-plane/destination/" class="bookcase-item-overlay"></a>
-    </figure>
-    <figcaption>
-        <a href="/control-plane/destination/">Control Plane</a>
-    </figcaption>
 </div>
-
-            
-                
-                
-
-
-
-<div class="bookcase-item">
-    <figure>
-        <img src="//localhost:1313/" class="bookcase-item-img-light">
-        <img src="//localhost:1313/" class="bookcase-item-img-dark">
-        <a href="/control-plane/proxy-injector/" class="bookcase-item-overlay"></a>
-    </figure>
-    <figcaption>
-        <a href="/control-plane/proxy-injector/">컨트롤 플레인</a>
-    </figcaption>
-</div>
-
-            
-        </div>
-    
-</div>
-
-
 
 
                 

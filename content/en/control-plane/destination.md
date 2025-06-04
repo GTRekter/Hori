@@ -143,7 +143,6 @@ func newAPI(
 	if l5dCrdClient != nil {
 		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
 	}
-
 	api := &API{
 		Client:                k8sClient,
 		L5dClient:             l5dCrdClient,
@@ -152,11 +151,9 @@ func newAPI(
 		sharedInformers:       sharedInformers,
 		l5dCrdSharedInformers: l5dCrdSharedInformers,
 	}
-
 	informerLabels := prometheus.Labels{
 		"cluster": cluster,
 	}
-
 	for _, resource := range resources {
 		switch resource {
 		case CJ:
@@ -335,7 +332,7 @@ func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *log
 }
 ```
 
-Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers  so that see only the incremental change.
+Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers so that see only the incremental change. It's important to understant that it won't watch both of them. Depending on `ew.enableEndpointSlices` it will watch one or the other. This value is received as parameter from the container `-enable-endpoint-slices` and by default is set to `true`.
 
 ```
 func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
@@ -378,7 +375,7 @@ time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linker
 time="2025-06-03T15:39:09Z" level=debug msg="Updating service for linkerd/linkerd-sp-validator" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-The same will happen for EndpointSlices and Endpoints. It's important to understant that it won't watch both of them. Depending on `ew.enableEndpointSlices` it will watch one or the other. This value is received as parameter from the container `-enable-endpoint-slices` and by default is set to `true`.
+The same will happen for EndpointSlices and Endpoints. 
 
 ```
 func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {

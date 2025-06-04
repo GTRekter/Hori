@@ -8,21 +8,12 @@
     <language>ko</language>
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/index/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>모듈</title>
-      <link>//localhost:1313/ko/control-plane/</link>
-      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
-      
-      <guid>//localhost:1313/ko/control-plane/</guid>
-      <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>모듈</title>
+      <title>데이터 플레인</title>
       <link>//localhost:1313/ko/data-plane/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>//localhost:1313/ko/data-plane/</guid>
-      <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
+      <description>&lt;p&gt;아래에서 Linkerd의 데이터 플레인 핵심 구성 요소를 심도 있게 학습할 수 있는 모듈들을 확인하세요. 각 모듈을 통해 데이터 플레인의 아키텍처, 구성 요소, 그리고 운영 방식을 완벽히 이해할 수 있습니다.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -32,6 +23,15 @@
       
       <guid>//localhost:1313/ko/modules/</guid>
       <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>제어 플레인</title>
+      <link>//localhost:1313/ko/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/control-plane/</guid>
+      <description>&lt;p&gt;아래에서 Linkerd의 제어 플레인 핵심 구성 요소를 심도 있게 학습할 수 있는 모듈들을 확인하세요. 각 모듈을 통해 제어 플레인의 아키텍처, 구성 요소, 그리고 운영 방식을 완벽히 이해할 수 있습니다.&lt;/p&gt;</description>
     </item>
     
   </channel>

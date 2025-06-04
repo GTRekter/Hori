@@ -327,17 +327,17 @@
                 href="//localhost:1313/ko/control-plane/destination/"
                 />
   </url><url>
-    <loc>//localhost:1313/ko/modules/proxy-injector/</loc>
+    <loc>//localhost:1313/ko/control-plane/proxy-injector/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/modules/proxy-injector/"
+                href="//localhost:1313/control-plane/proxy-injector/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="//localhost:1313/ko/modules/proxy-injector/"
+                href="//localhost:1313/ko/control-plane/proxy-injector/"
                 />
   </url><url>
     <loc>//localhost:1313/ko/modules/timeouts/</loc>
