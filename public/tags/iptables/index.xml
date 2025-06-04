@@ -9,10 +9,10 @@
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/tags/iptables/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Proxy-Init</title>
-      <link>//localhost:1313/modules/proxy-init/</link>
+      <link>//localhost:1313/data-plane/proxy-init/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/modules/proxy-init/</guid>
+      <guid>//localhost:1313/data-plane/proxy-init/</guid>
       <description>&lt;h1 id=&#34;proxy-init&#34; class=&#34;header-anchor-wrapper&#34;&gt;Proxy-Init
   &lt;a href=&#34;#proxy-init&#34; class=&#34;header-anchor-link&#34;&gt;
     &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;

@@ -9,10 +9,10 @@
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/proxy-init/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>프록시 초기화</title>
-      <link>//localhost:1313/ko/modules/proxy-init/</link>
+      <link>//localhost:1313/ko/data-plane/proxy-init/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/ko/modules/proxy-init/</guid>
+      <guid>//localhost:1313/ko/data-plane/proxy-init/</guid>
       <description>&lt;h1 id=&#34;프록시-초기화&#34; class=&#34;header-anchor-wrapper&#34;&gt;프록시 초기화
   &lt;a href=&#34;#%ed%94%84%eb%a1%9d%ec%8b%9c-%ec%b4%88%ea%b8%b0%ed%99%94&#34; class=&#34;header-anchor-link&#34;&gt;
     &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;

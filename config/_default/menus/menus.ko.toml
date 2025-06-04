@@ -1,41 +1,53 @@
 [[navbar]]
-  identifier = "modules"
-  name = "모듈"
-  url = "/ko/modules/"
+  identifier = "control-plane"
+  name = "제어 플레인"
+  url = "/control-plane/"
   weight = 1
   [[navbar]]
-    identifier = "certificates"
-    name = "인증서"
-    url = "/ko/modules/certificates"
-    parent = "modules"
+    identifier = "en-destination"
+    name = "목적지 컨트롤러"
+    url = "/control-plane/destination"
+    parent = "control-plane"
     weight = 1
+
+[[navbar]]
+  identifier = "data-plane"
+  name = "데이터 플레인"
+  url = "/data-plane/"
+  weight = 2
   [[navbar]]
     identifier = "proxy-init"
     name = "프록시 초기화"
-    url = "/ko/modules/proxy-init"
+    url = "/data-plane/proxy-init"
+    parent = "data-plane"
+    weight = 1
+
+[[navbar]]
+  identifier = "modules"
+  name = "모듈"
+  url = "/modules/"
+  weight = 3
+  [[navbar]]
+    identifier = "certificates"
+    name = "인증서"
+    url = "/modules/certificates"
+    parent = "modules"
+    weight = 1
+  [[navbar]]
+    identifier = "en-timeouts"
+    name = "타임아웃"
+    url = "/modules/timeouts"
     parent = "modules"
     weight = 2
   [[navbar]]
-    identifier = "destination"
-    name = "Destination 컨트롤러"
-    url = "/modules/destination"
-    parent = "모듈"
+    identifier = "en-linkerd-cli"
+    name = "Linkerd 커맨드라인 인터페이스"
+    url = "/modules/cli"
+    parent = "modules"
     weight = 3
-  [[navbar]]
-    identifier = "timeouts"
-    name = "타임아웃"
-    url = "/ko/modules/timeouts"
-    parent = "modules"
-    weight = 4
-  [[navbar]]
-    identifier = "linkerd-cli"
-    name = "Linkerd CLI"
-    url = "/ko/modules/cli"
-    parent = "modules"
-    weight = 4
 
 [[navbar]]
   identifier = "changelog"
   name = "변경 로그"
-  url = "/ko/changelog/"
-  weight = 2
+  url = "/changelog/"
+  weight = 4

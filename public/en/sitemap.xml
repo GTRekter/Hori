@@ -67,17 +67,30 @@
                 href="//localhost:1313/tags/cli/"
                 />
   </url><url>
-    <loc>//localhost:1313/modules/control-plane/</loc>
+    <loc>//localhost:1313/control-plane/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="//localhost:1313/ko/modules/control-plane/"
+                href="//localhost:1313/ko/control-plane/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/modules/control-plane/"
+                href="//localhost:1313/control-plane/"
+                />
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/control-plane/destination/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/control-plane/destination/"
                 />
   </url><url>
     <loc>//localhost:1313/tags/control-plane/</loc>
@@ -106,6 +119,19 @@
                 href="//localhost:1313/tags/crd/"
                 />
   </url><url>
+    <loc>//localhost:1313/data-plane/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/data-plane/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/data-plane/"
+                />
+  </url><url>
     <loc>//localhost:1313/tags/deep-dive/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -117,6 +143,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="//localhost:1313/tags/deep-dive/"
+                />
+  </url><url>
+    <loc>//localhost:1313/tags/destination/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/tags/destination/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/tags/destination/"
                 />
   </url><url>
     <loc>//localhost:1313/tags/identity/</loc>
@@ -223,17 +262,17 @@
                 href="//localhost:1313/tags/proxy-init/"
                 />
   </url><url>
-    <loc>//localhost:1313/modules/proxy-init/</loc>
+    <loc>//localhost:1313/data-plane/proxy-init/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="ko"
-                href="//localhost:1313/ko/modules/proxy-init/"
+                href="//localhost:1313/ko/data-plane/proxy-init/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/modules/proxy-init/"
+                href="//localhost:1313/data-plane/proxy-init/"
                 />
   </url><url>
     <loc>//localhost:1313/tags/service-annotations/</loc>
@@ -312,6 +351,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="//localhost:1313/modules/"
+                />
+  </url><url>
+    <loc>//localhost:1313/modules/proxy-injector/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/modules/proxy-injector/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/modules/proxy-injector/"
                 />
   </url><url>
     <loc>//localhost:1313/categories/</loc>

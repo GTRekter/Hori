@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Destination on Hori</title>
+    <link>//localhost:1313/ko/tags/destination/</link>
+    <description>Recent content in Destination on Hori</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/destination/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>컨트롤 플레인</title>
+      <link>//localhost:1313/ko/control-plane/destination/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/control-plane/destination/</guid>
+      <description>&lt;h1 id=&#34;destination&#34; class=&#34;header-anchor-wrapper&#34;&gt;Destination
+  &lt;a href=&#34;#destination&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;Linkerd 제어 플레인의 Destination 컨트롤러는 서비스 디스커버리와 라우팅을 담당합니다. 이 컨트롤러는 Kubernetes 리소스(Services, EndpointSlices, Pods, ExternalWorkloads 등)를 공유 인포머(shared informers)를 통해 감시하고, 엔드포인트의 로컬 캐시를 구축하며, 데이터 플레인 프록시로부터의 gRPC 요청을 제공합니다.&lt;/p&gt;
+
+&lt;h1 id=&#34;사전-준비&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 준비
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%a4%80%eb%b9%84&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows에서 유닉스 스타일 셸 사용 가능&lt;/li&gt;
+&lt;li&gt;로컬 Kubernetes 클러스터용 k3d (v5+) 설치&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+) 설치&lt;/li&gt;
+&lt;li&gt;Helm (v3+) 설치&lt;/li&gt;
+&lt;li&gt;인증서 생성을 위한 Smallstep (step) CLI&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-설정-파일-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 설정 파일 생성
+  &lt;a href=&#34;#1-%ec%84%a4%ec%a0%95-%ed%8c%8c%ec%9d%bc-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;policy.linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;gateway.networking.k8s.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: None
+EOF
+cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+volumes:
+  - volume: &amp;quot;&amp;lt;LOCAL-FULL-PATH&amp;gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&amp;quot;
+    nodeFilters: [&amp;quot;server:*&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-로컬-kubernetes-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. 로컬 Kubernetes 클러스터 생성
+  &lt;a href=&#34;#2-%eb%a1%9c%ec%bb%ac-kubernetes-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;k3d와 앞서 만든 cluster.yaml을 사용하여 경량 Kubernetes 클러스터를 시작합니다:&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

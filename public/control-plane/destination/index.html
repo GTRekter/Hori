@@ -1,0 +1,1186 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Control Plane - Hori</title>
+
+    
+    <meta name="description" content="Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes." />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/control-plane/">Control Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination">Destination Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/data-plane/">Data Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/data-plane/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/changelog/">Changelog</a></li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/control-plane/" class="pure-menu-link">Control Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination" class="pure-menu-link">Destination Controller</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/data-plane/" class="pure-menu-link">Data Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/data-plane/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    
+<h1 id="destination" class="header-anchor-wrapper">Destination
+  <a href="#destination" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<p>The Destination controller in Linkerd’s control plane is responsible for service discovery and routing. It watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies.</p>
+
+<h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
+  <a href="#prerequisites" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<ul>
+<li>macOS/Linux/Windows with a Unix‑style shell</li>
+<li>k3d (v5+) for local Kubernetes clusters</li>
+<li>kubectl (v1.25+)</li>
+<li>Helm (v3+)</li>
+<li>Smallstep (step) CLI for certificate generation</li>
+</ul>
+
+<h1 id="tutorial" class="header-anchor-wrapper">Tutorial
+  <a href="#tutorial" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+
+<h2 id="1-create-the-configuration-files" class="header-anchor-wrapper">1. Create the configuration files
+  <a href="#1-create-the-configuration-files" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>cat &lt;&lt; 'EOF' &gt; audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    resources:
+      - group: &quot;&quot;
+        resources: [&quot;*&quot;]
+  - level: RequestResponse
+    resources:
+      - group: &quot;linkerd.io&quot;
+        resources: [&quot;*&quot;]
+      - group: &quot;policy.linkerd.io&quot;
+        resources: [&quot;*&quot;]
+      - group: &quot;gateway.networking.k8s.io&quot;
+        resources: [&quot;*&quot;]
+  - level: None
+EOF
+cat &lt;&lt; 'EOF' &gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &quot;cluster&quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --debug
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
+        nodeFilters: [&quot;server:*&quot;]
+      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
+        nodeFilters: [&quot;server:*&quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&quot;loadbalancer&quot;]
+volumes:
+  - volume: &quot;&lt;LOCAL-FULL-PATH&gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&quot;
+    nodeFilters: [&quot;server:*&quot;]
+EOF
+</code></pre>
+
+<h2 id="2-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">2. Create a Local Kubernetes Cluster
+  <a href="#2-create-a-local-kubernetes-cluster" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:</p>
+<pre><code>k3d cluster create --kubeconfig-update-default \
+  -c ./cluster.yaml
+</code></pre>
+
+<h2 id="3-generate-identity-certificates" class="header-anchor-wrapper">3. Generate Identity Certificates
+  <a href="#3-generate-identity-certificates" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>Linkerd requires a trust anchor (root CA) and an issuer (intermediate CA) for mTLS identity.</p>
+<pre><code>step certificate create root.linkerd.cluster.local ./certificates/ca.crt ./certificates/ca.key \
+    --profile root-ca \
+    --no-password \
+    --insecure
+step certificate create identity.linkerd.cluster.local ./certificates/issuer.crt ./certificates/issuer.key \
+    --profile intermediate-ca \
+    --not-after 8760h \
+    --no-password \
+    --insecure \
+    --ca ./certificates/ca.crt \
+    --ca-key ./certificates/ca.key
+</code></pre>
+
+<h2 id="4-install-linkerd-via-helm" class="header-anchor-wrapper">4. Install Linkerd via Helm
+  <a href="#4-install-linkerd-via-helm" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<pre><code>helm repo add linkerd-edge https://helm.linkerd.io/edge
+helm repo update
+helm install linkerd-crds linkerd-edge/linkerd-crds \
+  -n linkerd --create-namespace --set installGatewayAPI=true
+helm upgrade --install linkerd-control-plane \
+  -n linkerd \
+  --set-file identityTrustAnchorsPEM=./certificates/ca.crt \
+  --set-file identity.issuer.tls.crtPEM=./certificates/issuer.crt \
+  --set-file identity.issuer.tls.keyPEM=./certificates/issuer.key \
+  --set controllerLogLevel=debug \
+  --set policyController.logLevel=debug \
+  linkerd-edge/linkerd-control-plane
+</code></pre>
+
+<h2 id="5-linkerd-destination" class="header-anchor-wrapper">5. Linkerd Destination
+  <a href="#5-linkerd-destination" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+
+<h3 id="interactions-with-the-kuberentes-api" class="header-anchor-wrapper">Interactions with the Kuberentes API
+  <a href="#interactions-with-the-kuberentes-api" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>When Destination starts, it use the <code>k8s.io/client-go</code> GO module to build one shared informer for every resource kinds it cares about (CronJobs, Pods, Services, etc.) and stores the handle in the API struct, as well as check and records a HasSynced check for each, and registers a Prometheus gauge that reports the current key count per cache.</p>
+<pre><code>func newAPI(
+	k8sClient kubernetes.Interface,
+	dynamicClient dynamic.Interface,
+	l5dCrdClient l5dcrdclient.Interface,
+	sharedInformers informers.SharedInformerFactory,
+	cluster string,
+	resources ...APIResource,
+) *API {
+	var l5dCrdSharedInformers l5dcrdinformer.SharedInformerFactory
+	if l5dCrdClient != nil {
+		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
+	}
+
+	api := &amp;API{
+		Client:                k8sClient,
+		L5dClient:             l5dCrdClient,
+		DynamicClient:         dynamicClient,
+		syncChecks:            make([]cache.InformerSynced, 0),
+		sharedInformers:       sharedInformers,
+		l5dCrdSharedInformers: l5dCrdSharedInformers,
+	}
+
+	informerLabels := prometheus.Labels{
+		&quot;cluster&quot;: cluster,
+	}
+
+	for _, resource := range resources {
+		switch resource {
+		case CJ:
+			api.cj = sharedInformers.Batch().V1().CronJobs()
+			api.syncChecks = append(api.syncChecks, api.cj.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.CronJob, informerLabels, api.cj.Informer())
+		case CM:
+			api.cm = sharedInformers.Core().V1().ConfigMaps()
+			api.syncChecks = append(api.syncChecks, api.cm.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ConfigMap, informerLabels, api.cm.Informer())
+		case Deploy:
+			api.deploy = sharedInformers.Apps().V1().Deployments()
+			api.syncChecks = append(api.syncChecks, api.deploy.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Deployment, informerLabels, api.deploy.Informer())
+		case DS:
+			api.ds = sharedInformers.Apps().V1().DaemonSets()
+			api.syncChecks = append(api.syncChecks, api.ds.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.DaemonSet, informerLabels, api.ds.Informer())
+		case Endpoint:
+			api.endpoint = sharedInformers.Core().V1().Endpoints()
+			api.syncChecks = append(api.syncChecks, api.endpoint.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Endpoints, informerLabels, api.endpoint.Informer())
+		case ES:
+			api.es = sharedInformers.Discovery().V1().EndpointSlices()
+			api.syncChecks = append(api.syncChecks, api.es.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.EndpointSlices, informerLabels, api.es.Informer())
+		case ExtWorkload:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.ew = l5dCrdSharedInformers.Externalworkload().V1beta1().ExternalWorkloads()
+			api.syncChecks = append(api.syncChecks, api.ew.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ExtWorkload, informerLabels, api.ew.Informer())
+		case Job:
+			api.job = sharedInformers.Batch().V1().Jobs()
+			api.syncChecks = append(api.syncChecks, api.job.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Job, informerLabels, api.job.Informer())
+		case Link:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.link = l5dCrdSharedInformers.Link().V1alpha3().Links()
+			api.syncChecks = append(api.syncChecks, api.link.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Link, informerLabels, api.link.Informer())
+		case MWC:
+			api.mwc = sharedInformers.Admissionregistration().V1().MutatingWebhookConfigurations()
+			api.syncChecks = append(api.syncChecks, api.mwc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.MutatingWebhookConfig, informerLabels, api.mwc.Informer())
+		case NS:
+			api.ns = sharedInformers.Core().V1().Namespaces()
+			api.syncChecks = append(api.syncChecks, api.ns.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Namespace, informerLabels, api.ns.Informer())
+		case Pod:
+			api.pod = sharedInformers.Core().V1().Pods()
+			api.syncChecks = append(api.syncChecks, api.pod.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Pod, informerLabels, api.pod.Informer())
+		case RC:
+			api.rc = sharedInformers.Core().V1().ReplicationControllers()
+			api.syncChecks = append(api.syncChecks, api.rc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ReplicationController, informerLabels, api.rc.Informer())
+		case RS:
+			api.rs = sharedInformers.Apps().V1().ReplicaSets()
+			api.syncChecks = append(api.syncChecks, api.rs.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ReplicaSet, informerLabels, api.rs.Informer())
+		case SP:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.sp = l5dCrdSharedInformers.Linkerd().V1alpha2().ServiceProfiles()
+			api.syncChecks = append(api.syncChecks, api.sp.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ServiceProfile, informerLabels, api.sp.Informer())
+		case Srv:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.srv = l5dCrdSharedInformers.Server().V1beta3().Servers()
+			api.syncChecks = append(api.syncChecks, api.srv.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Server, informerLabels, api.srv.Informer())
+		case SS:
+			api.ss = sharedInformers.Apps().V1().StatefulSets()
+			api.syncChecks = append(api.syncChecks, api.ss.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.StatefulSet, informerLabels, api.ss.Informer())
+		case Svc:
+			api.svc = sharedInformers.Core().V1().Services()
+			api.syncChecks = append(api.syncChecks, api.svc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Service, informerLabels, api.svc.Informer())
+		case Node:
+			api.node = sharedInformers.Core().V1().Nodes()
+			api.syncChecks = append(api.syncChecks, api.node.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Node, informerLabels, api.node.Informer())
+		case Secret:
+			api.secret = sharedInformers.Core().V1().Secrets()
+			api.syncChecks = append(api.syncChecks, api.secret.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Secret, informerLabels, api.secret.Informer())
+		}
+	}
+	return api
+}
+</code></pre>
+<p>When the <code>Sync</code> function is called, each informer request to get the initial snapshot, and then opens long-lived watch streams (parameter <code>watch=0</code>) so it can receive change events as they happen. If no events arrive withing 10 minutes (defined by the constant <code>ResyncTime = 10 * time.Minute</code>), it will requets a new compelte snapshot to the Kubernetes API Server.</p>
+<pre><code>kubectl logs -n linkerd deploy/linkerd-destination -c destination --follow
+...
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/workload.linkerd.io/v1beta1/externalworkloads?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m47s&amp;timeoutSeconds=467&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/discovery.k8s.io/v1/endpointslices?allowWatchBookmarks=true&amp;resourceVersion=751&amp;timeout=9m16s&amp;timeoutSeconds=556&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/batch/v1/jobs?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m10s&amp;timeoutSeconds=550&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/endpoints?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m35s&amp;timeoutSeconds=575&amp;watch=true 200 OK in 1 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/linkerd.io/v1alpha2/serviceprofiles?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m19s&amp;timeoutSeconds=439&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/policy.linkerd.io/v1beta3/servers?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m16s&amp;timeoutSeconds=496&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/services?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m50s&amp;timeoutSeconds=530&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/pods?allowWatchBookmarks=true&amp;resourceVersion=741&amp;timeout=8m55s&amp;timeoutSeconds=535&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/apps/v1/replicasets?allowWatchBookmarks=true&amp;resourceVersion=739&amp;timeout=7m4s&amp;timeoutSeconds=424&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/batch/v1/jobs?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m29s&amp;timeoutSeconds=449&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/nodes?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m30s&amp;timeoutSeconds=510&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/namespaces/linkerd/secrets?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m7s&amp;timeoutSeconds=547&amp;watch=true 200 OK in 0 milliseconds&quot;
+</code></pre>
+<p>Each informer owns a thread-safe local cache where it store the data returned by the Kubernetes API Server.</p>
+<p>By itself, an informer does not actually notify your business logic when things change; it only populates a local cache and lets you query it. For this reason the Controller&rsquo;s source code has several watchers on top of the related informers that registers event handlers on those informers, so it actually gets notified when the cache is updated.</p>
+<pre><code>func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *logging.Entry, enableEndpointSlices bool, cluster string) (*EndpointsWatcher, error) {
+	ew := &amp;EndpointsWatcher{
+		publishers:           make(map[ServiceID]*servicePublisher),
+		k8sAPI:               k8sAPI,
+		metadataAPI:          metadataAPI,
+		enableEndpointSlices: enableEndpointSlices,
+		cluster:              cluster,
+		log: log.WithFields(logging.Fields{
+			&quot;component&quot;: &quot;endpoints-watcher&quot;,
+		}),
+	}
+	var err error
+	ew.svcHandle, err = k8sAPI.Svc().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ew.addService,
+		DeleteFunc: ew.deleteService,
+		UpdateFunc: ew.updateService,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ew.srvHandle, err = k8sAPI.Srv().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ew.addServer,
+		DeleteFunc: ew.deleteServer,
+		UpdateFunc: ew.updateServer,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if ew.enableEndpointSlices {
+		ew.log.Debugf(&quot;Watching EndpointSlice resources&quot;)
+		ew.epHandle, err = k8sAPI.ES().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+			AddFunc:    ew.addEndpointSlice,
+			DeleteFunc: ew.deleteEndpointSlice,
+			UpdateFunc: ew.updateEndpointSlice,
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		ew.log.Debugf(&quot;Watching Endpoints resources&quot;)
+		ew.epHandle, err = k8sAPI.Endpoint().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+			AddFunc:    ew.addEndpoints,
+			DeleteFunc: ew.deleteEndpoints,
+			UpdateFunc: ew.updateEndpoints,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ew, nil
+}
+</code></pre>
+<p>Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers  so that see only the incremental change.</p>
+<pre><code>func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
+	newAddressSet := pp.endpointsToAddresses(endpoints)
+	if len(newAddressSet.Addresses) == 0 {
+		for _, listener := range pp.listeners {
+			listener.NoEndpoints(true)
+		}
+	} else {
+		add, remove := diffAddresses(pp.addresses, newAddressSet)
+		for _, listener := range pp.listeners {
+			if len(remove.Addresses) &gt; 0 {
+				listener.Remove(remove)
+			}
+			if len(add.Addresses) &gt; 0 {
+				listener.Add(add)
+			}
+		}
+	}
+	pp.addresses = newAddressSet
+	pp.exists = true
+	pp.metrics.incUpdates()
+	pp.metrics.setPods(len(pp.addresses.Addresses))
+	pp.metrics.setExists(true)
+}
+</code></pre>
+<p>You will be able to see the related logs message</p>
+<pre><code>time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for kube-system/kube-dns&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=kube-dns
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for kube-system/metrics-server&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=metrics-server
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-dst&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-dst-headless&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-identity&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-identity-headless&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-policy&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-policy-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy-validator
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-proxy-injector&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-sp-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
+</code></pre>
+<p>The same will happen for EndpointSlices and Endpoints. It&rsquo;s important to understant that it won&rsquo;t watch both of them. Depending on <code>ew.enableEndpointSlices</code> it will watch one or the other. This value is received as parameter from the container <code>-enable-endpoint-slices</code> and by default is set to <code>true</code>.</p>
+<pre><code>func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {
+	sp.Lock()
+	defer sp.Unlock()
+
+	sp.log.Debugf(&quot;Adding ES %s/%s&quot;, newSlice.Namespace, newSlice.Name)
+	for _, port := range sp.ports {
+		port.addEndpointSlice(newSlice)
+	}
+}
+...
+func (ew *EndpointsWatcher) addEndpointSlice(obj interface{}) {
+	newSlice, ok := obj.(*discovery.EndpointSlice)
+	if !ok {
+		ew.log.Errorf(&quot;error processing EndpointSlice resource, got %#v expected *discovery.EndpointSlice&quot;, obj)
+		return
+	}
+
+	id, err := getEndpointSliceServiceID(newSlice)
+	if err != nil {
+		ew.log.Errorf(&quot;Could not fetch resource service name:%v&quot;, err)
+		return
+	}
+
+	sp := ew.getOrNewServicePublisher(id)
+	sp.addEndpointSlice(newSlice)
+}
+</code></pre>
+<p>With their related logs</p>
+<pre><code>time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES default/kubernetes&quot; addr=&quot;:8086&quot; component=service-publisher ns=default svc=kubernetes
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES kube-system/kube-dns-g2kr4&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=kube-dns
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES kube-system/metrics-server-mfqjs&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=metrics-server
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-dst-headless-kz5q4&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-dst-pmtjw&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-identity-dzpzm&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-identity-headless-45vjs&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-policy-n54jm&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-policy-validator-5hqbl&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy-validator
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-proxy-injector-kzk6j&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-sp-validator-g7vgx&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
+</code></pre>
+
+<h3 id="external-workloads" class="header-anchor-wrapper">External Workloads
+  <a href="#external-workloads" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>Linkerd’s destination subsystem manages <code>ExternalWorkload</code> resources to represent workloads running outside the cluster. Unlike normal Pods, these workloads are not native Kubernetes objects; their IPs live in the <code>ExternalWorkload.spec.workloadIPs</code> field.</p>
+<pre><code>kubectl get externalworkload -n simple-app   external-simple-app-v1-0e340584 -o yaml
+apiVersion: workload.linkerd.io/v1beta1
+kind: ExternalWorkload
+metadata:
+  name: external-simple-app-v1-0e340584
+  namespace: simple-app
+  ...
+spec:
+  meshTLS:
+    identity: spiffe://root.linkerd.cluster.local/proxy-harness
+    serverName: external-simple-app-v1-0e340584.simple-app.external.identity.linkerd.cluster.local
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  workloadIPs:
+  - ip: 172.20.0.8
+...
+</code></pre>
+<p>When an <code>ExternalWorkload</code> is created, updated, or deleted, Linkerd’s controller sets up informers to catch those events and invoke the related function in the handler.</p>
+<pre><code>func (ec *EndpointsController) addHandlers() error {
+	...
+	ec.ewHandle, err = ec.k8sAPI.ExtWorkload().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ec.onAddExternalWorkload,
+		DeleteFunc: ec.onDeleteExternalWorkload,
+		UpdateFunc: ec.onUpdateExternalWorkload,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+</code></pre>
+<p>To decide which Services should include a given <code>ExternalWorkload</code>, the controller uses a label‐selector match to create a list of <code>&lt;namespace&gt;/&lt;service-name&gt;</code> so that it will know exactly which Services need to be re‐synced.</p>
+<pre><code>func (ec *EndpointsController) getExternalWorkloadSvcMembership(workload *ewv1beta1.ExternalWorkload) (sets.Set[string], error) {
+	keys := sets.Set[string]{}
+	services, err := ec.k8sAPI.Svc().Lister().Services(workload.Namespace).List(labels.Everything())
+	if err != nil {
+		return keys, err
+	}
+	for _, svc := range services {
+		if svc.Spec.Selector == nil {
+			continue
+		}
+		key, err := cache.DeletionHandlingMetaNamespaceKeyFunc(svc)
+		if err != nil {
+			return sets.Set[string]{}, err
+		}
+		if labels.ValidatedSetSelector(svc.Spec.Selector).Matches(labels.Set(workload.Labels)) {
+			keys.Insert(key)
+		}
+	}
+	return keys, nil
+}
+</code></pre>
+<p>When an <code>ExternalWorkload</code> is updated, it re‐evaluate both its IPs and its labels. Only if something actually changed do it will re‐enqueue the affected Services.</p>
+<pre><code>func (ec *EndpointsController) getServicesToUpdateOnExternalWorkloadChange(old, cur interface{}) sets.Set[string] {
+	newEw, newEwOk := cur.(*ewv1beta1.ExternalWorkload)
+	oldEw, oldEwOk := old.(*ewv1beta1.ExternalWorkload)
+	if !oldEwOk {
+		ec.log.Errorf(&quot;Expected (cur) to be an EndpointSlice in getServicesToUpdateOnExternalWorkloadChange(), got type: %T&quot;, cur)
+		return sets.Set[string]{}
+	}
+	if !newEwOk {
+		ec.log.Errorf(&quot;Expected (old) to be an EndpointSlice in getServicesToUpdateOnExternalWorkloadChange(), got type: %T&quot;, old)
+		return sets.Set[string]{}
+	}
+	if newEw.ResourceVersion == oldEw.ResourceVersion {
+		return sets.Set[string]{}
+	}
+	ewChanged, labelsChanged := ewEndpointsChanged(oldEw, newEw)
+	if !ewChanged &amp;&amp; !labelsChanged {
+		ec.log.Errorf(&quot;skipping update; nothing has changed between old rv %s and new rv %s&quot;, oldEw.ResourceVersion, newEw.ResourceVersion)
+		return sets.Set[string]{}
+	}
+	services, err := ec.getExternalWorkloadSvcMembership(newEw)
+	if err != nil {
+		ec.log.Errorf(&quot;unable to get pod %s/%s's service memberships: %v&quot;, newEw.Namespace, newEw.Name, err)
+		return sets.Set[string]{}
+	}
+	if labelsChanged {
+		oldServices, err := ec.getExternalWorkloadSvcMembership(oldEw)
+		if err != nil {
+			ec.log.Errorf(&quot;unable to get pod %s/%s's service memberships: %v&quot;, oldEw.Namespace, oldEw.Name, err)
+		}
+		services = determineNeededServiceUpdates(oldServices, services, ewChanged)
+	}
+	return services
+}
+</code></pre>
+<p>Once Services are enqueued, a background worker handles them one at a time.</p>
+<pre><code>func (ec *EndpointsController) processQueue() {
+	for {
+		key, quit := ec.queue.Get()
+		if quit {
+			ec.log.Trace(&quot;queue received shutdown signal&quot;)
+			return
+		}
+		err := ec.syncService(key)
+		ec.handleError(err, key)
+		ec.queue.Done(key)
+	}
+}
+</code></pre>
+<p>The <code>syncService</code> method ensures the set of EndpointSlice objects for a Service matches exactly the IPs from its corresponding ExternalWorkload CRs. It will consider only Services with a Type different than <code>ExternalName</code>.</p>
+<pre><code>func (ec *EndpointsController) syncService(update string) error {
+	namespace, name, err := cache.SplitMetaNamespaceKey(update)
+	if err != nil {
+		return err
+	}
+	svc, err := ec.k8sAPI.Svc().Lister().Services(namespace).Get(name)
+	if err != nil {
+		if !kerrors.IsNotFound(err) {
+			return err
+		}
+		ec.reconciler.endpointTracker.DeleteService(namespace, name)
+		return nil
+	}
+	if svc.Spec.Type == corev1.ServiceTypeExternalName {
+		return nil
+	}
+	if svc.Spec.Selector == nil {
+		return nil
+	}
+	ewSelector := labels.Set(svc.Spec.Selector).AsSelectorPreValidated()
+	ews, err := ec.k8sAPI.ExtWorkload().Lister().List(ewSelector)
+	if err != nil {
+		return err
+	}
+	esSelector := labels.Set(map[string]string{
+		discoveryv1.LabelServiceName: svc.Name,
+		discoveryv1.LabelManagedBy:   managedBy,
+	}).AsSelectorPreValidated()
+	epSlices, err := ec.k8sAPI.ES().Lister().List(esSelector)
+	if err != nil {
+		return err
+	}
+	epSlices = dropEndpointSlicesPendingDeletion(epSlices)
+	if ec.reconciler.endpointTracker.StaleSlices(svc, epSlices) {
+		ec.log.Warnf(&quot;detected EndpointSlice informer cache is out of date when processing %s&quot;, update)
+		return errors.New(&quot;EndpointSlice informer cache is out of date&quot;)
+	}
+	err = ec.reconciler.reconcile(svc, ews, epSlices)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+</code></pre>
+<p>Fianlly, it will delegates the heavy lifting to the <code>reconcile</code> method. The goal of this method is to produce exactly the right set of <code>EndpointSlice</code> objects so that each Service’s external IPs (from <code>ExternalWorkload</code>) are reflected. It will immediately deletes any slices that advertise an <code>AddressType</code> the Service no longer supports, create three lists with the slices to Create, Update, or Delete.</p>
+<pre><code>func (r *endpointsReconciler) reconcile(svc *corev1.Service, ews []*ewv1beta1.ExternalWorkload, existingSlices []*discoveryv1.EndpointSlice) error {
+	toDelete := []*discoveryv1.EndpointSlice{}
+	slicesByAddrType := make(map[discoveryv1.AddressType][]*discoveryv1.EndpointSlice)
+	errs := []error{}
+	supportedAddrTypes := getSupportedAddressTypes(svc)
+	for _, slice := range existingSlices {
+		if _, supported := supportedAddrTypes[slice.AddressType]; !supported {
+			toDelete = append(toDelete, slice)
+			continue
+		}
+		if _, ok := slicesByAddrType[slice.AddressType]; !ok {
+			slicesByAddrType[slice.AddressType] = []*discoveryv1.EndpointSlice{}
+		}
+		slicesByAddrType[slice.AddressType] = append(slicesByAddrType[slice.AddressType], slice)
+	}
+	for addrType := range supportedAddrTypes {
+		existingSlices := slicesByAddrType[addrType]
+		err := r.reconcileByAddressType(svc, ews, existingSlices, addrType)
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+	for _, slice := range toDelete {
+		err := r.k8sAPI.Client.DiscoveryV1().EndpointSlices(svc.Namespace).Delete(context.TODO(), slice.Name, metav1.DeleteOptions{})
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+	return utilerrors.NewAggregate(errs)
+}
+</code></pre>
+<p>Once we know exactly which slices need to be created, updated, or deleted, we push those changes to Kubernetes.</p>
+<pre><code>func (r *endpointsReconciler) finalize(svc *corev1.Service, slicesToCreate, slicesToUpdate, slicesToDelete []*discoveryv1.EndpointSlice) error {
+	for i := 0; i &lt; len(slicesToDelete); {
+		if len(slicesToCreate) == 0 {
+			break
+		}
+		sliceToDelete := slicesToDelete[i]
+		slice := slicesToCreate[len(slicesToCreate)-1]
+		if sliceToDelete.AddressType == slice.AddressType &amp;&amp; ownedBy(sliceToDelete, svc) {
+			slice.Name = sliceToDelete.Name
+			slicesToCreate = slicesToCreate[:len(slicesToCreate)-1]
+			slicesToUpdate = append(slicesToUpdate, slice)
+			slicesToDelete = append(slicesToDelete[:i], slicesToDelete[i+1:]...)
+		} else {
+			i++
+		}
+	}
+	r.log.Debugf(&quot;reconciliation result for %s/%s: %d to add, %d to update, %d to remove&quot;, svc.Namespace, svc.Name, len(slicesToCreate), len(slicesToUpdate), len(slicesToDelete))
+	if svc.DeletionTimestamp == nil {
+		for _, slice := range slicesToCreate {
+			r.log.Tracef(&quot;starting create: %s/%s&quot;, slice.Namespace, slice.Name)
+			createdSlice, err := r.k8sAPI.Client.DiscoveryV1().EndpointSlices(svc.Namespace).Create(context.TODO(), slice, metav1.CreateOptions{})
+			if err != nil {
+				if errors.HasStatusCause(err, corev1.NamespaceTerminatingCause) {
+					return nil
+				}
+				return err
+			}
+			r.endpointTracker.Update(createdSlice)
+			r.log.Tracef(&quot;finished creating: %s/%s&quot;, createdSlice.Namespace, createdSlice.Name)
+		}
+	}
+	for _, slice := range slicesToUpdate {
+		r.log.Tracef(&quot;starting update: %s/%s&quot;, slice.Namespace, slice.Name)
+		updatedSlice, err := r.k8sAPI.Client.DiscoveryV1().EndpointSlices(svc.Namespace).Update(context.TODO(), slice, metav1.UpdateOptions{})
+		if err != nil {
+			return err
+		}
+		r.endpointTracker.Update(updatedSlice)
+		r.log.Tracef(&quot;finished updating: %s/%s&quot;, updatedSlice.Namespace, updatedSlice.Name)
+	}
+	for _, slice := range slicesToDelete {
+		r.log.Tracef(&quot;starting delete: %s/%s&quot;, slice.Namespace, slice.Name)
+		err := r.k8sAPI.Client.DiscoveryV1().EndpointSlices(svc.Namespace).Delete(context.TODO(), slice.Name, metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
+		r.endpointTracker.ExpectDeletion(slice)
+		r.log.Tracef(&quot;finished deleting: %s/%s&quot;, slice.Namespace, slice.Name)
+	}
+	return nil
+}
+</code></pre>
+<p>Because multiple <code>destination</code> controller replicas may run, Linekrd use a leader election pattern to ensure only one instance writes <code>EndpointSlice</code> objects at a time. It uses a Kubernetes <code>Lease</code> object to coordinate leadership with the following configuration.</p>
+<pre><code>ec.lec = leaderelection.LeaderElectionConfig{
+    Lock: &amp;resourcelock.LeaseLock{
+        LeaseMeta: metav1.ObjectMeta{
+            Name:      &quot;linkerd-destination-endpoint-write&quot;,
+            Namespace: controllerNs,
+        },
+        Client: k8sAPI.Client.CoordinationV1(),
+        LockConfig: resourcelock.ResourceLockConfig{
+            Identity: hostname,  // unique ID per instance
+        },
+    },
+    LeaseDuration: 30 * time.Second,
+    RenewDeadline: 10 * time.Second,
+    RetryPeriod:   2 * time.Second,
+    Callbacks: leaderelection.LeaderCallbacks{
+        OnStartedLeading: ec.addHandlers,
+        OnStoppedLeading: ec.removeHandlers,
+    },
+}
+</code></pre>
+<p>As long as the leader continues to renew, it keeps reconciling ExternalWorkload changes. If it fails, another replica becomes leader and resumes write operations. You will be able to see an output with the periodic renewals.</p>
+<pre><code>time=&quot;2025-05-19T08:53:23Z&quot; level=info msg=&quot;PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 2 milliseconds&quot;
+...
+time=&quot;2025-05-19T08:53:25Z&quot; level=info msg=&quot;PUT https://10.247.0.1:443/apis/coordination.k8s.io/v1/namespaces/linkerd/leases/linkerd-destination-endpoint-write 200 OK in 6 milliseconds&quot;
+</code></pre>
+
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li><a href="https://linkerd.io/2-edge/reference/architecture/">https://linkerd.io/2-edge/reference/architecture/</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/workload_watcher.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/workload_watcher.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/k8s.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/k8s.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/endpoints_watcher.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/endpoints_watcher.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_controller.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_controller.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_reconciler.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_reconciler.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/k8s/k8s.go">https://github.com/linkerd/linkerd2/blob/main/controller/k8s/k8s.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/k8s/api.go">https://github.com/linkerd/linkerd2/blob/main/controller/k8s/api.go</a></li>
+<li><a href="https://pkg.go.dev/k8s.io/client-go">https://pkg.go.dev/k8s.io/client-go</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/</a></li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

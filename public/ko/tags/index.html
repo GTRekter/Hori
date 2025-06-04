@@ -97,57 +97,67 @@
             </label>
             <div id="sidebar">
                 <ul><li>
-                            <a href="/ko/modules/">모듈</a>
+                            <a href="/control-plane/">제어 플레인</a>
     <ul>
         
 
             
                 <li>
                     
-                        <a href="/ko/modules/certificates">인증서</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/ko/modules/proxy-init">프록시 초기화</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/ko/modules/control-plane">컨트롤 플레인</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/ko/modules/cli">Linkerd CLI</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/ko/modules/timeouts">타임아웃</a>
+                        <a href="/control-plane/destination">목적지 컨트롤러</a>
                     
                 </li>
             
         
     </ul>
 </li><li>
-                            <a href="/ko/changelog/">변경 로그</a></li></ul>
+                            <a href="/data-plane/">데이터 플레인</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/data-plane/proxy-init">프록시 초기화</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/modules/">모듈</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">인증서</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">타임아웃</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd 커맨드라인 인터페이스</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/changelog/">변경 로그</a></li></ul>
             </div>
         </div>
     
@@ -256,14 +266,44 @@
 <nav id="navbar" class="pure-menu">
     <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
                     
-                        <a href="/ko/modules/" class="pure-menu-link">모듈</a>
+                        <a href="/control-plane/" class="pure-menu-link">제어 플레인</a>
                     
                     <ul class="pure-menu-children">
 
     
         <li class="pure-menu-item">
             
-                <a href="/ko/modules/certificates" class="pure-menu-link">인증서</a>
+                <a href="/control-plane/destination" class="pure-menu-link">목적지 컨트롤러</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/data-plane/" class="pure-menu-link">데이터 플레인</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/data-plane/proxy-init" class="pure-menu-link">프록시 초기화</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/modules/" class="pure-menu-link">모듈</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">인증서</a>
             
         </li>
     
@@ -272,7 +312,7 @@
     
         <li class="pure-menu-item">
             
-                <a href="/ko/modules/proxy-init" class="pure-menu-link">프록시 초기화</a>
+                <a href="/modules/timeouts" class="pure-menu-link">타임아웃</a>
             
         </li>
     
@@ -281,25 +321,7 @@
     
         <li class="pure-menu-item">
             
-                <a href="/ko/modules/control-plane" class="pure-menu-link">컨트롤 플레인</a>
-            
-        </li>
-    
-
-
-    
-        <li class="pure-menu-item">
-            
-                <a href="/ko/modules/cli" class="pure-menu-link">Linkerd CLI</a>
-            
-        </li>
-    
-
-
-    
-        <li class="pure-menu-item">
-            
-                <a href="/ko/modules/timeouts" class="pure-menu-link">타임아웃</a>
+                <a href="/modules/cli" class="pure-menu-link">Linkerd 커맨드라인 인터페이스</a>
             
         </li>
     
@@ -307,7 +329,7 @@
 </ul>
                 </li><li class="navbar-item pure-menu-item ">
                     
-                        <a href="/ko/changelog/" class="pure-menu-link">변경 로그</a>
+                        <a href="/changelog/" class="pure-menu-link">변경 로그</a>
                     
                 </li></ul>
 </nav>
@@ -354,6 +376,8 @@
     
         
     
+        
+    
     
 
     
@@ -365,8 +389,17 @@
             
             
 
-            <a class="term-item" href="/ko/tags/linkerd/" style="line-height:2.376227191235347rem">
-                <span style="font-size:1.5262271912353471rem">Linkerd</span>
+            <a class="term-item" href="/ko/tags/linkerd/" style="line-height:2.3925671103421613rem">
+                <span style="font-size:1.5425671103421614rem">Linkerd</span>
+                <span style="font-size:0.675rem"> (6) </span>
+            </a>
+        
+            
+            
+            
+
+            <a class="term-item" href="/ko/tags/kubernetes/" style="line-height:2.324638419626514rem">
+                <span style="font-size:1.4746384196265143rem">Kubernetes</span>
                 <span style="font-size:0.675rem"> (5) </span>
             </a>
         
@@ -374,8 +407,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/kubernetes/" style="line-height:2.2859365704900854rem">
-                <span style="font-size:1.4359365704900853rem">Kubernetes</span>
+            <a class="term-item" href="/ko/tags/deep-dive/" style="line-height:2.241500421306632rem">
+                <span style="font-size:1.3915004213066322rem">Deep-Dive</span>
                 <span style="font-size:0.675rem"> (4) </span>
             </a>
         
@@ -383,8 +416,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/deep-dive/" style="line-height:2.1695317147549575rem">
-                <span style="font-size:1.3195317147549575rem">Deep-Dive</span>
+            <a class="term-item" href="/ko/tags/index/" style="line-height:2.1343168996888453rem">
+                <span style="font-size:1.2843168996888452rem">Index</span>
                 <span style="font-size:0.675rem"> (3) </span>
             </a>
         
@@ -392,8 +425,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/tutorial/" style="line-height:2.0054682852450427rem">
-                <span style="font-size:1.1554682852450426rem">Tutorial</span>
+            <a class="term-item" href="/ko/tags/control-plane/" style="line-height:1.983250210653316rem">
+                <span style="font-size:1.133250210653316rem">Control-Plane</span>
                 <span style="font-size:0.675rem"> (2) </span>
             </a>
         
@@ -401,17 +434,17 @@
             
             
 
-            <a class="term-item" href="/ko/tags/control-plane/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Control-Plane</span>
-                <span style="font-size:0.675rem"> (1) </span>
+            <a class="term-item" href="/ko/tags/tutorial/" style="line-height:1.983250210653316rem">
+                <span style="font-size:1.133250210653316rem">Tutorial</span>
+                <span style="font-size:0.675rem"> (2) </span>
             </a>
         
             
             
             
 
-            <a class="term-item" href="/ko/tags/index/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Index</span>
+            <a class="term-item" href="/ko/tags/iptables/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Iptables</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         
@@ -428,8 +461,26 @@
             
             
 
-            <a class="term-item" href="/ko/tags/service-annotations/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Service-Annotations</span>
+            <a class="term-item" href="/ko/tags/proxy-init/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Proxy-Init</span>
+                <span style="font-size:0.675rem"> (1) </span>
+            </a>
+        
+            
+            
+            
+
+            <a class="term-item" href="/ko/tags/identity/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Identity</span>
+                <span style="font-size:0.675rem"> (1) </span>
+            </a>
+        
+            
+            
+            
+
+            <a class="term-item" href="/ko/tags/timeouts/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Timeouts</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         
@@ -439,15 +490,6 @@
 
             <a class="term-item" href="/ko/tags/architecture/" style="line-height:1.725rem">
                 <span style="font-size:0.875rem">Architecture</span>
-                <span style="font-size:0.675rem"> (1) </span>
-            </a>
-        
-            
-            
-            
-
-            <a class="term-item" href="/ko/tags/certificates/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Certificates</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         
@@ -473,8 +515,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/identity/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Identity</span>
+            <a class="term-item" href="/ko/tags/destination/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Destination</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         
@@ -482,8 +524,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/iptables/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Iptables</span>
+            <a class="term-item" href="/ko/tags/service-annotations/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Service-Annotations</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         
@@ -491,17 +533,8 @@
             
             
 
-            <a class="term-item" href="/ko/tags/proxy-init/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Proxy-Init</span>
-                <span style="font-size:0.675rem"> (1) </span>
-            </a>
-        
-            
-            
-            
-
-            <a class="term-item" href="/ko/tags/timeouts/" style="line-height:1.725rem">
-                <span style="font-size:0.875rem">Timeouts</span>
+            <a class="term-item" href="/ko/tags/certificates/" style="line-height:1.725rem">
+                <span style="font-size:0.875rem">Certificates</span>
                 <span style="font-size:0.675rem"> (1) </span>
             </a>
         

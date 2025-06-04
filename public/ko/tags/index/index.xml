@@ -9,6 +9,24 @@
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/tags/index/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>모듈</title>
+      <link>//localhost:1313/ko/control-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/control-plane/</guid>
+      <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>모듈</title>
+      <link>//localhost:1313/ko/data-plane/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/data-plane/</guid>
+      <description>&lt;p&gt;아래 심층 모듈을 통해 Linkerd의 핵심 구성 요소를 완벽히 익혀보세요.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>모듈</title>
       <link>//localhost:1313/ko/modules/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
