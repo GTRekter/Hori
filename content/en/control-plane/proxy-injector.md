@@ -16,7 +16,7 @@ bookcase_cover_src_dark: 'control-plane/proxy-injector_white.png'
 
 ## Linkerd Proxy-Injector
 
-It's using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is `linkerd.io/injected: enabled` then inject a Linkerd proxy and ProxyInit containers.
+The Linkerd Proxy-Injector uses a mutating webhook to intercept requests to the Kubernetes API when a new Pod (or Service) is created. If the namespace or Pod is annotated with `linkerd.io/inject: enabled`, the webhook injects the Linkerd proxy and ProxyInit containers into the Pod spec.
 
 # Prerequisites
 
@@ -80,6 +80,37 @@ volumes:
   - volume: "<LOCAL-FULL-PATH>/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml"
     nodeFilters: ["server:*"]
 EOF
+cat << 'EOF' > application.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-app-v1
+  namespace: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      containers:
+        - name: http-app
+          image: kong/httpbin:latest
+          ports:
+            - containerPort: 80
+EOF
 ```
 
 ## 2. Create a Local Kubernetes Cluster
@@ -126,10 +157,19 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 ```
 
-## 5. Interactions with the Kuberentes API
+## 5. Deploy the Sample Application
 
-The entire flow starts with a request to create a new Pod or Service being sent to the Kuberentes API. It will then receive the request and call process the 
- Mutating Webhook with the matiching rules. In case of Linkerd, the `linkerd-proxy-injector-webhook`. This Mutating Webhook will referenct the `linkerd-proxy-injector` service in the namespace `linkerd` on port `443`.
+Since the `simple-app` namespace is annotated with `linkerd.io/inject: enabled`, Linkerd’s proxy-injector webhook will automatically inject a sidecar into the `simple-app-v1` Deployment’s Pods.
+
+```
+kubectl apply -f ./application.yaml
+```
+
+At this point, Kubernetes will send a CREATE request for the Deployment’s ReplicaSet and then for the Pod.
+
+## 6. Interactions with the Kuberentes API
+
+When you apply `application.yaml`, Kubernetes processes it and calls any matching mutating webhooks. In Linkerd’s case, this is the `linkerd-proxy-injector-webhook` (configured under `MutatingWebhookConfiguration`). Here’s a trimmed-down view of that webhook configuration:
 
 ```
 kubectl get mutatingwebhookconfiguration linkerd-proxy-injector-webhook-config -o yaml
@@ -184,14 +224,20 @@ webhooks:
   timeoutSeconds: 10
 ```
 
-If we look at the volumes mounted by the `linkerd-proxy-injector` pod and available to the `proxy-injector` controller, we will see both Root Certificate Trust Anchor (stored in the `linkerd-identity-trust-roots` configMap), and the linkerd configuration (stored in the `linkerd-config` configMap).
+The mutating webhook will:
+- Be triggered by any Pod or Service creation in a namespace that does NOT have `config.linkerd.io/admission-webhooks=disabled` will be sent to this webhook. The webhook also ignores any object labeled with `linkerd.io/control-plane-component` or `linkerd.io/cni-resource`, and it skips system namespaces `kube-system` and `cert-manager`.
+- Point to the `linkerd-proxy-injector` service in the `linkerd` namespace on port `443`. 
+
+If we take a look a inside the `linkerd-proxy-injector` Pod we will see that:
+- It will mount a volume containing the `linkerd-config` ConfigMap that holds the chart‐rendered values.yaml, including defaults for proxy image, opaque ports, resource limits, and so forth.
+- It will mount a volume which contains the `linkerd-identity-trust-roots` ConfigMap. This ConfigMap contains the the trust anchor Certificate.
 
 ```
-kubectl get pods -n linkerd linkerd-proxy-injector-b97875998-9dvfj -o yaml
+kubectl get pods -n linkerd linkerd-proxy-injector-******** -o yaml
 apiVersion: v1
 kind: Pod
   ...
-  name: linkerd-proxy-injector-b97875998-9dvfj
+  name: linkerd-proxy-injector-********
   namespace: linkerd
 spec:
   containers:
@@ -269,7 +315,7 @@ spec:
     name: linkerd-identity-end-entity
 ```
 
-These two referencese are important because, the first thing that the proxy-injector will do is to read the content of these volues
+When the webhook binary starts handling a request, the first lines of code read both the mounted volume with the `linkerd-config` ConfigMap and `linkerd-identity-trust-roots` ConfigMap so that the injector will know the configurations and correct trust root to inject in the proxy configuration.
 
 ```
 valuesConfig, err := config.Values(pkgK8s.MountPathValuesConfig)
@@ -281,17 +327,29 @@ if err != nil {
   return nil, err
 }
 valuesConfig.IdentityTrustAnchorsPEM = string(caPEM)
+```
+
+Next, the webhook fetches the namespace object to read any namespace-level Linkerd annotations. This is important because these values will be propagated to the proxy itself if no annotations in the deployment override them.
+
+```
 ns, err := api.Get(k8s.NS, request.Namespace)
 if err != nil {
   return nil, err
 }
+```
+
+Then it constructs a `ResourceConfig` struct that carries:
+- The chart values merged with any overrides from Pod annotations.
+- All namespace‐level annotations, so that any Linkerd annotation set at the namespace is automatically inherited by each Pod.
+- The resource kind (e.g. “Pod” or “Deployment”) so that the code knows where to look for a Pod template if the resource is a Deployment.
+- An “OwnerRetriever” function that can look up the parent resource (e.g. Deployment → ReplicaSet → Pod) so that injected events can be attached to the highest‐level owner.
+
+```
 resourceConfig := inject.NewResourceConfig(valuesConfig, inject.OriginWebhook, linkerdNamespace).
   WithOwnerRetriever(ownerRetriever(ctx, api, request.Namespace)).
   WithNsAnnotations(ns.GetAnnotations()).
   WithKind(request.Kind.Kind)
-```
-
-```
+...
 func NewResourceConfig(values *l5dcharts.Values, origin Origin, ns string) *ResourceConfig {
 	config := &ResourceConfig{
 		namespace:     ns,
@@ -305,25 +363,24 @@ func NewResourceConfig(values *l5dcharts.Values, origin Origin, ns string) *Reso
 	config.pod.annotations = map[string]string{}
 	return config
 }
-// WithOwnerRetriever enriches ResourceConfig with a function that allows to retrieve
-// the kind and name of the workload's owner reference
 func (conf *ResourceConfig) WithOwnerRetriever(f OwnerRetrieverFunc) *ResourceConfig {
 	conf.ownerRetriever = f
 	return conf
 }
-// WithNsAnnotations enriches ResourceConfig with the namespace annotations, that can
-// be used in shouldInject()
 func (conf *ResourceConfig) WithNsAnnotations(m map[string]string) *ResourceConfig {
 	conf.nsAnnotations = m
 	return conf
 }
-// WithKind enriches ResourceConfig with the workload kind
 func (conf *ResourceConfig) WithKind(kind string) *ResourceConfig {
 	conf.workload.metaType = metav1.TypeMeta{Kind: kind}
 	return conf
 }
 ```
 
+At this point, the webhook deserializes the raw JSON bytes from the admission request into typed Kubernetes objects and fills some additional field in the `ResourceConfig` struct:
+- `resourceConfig.workload.metatype` and `resourceConfig.workload.meta` if the object is a Deployment, StatefulSet, Service, and so on.
+- `resourceConfig.pod.spec` and `resourceConfig.pod.meta` if the object is a Pod (or if the object has a PodTemplate, such as a Deployment template).
+- `resourceConfig.ownerRef` if there is a controller owner reference (for example, a Pod owned by a ReplicaSet, owned by a Deployment).
 
 ```
 report, err := resourceConfig.ParseMetaAndYAML(request.Object.Raw)
@@ -333,11 +390,89 @@ if err != nil {
 log.Infof("received %s", report.ResName())
 ```
 
-It will then copy the annotations from the naspace that do not exist on pod over to pod's template. 
-If the pod did not inherit the opaque ports annotation from the namespace, then add the default value from the config values. Only add the annotation if there are ports that the pod exposes that are in the default opaque ports list.
+You will see log lines like:
+
+```
+time="2025-06-04T11:19:18Z" level=info msg="received service/simple-app-v1"
+time="2025-06-04T11:19:18Z" level=info msg="received admission review request \"919c6889-a59c-4168-be0d-6d448460af98\""
+```
+
+If the resource has a parent (for example, a Pod created by a ReplicaSet which is managed by a Deployment), the code looks it up so that any Kubernetes Event (Injected or Skipped) goes on the parent:
+
+
+```
+var parent *metav1.PartialObjectMetadata
+var ownerKind string
+if ownerRef := resourceConfig.GetOwnerRef(); ownerRef != nil {
+  res, err := k8s.GetAPIResource(ownerRef.Kind)
+  if err != nil {
+    log.Tracef("skipping event for parent %s: %s", ownerRef.Kind, err)
+  } else {
+    objs, err := api.GetByNamespaceFiltered(res, request.Namespace, ownerRef.Name, labels.Everything())
+    if err != nil {
+      log.Warnf("couldn't retrieve parent object %s-%s-%s; error: %s", request.Namespace, ownerRef.Kind, ownerRef.Name, err)
+    } else if len(objs) == 0 {
+      log.Warnf("couldn't retrieve parent object %s-%s-%s", request.Namespace, ownerRef.Kind, ownerRef.Name)
+    } else {
+      parent = objs[0]
+    }
+    ownerKind = strings.ToLower(ownerRef.Kind)
+  }
+}
+```
+
+With those pieces in place, the webhook calls `report.Injectable()` to decide whether injection should proceed. To do so it checks:
+- `HostNetwork` mode (iptables won’t work if the Pod is on the host network).
+- Existing sidecar detecting that injection would be redundant.
+- Unsupported resource kinds.
+- An explicit annotation that disables injection.
+- Whether the Pod automounts its ServiceAccount token (needed for mTLS).
+If any of these checks fail, the function returns `false` along with one or more human-readable reasons. 
+
 
 ```
 injectable, reasons := report.Injectable()
+...
+func (r *Report) Injectable() (bool, []string) {
+	var reasons []string
+	if r.HostNetwork {
+		reasons = append(reasons, hostNetworkEnabled)
+	}
+	if r.Sidecar {
+		reasons = append(reasons, sidecarExists)
+	}
+	if r.UnsupportedResource {
+		reasons = append(reasons, unsupportedResource)
+	}
+	if r.InjectDisabled {
+		reasons = append(reasons, r.InjectDisabledReason)
+	}
+
+	if !r.AutomountServiceAccountToken {
+		reasons = append(reasons, disabledAutomountServiceAccountToken)
+	}
+
+	if len(reasons) > 0 {
+		return false, reasons
+	}
+	return true, nil
+}
+```
+
+If `Injectable()` returns `true`, the webhook proceeds with injection and:
+- Append a `config.linkerd.io/created-by` annotation.
+- Copy any namespace‐level Linkerd annotations (for CPU/memory limits, proxy image overrides, etc.) onto the Pod template if they are not explicitly set on the Pod.
+- If the Pod does not already have a `config.linkerd.io/opaque-ports` annotation, split the comma-separated default opaque ports from `valuesConfig.Proxy.OpaquePorts`, filter them against the actual container ports in the Pod spec, and then set the annotation to just the matching ports.
+
+Then it will call `resourceConfig.GetPodPatch(true)` to build the JSON patch that:
+- Adds the `linkerd-init` init container (which programs iptables rules).
+- Adds the `linkerd-proxy` sidecar container with all required environment variables, volume mounts, and command-line flags.
+- Attaches the `config.linkerd.io/opaque-ports` and `config.linkerd.io/created-by` annotations.
+- Mounts the trust anchors and TLS secrets (so the proxy can talk securely to the control plane).
+- If a parent was found, emit a Kubernetes Event on the parent resource with reason Injected and message **Linkerd sidecar proxy injected.**
+- Log the generated patch at INFO level and debug-print the full JSON patch.
+
+```
 if injectable {
   resourceConfig.AppendPodAnnotation(pkgK8s.CreatedByAnnotation, fmt.Sprintf("linkerd/proxy-injector %s", version.Version))
   inject.AppendNamespaceAnnotations(resourceConfig.GetOverrideAnnotations(), resourceConfig.GetNsAnnotations(), resourceConfig.GetWorkloadAnnotations())
@@ -367,61 +502,98 @@ if injectable {
     Patch:     patchJSON,
   }, nil
 }
-```
-
-```
-// Create a patch which adds the opaque ports annotation if the workload
-// doesn't already have it set.
-patchJSON, err := resourceConfig.CreateOpaquePortsPatch()
-if err != nil {
-  return nil, err
+...
+func (conf *ResourceConfig) GetPodPatch(injectProxy bool) ([]byte, error) {
+	namedPorts := make(map[string]int32)
+	if conf.HasPodTemplate() {
+		namedPorts = util.GetNamedPorts(conf.pod.spec.Containers)
+	}
+	values, err := GetOverriddenValues(conf.values, conf.getAnnotationOverrides(), namedPorts)
+	values.Proxy.PodInboundPorts = getPodInboundPorts(conf.pod.spec)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate Overridden Values: %w", err)
+	}
+	if values.ClusterNetworks != "" {
+		for _, network := range strings.Split(strings.Trim(values.ClusterNetworks, ","), ",") {
+			if _, _, err := net.ParseCIDR(network); err != nil {
+				return nil, fmt.Errorf("cannot parse destination get networks: %w", err)
+			}
+		}
+	}
+	patch := &podPatch{
+		Values:      *values,
+		Annotations: map[string]string{},
+		Labels:      map[string]string{},
+	}
+	switch strings.ToLower(conf.workload.metaType.Kind) {
+	case k8s.Pod:
+	case k8s.CronJob:
+		patch.PathPrefix = "/spec/jobTemplate/spec/template"
+	default:
+		patch.PathPrefix = "/spec/template"
+	}
+	if conf.pod.spec != nil {
+		conf.injectPodAnnotations(patch)
+		if injectProxy {
+			conf.injectObjectMeta(patch)
+			conf.injectPodSpec(patch)
+		} else {
+			patch.Proxy = nil
+			patch.ProxyInit = nil
+		}
+	}
+	rawValues, err := yaml.Marshal(patch)
+	if err != nil {
+		return nil, err
+	}
+	files := []*loader.BufferedFile{
+		{Name: chartutil.ChartfileName},
+		{Name: "requirements.yaml"},
+		{Name: "templates/patch.json"},
+	}
+	chart := &charts.Chart{
+		Name:      "patch",
+		Dir:       "patch",
+		Namespace: conf.namespace,
+		RawValues: rawValues,
+		Files:     files,
+		Fs:        static.Templates,
+	}
+	buf, err := chart.Render()
+	if err != nil {
+		return nil, err
+	}
+	res := rTrail.ReplaceAll(buf.Bytes(), []byte("\n"))
+	return res, nil
 }
-
-// If resource needs to be patched with annotations (e.g opaque
-// ports), then admit the request with the relevant patch
-if len(patchJSON) != 0 {
-  log.Infof("annotation patch generated for: %s", report.ResName())
-  log.Debugf("annotation patch: %s", patchJSON)
-  proxyInjectionAdmissionResponses.With(admissionResponseLabels(ownerKind, request.Namespace, "false", "", report.InjectAnnotationAt, configLabels)).Inc()
-  patchType := admissionv1beta1.PatchTypeJSONPatch
-  return &admissionv1beta1.AdmissionResponse{
-    UID:       request.UID,
-    Allowed:   true,
-    PatchType: &patchType,
-    Patch:     patchJSON,
-  }, nil
-}
-
-// If the resource is a pod, and no annotation patch has
-// been generated, record in the metrics (and log) that it has been
-// entirely skipped and admit without any mutations
-if resourceConfig.IsPod() {
-  log.Infof("skipped %s: %s", report.ResName(), readableMsg)
-  proxyInjectionAdmissionResponses.With(admissionResponseLabels(ownerKind, request.Namespace, "true", strings.Join(reasons, ","), report.InjectAnnotationAt, configLabels)).Inc()
-  return &admissionv1beta1.AdmissionResponse{
-    UID:     request.UID,
-    Allowed: true,
-  }, nil
-}
-
-return &admissionv1beta1.AdmissionResponse{
-  UID:     request.UID,
-  Allowed: true,
-}, nil
 ```
 
-
+You can see the related logs in the Deployment's Events.
 
 ```
-time="2025-06-04T11:19:18Z" level=info msg="received service/simple-app-v1"
-time="2025-06-04T11:19:18Z" level=info msg="received admission review request \"919c6889-a59c-4168-be0d-6d448460af98\""
+kubectl describe deployment/simple-app-v1 -n simple-app
+...
+Events:
+  Type    Reason             Age                    From                    Message
+  ----    ------             ----                   ----                    -------
+  Normal  ScalingReplicaSet  2m26s                  deployment-controller   Scaled up replica set simple-app-v1-658b475d7c from 0 to 1
+  Normal  Injected           2m25s (x2 over 2m26s)  linkerd-proxy-injector  Linkerd sidecar proxy injected
+  Normal  ScalingReplicaSet  2m25s                  deployment-controller   Scaled up replica set simple-app-v1-76fc99b86b from 0 to 1
+  Normal  ScalingReplicaSet  2m19s                  deployment-controller   Scaled down replica set simple-app-v1-658b475d7c from 1 to 0
+```
+
+Once the Json is generated, it calls the `chart.Render()` that returns the resulting []byte patch that Kubernetes applies. You can see the raw byte array of the incoming admission request, including the trust anchor PEM, Linkerd-related annotations, and Pod spec. For example:
+
+```
 time="2025-06-04T11:19:18Z" level=debug msg="admission request: &AdmissionRequest{UID:919c6889-a59c-4168-be0d-6d448460af98,Kind:/v1, Kind=Service,Resource:{ v1 services},SubResource:,Name:simple-app-v2,Namespace:simple-app,Operation:CREATE,UserInfo:{system:admin  [system:masters system:authenticated] map[authentication.kubernetes.io/credential-id:[X509SHA256=4bc6de6278f805fc173745e09f4a564b7c7b4fac138201f729d912cd623fa55b]]},Object:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 107 105 110 100 34 58 34 83 101 114 118 105 99 101 34 44 34 109 101 116 97 100 97 116 97 34 58 123 34 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 34 123 92 34 97 112 105 86 101 114 115 105 111 110 92 34 58 92 34 118 49 92 34 44 92 34 107 105 110 100 92 34 58 92 34 83 101 114 118 105 99 101 92 34 44 92 34 109 101 116 97 100 97 116 97 92 34 58 123 92 34 97 110 110 111 116 97 116 105 111 110 115 92 34 58 123 125 44 92 34 110 97 109 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 110 97 109 101 115 112 97 99 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 92 34 125 44 92 34 115 112 101 99 92 34 58 123 92 34 112 111 114 116 115 92 34 58 91 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 116 97 114 103 101 116 80 111 114 116 92 34 58 53 54 55 56 125 93 44 92 34 115 101 108 101 99 116 111 114 92 34 58 123 92 34 97 112 112 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 118 101 114 115 105 111 110 92 34 58 92 34 118 50 92 34 125 125 125 92 110 34 125 44 34 99 114 101 97 116 105 111 110 84 105 109 101 115 116 97 109 112 34 58 110 117 108 108 44 34 109 97 110 97 103 101 100 70 105 101 108 100 115 34 58 91 123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 102 105 101 108 100 115 84 121 112 101 34 58 34 70 105 101 108 100 115 86 49 34 44 34 102 105 101 108 100 115 86 49 34 58 123 34 102 58 109 101 116 97 100 97 116 97 34 58 123 34 102 58 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 46 34 58 123 125 44 34 102 58 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 123 125 125 125 44 34 102 58 115 112 101 99 34 58 123 34 102 58 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 123 125 44 34 102 58 112 111 114 116 115 34 58 123 34 46 34 58 123 125 44 34 107 58 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 112 114 111 116 111 99 111 108 92 34 58 92 34 84 67 80 92 34 125 34 58 123 34 46 34 58 123 125 44 34 102 58 112 111 114 116 34 58 123 125 44 34 102 58 112 114 111 116 111 99 111 108 34 58 123 125 44 34 102 58 116 97 114 103 101 116 80 111 114 116 34 58 123 125 125 125 44 34 102 58 115 101 108 101 99 116 111 114 34 58 123 125 44 34 102 58 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 123 125 44 34 102 58 116 121 112 101 34 58 123 125 125 125 44 34 109 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 111 112 101 114 97 116 105 111 110 34 58 34 85 112 100 97 116 101 34 44 34 116 105 109 101 34 58 34 50 48 50 53 45 48 54 45 48 52 84 49 49 58 49 57 58 49 56 90 34 125 93 44 34 110 97 109 101 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 110 97 109 101 115 112 97 99 101 34 58 34 115 105 109 112 108 101 45 97 112 112 34 125 44 34 115 112 101 99 34 58 123 34 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 34 67 108 117 115 116 101 114 34 44 34 112 111 114 116 115 34 58 91 123 34 112 111 114 116 34 58 56 48 44 34 112 114 111 116 111 99 111 108 34 58 34 84 67 80 34 44 34 116 97 114 103 101 116 80 111 114 116 34 58 53 54 55 56 125 93 44 34 115 101 108 101 99 116 111 114 34 58 123 34 97 112 112 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 118 101 114 115 105 111 110 34 58 34 118 50 34 125 44 34 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 34 78 111 110 101 34 44 34 116 121 112 101 34 58 34 67 108 117 115 116 101 114 73 80 34 125 44 34 115 116 97 116 117 115 34 58 123 34 108 111 97 100 66 97 108 97 110 99 101 114 34 58 123 125 125 125] <nil>},OldObject:{[] <nil>},DryRun:*false,Options:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 109 101 116 97 46 107 56 115 46 105 111 47 118 49 34 44 34 102 105 101 108 100 77 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 102 105 101 108 100 86 97 108 105 100 97 116 105 111 110 34 58 34 83 116 114 105 99 116 34 44 34 107 105 110 100 34 58 34 67 114 101 97 116 101 79 112 116 105 111 110 115 34 125] <nil>},RequestKind:/v1, Kind=Service,RequestResource:/v1, Resource=services,RequestSubResource:,}"
 time="2025-06-04T11:19:18Z" level=debug msg="request object bytes: {\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/last-applied-configuration\":\"{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Service\\\",\\\"metadata\\\":{\\\"annotations\\\":{},\\\"name\\\":\\\"simple-app-v2\\\",\\\"namespace\\\":\\\"simple-app\\\"},\\\"spec\\\":{\\\"ports\\\":[{\\\"port\\\":80,\\\"targetPort\\\":5678}],\\\"selector\\\":{\\\"app\\\":\\\"simple-app-v2\\\",\\\"version\\\":\\\"v2\\\"}}}\\n\"},\"creationTimestamp\":null,\"managedFields\":[{\"apiVersion\":\"v1\",\"fieldsType\":\"FieldsV1\",\"fieldsV1\":{\"f:metadata\":{\"f:annotations\":{\".\":{},\"f:kubectl.kubernetes.io/last-applied-configuration\":{}}},\"f:spec\":{\"f:internalTrafficPolicy\":{},\"f:ports\":{\".\":{},\"k:{\\\"port\\\":80,\\\"protocol\\\":\\\"TCP\\\"}\":{\".\":{},\"f:port\":{},\"f:protocol\":{},\"f:targetPort\":{}}},\"f:selector\":{},\"f:sessionAffinity\":{},\"f:type\":{}}},\"manager\":\"kubectl-client-side-apply\",\"operation\":\"Update\",\"time\":\"2025-06-04T11:19:18Z\"}],\"name\":\"simple-app-v2\",\"namespace\":\"simple-app\"},\"spec\":{\"internalTrafficPolicy\":\"Cluster\",\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":5678}],\"selector\":{\"app\":\"simple-app-v2\",\"version\":\"v2\"},\"sessionAffinity\":\"None\",\"type\":\"ClusterIP\"},\"status\":{\"loadBalancer\":{}}}"
 time="2025-06-04T11:19:18Z" level=debug msg="/var/run/linkerd/config/values config YAML: clusterDomain: cluster.local\nclusterNetworks: 10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fd00::/8\ncniEnabled: false\ncommonLabels: {}\ncontrolPlaneTracing: false\ncontrolPlaneTracingNamespace: linkerd-jaeger\ncontroller:\n  podDisruptionBudget:\n    maxUnavailable: 1\ncontrollerGID: -1\ncontrollerImage: ghcr.io/buoyantio/controller\ncontrollerImageVersion: \"\"\ncontrollerLogFormat: plain\ncontrollerLogLevel: debug\ncontrollerReplicas: 1\ncontrollerUID: 2103\ndebugContainer:\n  image:\n    name: cr.l5d.io/linkerd/debug\n    pullPolicy: \"\"\n    version: edge-25.4.4\ndeploymentStrategy:\n  rollingUpdate:\n    maxSurge: 25%\n    maxUnavailable: 25%\ndestinationController:\n  additionalArgs:\n  - -ext-endpoint-zone-weights\n  livenessProbe:\n    timeoutSeconds: 1\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\ndisableHeartBeat: false\ndisableIPv6: true\negress:\n  globalEgressNetworkNamespace: linkerd-egress\nenableEndpointSlices: true\nenableH2Upgrade: true\nenablePSP: false\nenablePodAntiAffinity: false\nenablePodDisruptionBudget: false\nenablePprof: false\nidentity:\n  externalCA: false\n  issuer:\n    clockSkewAllowance: 20s\n    issuanceLifetime: 24h0m0s\n    scheme: linkerd.io/tls\n    tls:\n      crtPEM: |\n        -----BEGIN CERTIFICATE-----\n        MIIBsjCCAVigAwIBAgIQG4RR1EkQLvanRZspKw9R3jAKBggqhkjOPQQDAjAlMSMw\n        IQYDVQQDExpyb290LmxpbmtlcmQuY2x1c3Rlci5sb2NhbDAeFw0yNTA2MDQxMTE4\n        NDJaFw0yNjA2MDQxMTE4NDJaMCkxJzAlBgNVBAMTHmlkZW50aXR5LmxpbmtlcmQu\n        Y2x1c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKyE5Px3kwpI\n        ZEGR9Ky0feN3/X/3DQOSDweb3B1O6JK4fAtYDetnyUul+T0zXKtrLX0lrAdRzyaj\n        MLhci5ZMEd6jZjBkMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEA\n        MB0GA1UdDgQWBBSkrmSMxXmF/CJz14sL5SNbwNh9qjAfBgNVHSMEGDAWgBSw5rC0\n        vxQuKzp3Qyo9+367k6kzMTAKBggqhkjOPQQDAgNIADBFAiA7L9KiSSJdKD8WxSXM\n        cLcyqPe7Sw9lBko/Wcgcue80iwIhAJjddq/892QBoQspnTBctEfUVovznJCIMSKq\n        P4YtzyEn\n        -----END CERTIFICATE-----\n  kubeAPI:\n    clientBurst: 200\n    clientQPS: 100\n  livenessProbe:\n    timeoutSeconds: 1\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\n  serviceAccountTokenProjection: true\nidentityTrustAnchorsPEM: |\n  -----BEGIN CERTIFICATE-----\n  MIIBjTCCATSgAwIBAgIRAIMD4XLxwxvmNPAOcIuzz/EwCgYIKoZIzj0EAwIwJTEj\n  MCEGA1UEAxMacm9vdC5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMjUwNjA0MTEx\n  ODQyWhcNMzUwNjAyMTExODQyWjAlMSMwIQYDVQQDExpyb290LmxpbmtlcmQuY2x1\n  c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLwQ70dJQiN0LHY6\n  q4fvIND1LqcyypW8P+qrhVuIdHThgPx/KXXLa2+KjAbUzzeu8PRagGriwRn6+A69\n  AixeeuKjRTBDMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEBMB0G\n  A1UdDgQWBBSw5rC0vxQuKzp3Qyo9+367k6kzMTAKBggqhkjOPQQDAgNHADBEAiAt\n  ZkhSf0dHy7c6dDorCcfUiwNVjSdV2Z+Sl2EJ0ZxorgIgO9hII30K/26KlicbXygh\n  CxaYQ3t5qyY437Z08s11FEg=\n  -----END CERTIFICATE-----\nidentityTrustDomain: cluster.local\nimagePullPolicy: IfNotPresent\nimagePullSecrets: []\nkubeAPI:\n  clientBurst: 200\n  clientQPS: 100\nlicenseResources:\n  resources:\n    limits:\n      cpu: 500m\n      memory: 256Mi\n    requests:\n      cpu: 250m\n      memory: 128Mi\nlicenseSecret: null\nlinkerdVersion: enterprise-2.18.0\nmanageExternalWorkloads: true\nnetworkValidator:\n  connectAddr: \"\"\n  enableSecurityContext: true\n  listenAddr: \"\"\n  logFormat: plain\n  logLevel: debug\n  timeout: 10s\nnodeSelector:\n  kubernetes.io/os: linux\npodAnnotations: {}\npodLabels: {}\npodMonitor:\n  controller:\n    enabled: true\n    namespaceSelector: |\n      matchNames:\n        - {{ .Release.Namespace }}\n        - linkerd-viz\n        - linkerd-jaeger\n  enabled: false\n  labels: {}\n  proxy:\n    enabled: true\n  scrapeInterval: 10s\n  scrapeTimeout: 10s\n  serviceMirror:\n    enabled: true\npolicyController:\n  image:\n    name: ghcr.io/buoyantio/policy-controller\n    pullPolicy: \"\"\n    version: \"\"\n  livenessProbe:\n    timeoutSeconds: 1\n  logLevel: info\n  probeNetworks:\n  - 0.0.0.0/0\n  - ::/0\n  readinessProbe:\n    timeoutSeconds: 1\n  resources:\n    cpu:\n      limit: \"\"\n      request: \"\"\n    ephemeral-storage:\n      limit: \"\"\n      request: \"\"\n    memory:\n      limit: \"\"\n      request: \"\"\npolicyValidator:\n  caBundle: \"\"\n  crtPEM: \"\"\n  externalSecret: false\n  injectCaFrom: \"\"\n  injectCaFromSecret: \"\"\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\npriorityClassName: \"\"\nprofileValidator:\n  caBundle: \"\"\n  crtPEM: \"\"\n  externalSecret: false\n  injectCaFrom: \"\"\n  injectCaFromSecret: \"\"\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\nprometheusUrl: \"\"\nproxy:\n  additionalEnv:\n  - name: BUOYANT_BALANCER_LOAD_LOW\n    value: \"0.1\"\n  - name: BUOYANT_BALANCER_LOAD_HIGH\n    value: \"3.0\"\n  await: true\n  control:\n    streams:\n      idleTimeout: 5m\n      initialTimeout: 3s\n      lifetime: 1h\n  cores: null\n  defaultInboundPolicy: all-unauthenticated\n  disableInboundProtocolDetectTimeout: false\n  disableOutboundProtocolDetectTimeout: false\n  enableExternalProfiles: false\n  enableShutdownEndpoint: false\n  gid: -1\n  image:\n    name: ghcr.io/buoyantio/proxy\n    pullPolicy: \"\"\n    version: \"\"\n  inbound:\n    server:\n      http2:\n        keepAliveInterval: 100s\n        keepAliveTimeout: 100s\n  inboundConnectTimeout: 100ms\n  inboundDiscoveryCacheUnusedTimeout: 90s\n  livenessProbe:\n    initialDelaySeconds: 10\n    timeoutSeconds: 1\n  logFormat: plain\n  logHTTPHeaders: \"off\"\n  logLevel: warn,linkerd=debug,hickory=error,linkerd_proxy_http::client[{headers}]=on\n  metrics:\n    hostnameLabels: false\n  nativeSidecar: false\n  opaquePorts: 25,587,3306,4444,5432,6379,9300,11211\n  outbound:\n    server:\n      http2:\n        keepAliveInterval: 200s\n        keepAliveTimeout: 200s\n  outboundConnectTimeout: 1000ms\n  outboundDiscoveryCacheUnusedTimeout: 5s\n  outboundTransportMode: transport-header\n  ports:\n    admin: 4191\n    control: 4190\n    inbound: 4143\n    outbound: 4140\n  readinessProbe:\n    initialDelaySeconds: 2\n    timeoutSeconds: 1\n  requireIdentityOnInboundPorts: \"\"\n  resources:\n    cpu:\n      limit: \"\"\n      request: \"\"\n    ephemeral-storage:\n      limit: \"\"\n      request: \"\"\n    memory:\n      limit: \"\"\n      request: \"\"\n  runtime:\n    workers:\n      maximumCPURatio: null\n      minimum: 1\n  shutdownGracePeriod: \"\"\n  startupProbe:\n    failureThreshold: 120\n    initialDelaySeconds: 0\n    periodSeconds: 1\n  uid: 2102\n  waitBeforeExitSeconds: 0\nproxyInit:\n  closeWaitTimeoutSecs: 0\n  ignoreInboundPorts: 4567,4568\n  ignoreOutboundPorts: 4567,4568\n  image:\n    name: ghcr.io/buoyantio/proxy-init\n    pullPolicy: \"\"\n    version: enterprise-2.18.0\n  iptablesMode: legacy\n  kubeAPIServerPorts: 443,6443\n  logFormat: \"\"\n  logLevel: \"\"\n  privileged: false\n  runAsGroup: 65534\n  runAsRoot: false\n  runAsUser: 65534\n  skipSubnets: \"\"\n  xtMountPath:\n    mountPath: /run\n    name: linkerd-proxy-init-xtables-lock\nproxyInjector:\n  caBundle: \"\"\n  crtPEM: \"\"\n  externalSecret: false\n  injectCaFrom: \"\"\n  injectCaFromSecret: \"\"\n  livenessProbe:\n    timeoutSeconds: 1\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\n    - key: kubernetes.io/metadata.name\n      operator: NotIn\n      values:\n      - kube-system\n      - cert-manager\n  objectSelector:\n    matchExpressions:\n    - key: linkerd.io/control-plane-component\n      operator: DoesNotExist\n    - key: linkerd.io/cni-resource\n      operator: DoesNotExist\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\n  timeoutSeconds: 10\nrevisionHistoryLimit: 10\nruntimeClassName: \"\"\nspValidator:\n  livenessProbe:\n    timeoutSeconds: 1\n  readinessProbe:\n    timeoutSeconds: 1\nwebhookFailurePolicy: Ignore\n"
 ```
 
-## 참고 자료
+## References
 
 - https://linkerd.io/2-edge/reference/architecture/
 - https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/
 - https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook
+- https://github.com/linkerd/linkerd2/blob/main/pkg/inject/inject.go
+- https://github.com/linkerd/linkerd2/blob/main/controller/proxy-injector/webhook.go

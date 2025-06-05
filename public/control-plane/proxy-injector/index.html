@@ -571,7 +571,7 @@ helm upgrade --install linkerd-control-plane \
 </h2>
 
 <p>The entire flow starts with a request to create a new Pod or Service being sent to the Kuberentes API. It will then receive the request and call process the
-Mutating Webhook with the matiching rules. In case of Linkerd, the <code>linkerd-proxy-injector-webhook</code>. This Mutating Webhook will referenct the <code>linkerd-proxy-injector</code> service in the namespace <code>linkerd</code> on port <code>443</code>.</p>
+Mutating Webhook with the matiching rules. In case of Linkerd, the <code>linkerd-proxy-injector-webhook</code>. This Mutating Webhook will referenct the <code>linkerd-proxy-injector</code> service in the namespace <code>linkerd</code> on port <code>443</code>. Also, it will skip injection for namespaces labeled <code>config.linkerd.io/admission-webhooks=disabled</code> or the system namespaces <code>kube-system</code>, and <code>cert-manager</code>, as well as objects with <code>linkerd.io/control-plane-component</code> or <code>linkerd.io/cni-resource</code> labels.</p>
 <pre><code>kubectl get mutatingwebhookconfiguration linkerd-proxy-injector-webhook-config -o yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -624,6 +624,7 @@ webhooks:
   timeoutSeconds: 10
 </code></pre>
 <p>If we look at the volumes mounted by the <code>linkerd-proxy-injector</code> pod and available to the <code>proxy-injector</code> controller, we will see both Root Certificate Trust Anchor (stored in the <code>linkerd-identity-trust-roots</code> configMap), and the linkerd configuration (stored in the <code>linkerd-config</code> configMap).</p>
+<p>config.Values(&hellip;) reads the chart‐rendered values.yaml from the mounted ConfigMap at /var/run/linkerd/config/values. This struct (*l5dcharts.Values) contains every configurable parameter in Linkerd’s control plane: proxy images, resource limits, default opaque ports, and so on.</p>
 <pre><code>kubectl get pods -n linkerd linkerd-proxy-injector-b97875998-9dvfj -o yaml
 apiVersion: v1
 kind: Pod
@@ -705,7 +706,7 @@ spec:
       medium: Memory
     name: linkerd-identity-end-entity
 </code></pre>
-<p>These two referencese are important because, the first thing that the proxy-injector will do is to read the content of these volues</p>
+<p>These two referencese are important because, the first thing that the proxy-injector will do is to read the content of these volues, and later will inject them in the request.</p>
 <pre><code>valuesConfig, err := config.Values(pkgK8s.MountPathValuesConfig)
 if err != nil {
   return nil, err
@@ -715,16 +716,20 @@ if err != nil {
   return nil, err
 }
 valuesConfig.IdentityTrustAnchorsPEM = string(caPEM)
-ns, err := api.Get(k8s.NS, request.Namespace)
+</code></pre>
+<p>Then it call into the Metadata API to fetch the namespace‐level annotations object for the incoming admission request.</p>
+<pre><code>ns, err := api.Get(k8s.NS, request.Namespace)
 if err != nil {
   return nil, err
 }
-resourceConfig := inject.NewResourceConfig(valuesConfig, inject.OriginWebhook, linkerdNamespace).
+</code></pre>
+<p>it will create a custom object called <code>ResourceConfig</code> that will contin informations about the object. injects all namespace annotations into the config as many Linkerd settings can be inherited at a namespace level (that value will be copied to any workload that does not override it), and collect informations whether the incoming admission object is a Pod, Deployment, Service, etc., and resolve its top‐level owner (e.g. Deployment, ReplicaSet). This is used later to emit Kubernetes Events on the parent resource instead of on the Pod itself.</p>
+<pre><code>resourceConfig := inject.NewResourceConfig(valuesConfig, inject.OriginWebhook, linkerdNamespace).
   WithOwnerRetriever(ownerRetriever(ctx, api, request.Namespace)).
   WithNsAnnotations(ns.GetAnnotations()).
   WithKind(request.Kind.Kind)
-</code></pre>
-<pre><code>func NewResourceConfig(values *l5dcharts.Values, origin Origin, ns string) *ResourceConfig {
+...
+func NewResourceConfig(values *l5dcharts.Values, origin Origin, ns string) *ResourceConfig {
 	config := &amp;ResourceConfig{
 		namespace:     ns,
 		nsAnnotations: make(map[string]string),
@@ -737,34 +742,89 @@ resourceConfig := inject.NewResourceConfig(valuesConfig, inject.OriginWebhook, l
 	config.pod.annotations = map[string]string{}
 	return config
 }
-// WithOwnerRetriever enriches ResourceConfig with a function that allows to retrieve
-// the kind and name of the workload's owner reference
 func (conf *ResourceConfig) WithOwnerRetriever(f OwnerRetrieverFunc) *ResourceConfig {
 	conf.ownerRetriever = f
 	return conf
 }
-// WithNsAnnotations enriches ResourceConfig with the namespace annotations, that can
-// be used in shouldInject()
 func (conf *ResourceConfig) WithNsAnnotations(m map[string]string) *ResourceConfig {
 	conf.nsAnnotations = m
 	return conf
 }
-// WithKind enriches ResourceConfig with the workload kind
 func (conf *ResourceConfig) WithKind(kind string) *ResourceConfig {
 	conf.workload.metaType = metav1.TypeMeta{Kind: kind}
 	return conf
 }
 </code></pre>
+<p>Then deserializes the raw JSON bytes into a typed Kubernetes object</p>
 <pre><code>report, err := resourceConfig.ParseMetaAndYAML(request.Object.Raw)
 if err != nil {
   return nil, err
 }
 log.Infof(&quot;received %s&quot;, report.ResName())
 </code></pre>
-<p>It will then copy the annotations from the naspace that do not exist on pod over to pod&rsquo;s template.
-If the pod did not inherit the opaque ports annotation from the namespace, then add the default value from the config values. Only add the annotation if there are ports that the pod exposes that are in the default opaque ports list.</p>
+<p>You will be able to see the name in the name of the resource in the logs.</p>
+<pre><code>time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received service/simple-app-v1&quot;
+time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received admission review request \&quot;919c6889-a59c-4168-be0d-6d448460af98\&quot;&quot;
+</code></pre>
+<p>It will then determining the owner of the resource for recording the enent. It returns the top‐level *metav1.OwnerReference if the Pod was created by a ReplicaSet or Deployment.</p>
+<pre><code>var parent *metav1.PartialObjectMetadata
+var ownerKind string
+if ownerRef := resourceConfig.GetOwnerRef(); ownerRef != nil {
+  res, err := k8s.GetAPIResource(ownerRef.Kind)
+  if err != nil {
+    log.Tracef(&quot;skipping event for parent %s: %s&quot;, ownerRef.Kind, err)
+  } else {
+    objs, err := api.GetByNamespaceFiltered(res, request.Namespace, ownerRef.Name, labels.Everything())
+    if err != nil {
+      log.Warnf(&quot;couldn't retrieve parent object %s-%s-%s; error: %s&quot;, request.Namespace, ownerRef.Kind, ownerRef.Name, err)
+    } else if len(objs) == 0 {
+      log.Warnf(&quot;couldn't retrieve parent object %s-%s-%s&quot;, request.Namespace, ownerRef.Kind, ownerRef.Name)
+    } else {
+      parent = objs[0]
+    }
+    ownerKind = strings.ToLower(ownerRef.Kind)
+  }
+}
+</code></pre>
+<p>It will then proceed with the actual injection and patching only if the workload-level or namespace-level annotation indicates injection should occur.</p>
+<p>// Injectable returns false if the report flags indicate that the workload is on a host network
+// or there is already a sidecar or the resource is not supported or inject is explicitly disabled.
+// If false, the second returned value describes the reason.
+This conditions are important because they will prevent the actual inection.</p>
 <pre><code>injectable, reasons := report.Injectable()
-if injectable {
+...
+func (r *Report) Injectable() (bool, []string) {
+	var reasons []string
+	if r.HostNetwork {
+		reasons = append(reasons, hostNetworkEnabled)
+	}
+	if r.Sidecar {
+		reasons = append(reasons, sidecarExists)
+	}
+	if r.UnsupportedResource {
+		reasons = append(reasons, unsupportedResource)
+	}
+	if r.InjectDisabled {
+		reasons = append(reasons, r.InjectDisabledReason)
+	}
+
+	if !r.AutomountServiceAccountToken {
+		reasons = append(reasons, disabledAutomountServiceAccountToken)
+	}
+
+	if len(reasons) &gt; 0 {
+		return false, reasons
+	}
+	return true, nil
+}
+</code></pre>
+<p>Finally, if everything is ok, it will proceed by:</p>
+<ul>
+<li>Appending the pkgK8s.CreatedByAnnotation is &ldquo;config.linkerd.io/created-by&rdquo;</li>
+<li>Copy Namespace Overrides. If the namespace has settings like <code>config.linkerd.io/proxy-cpu-limit: &quot;100m&quot;</code> and the workload did not explicitly override those, this helper copies them onto the Pod template annotations.</li>
+<li>If the Pod’s annotation for config.linkerd.io/opaque-ports does not exist, it will split the default list from the chart (valuesConfig.Proxy.OpaquePorts), Filter to only those ports actually exposed by containers in this Pod, If we find any matches, we annotate the Pod with exactly those ports (e.g. &ldquo;3306,5432&rdquo;). This tells the injected proxy which ports to intercept for transparent TLS.</li>
+</ul>
+<pre><code>if injectable {
   resourceConfig.AppendPodAnnotation(pkgK8s.CreatedByAnnotation, fmt.Sprintf(&quot;linkerd/proxy-injector %s&quot;, version.Version))
   inject.AppendNamespaceAnnotations(resourceConfig.GetOverrideAnnotations(), resourceConfig.GetNsAnnotations(), resourceConfig.GetWorkloadAnnotations())
   if !resourceConfig.HasWorkloadAnnotation(pkgK8s.ProxyOpaquePortsAnnotation) {
@@ -794,6 +854,79 @@ if injectable {
   }, nil
 }
 </code></pre>
+<p>The <code>GetPodPatch</code> is the methond in chargce of
+Add an init container named linkerd-init that programs iptables rules.
+Add the sidecar container linkerd-proxy with all necessary environment variables, volume mounts, and command-line flags.
+Attach the config.linkerd.io/opaque-ports annotation.
+Attach the config.linkerd.io/created-by annotation.
+Mount the toleration/config secrets and trust anchors inside the injected containers.</p>
+<pre><code>// GetPodPatch returns the JSON patch containing the proxy and init containers specs, if any.
+// If injectProxy is false, only the config.linkerd.io annotations are set.
+func (conf *ResourceConfig) GetPodPatch(injectProxy bool) ([]byte, error) {
+	namedPorts := make(map[string]int32)
+	if conf.HasPodTemplate() {
+		namedPorts = util.GetNamedPorts(conf.pod.spec.Containers)
+	}
+	values, err := GetOverriddenValues(conf.values, conf.getAnnotationOverrides(), namedPorts)
+	values.Proxy.PodInboundPorts = getPodInboundPorts(conf.pod.spec)
+	if err != nil {
+		return nil, fmt.Errorf(&quot;could not generate Overridden Values: %w&quot;, err)
+	}
+	if values.ClusterNetworks != &quot;&quot; {
+		for _, network := range strings.Split(strings.Trim(values.ClusterNetworks, &quot;,&quot;), &quot;,&quot;) {
+			if _, _, err := net.ParseCIDR(network); err != nil {
+				return nil, fmt.Errorf(&quot;cannot parse destination get networks: %w&quot;, err)
+			}
+		}
+	}
+	patch := &amp;podPatch{
+		Values:      *values,
+		Annotations: map[string]string{},
+		Labels:      map[string]string{},
+	}
+	switch strings.ToLower(conf.workload.metaType.Kind) {
+	case k8s.Pod:
+	case k8s.CronJob:
+		patch.PathPrefix = &quot;/spec/jobTemplate/spec/template&quot;
+	default:
+		patch.PathPrefix = &quot;/spec/template&quot;
+	}
+	if conf.pod.spec != nil {
+		conf.injectPodAnnotations(patch)
+		if injectProxy {
+			conf.injectObjectMeta(patch)
+			conf.injectPodSpec(patch)
+		} else {
+			patch.Proxy = nil
+			patch.ProxyInit = nil
+		}
+	}
+	rawValues, err := yaml.Marshal(patch)
+	if err != nil {
+		return nil, err
+	}
+	files := []*loader.BufferedFile{
+		{Name: chartutil.ChartfileName},
+		{Name: &quot;requirements.yaml&quot;},
+		{Name: &quot;templates/patch.json&quot;},
+	}
+	chart := &amp;charts.Chart{
+		Name:      &quot;patch&quot;,
+		Dir:       &quot;patch&quot;,
+		Namespace: conf.namespace,
+		RawValues: rawValues,
+		Files:     files,
+		Fs:        static.Templates,
+	}
+	buf, err := chart.Render()
+	if err != nil {
+		return nil, err
+	}
+	res := rTrail.ReplaceAll(buf.Bytes(), []byte(&quot;}\n]&quot;))
+	return res, nil
+}
+</code></pre>
+<p>Once the Json is generated it will emit the event. If we resolved an owning Deployment/ReplicaSet/StatefulSet, we emit an event on the parent object instead of the Pod. and print the patch in the logs.</p>
 <pre><code>// Create a patch which adds the opaque ports annotation if the workload
 // doesn't already have it set.
 patchJSON, err := resourceConfig.CreateOpaquePortsPatch()
