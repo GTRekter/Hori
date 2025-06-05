@@ -24,8 +24,6 @@
     <title>Hori</title>
 
     
-    <meta name="description" content="Who I am, why this course exists, and what you can expect to learn." />
-    
 
     
 
@@ -100,6 +98,34 @@
             </label>
             <div id="sidebar">
                 <ul><li>
+                            <a href="/control-plane/">Control Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination">Destination Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/data-plane/">Data Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/data-plane/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
                             <a href="/modules/">Modules</a>
     <ul>
         
@@ -116,16 +142,7 @@
             
                 <li>
                     
-                        <a href="/modules/proxy-init">Proxy-Init</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/modules/control-plane">Control Plane</a>
+                        <a href="/modules/timeouts">Timeouts</a>
                     
                 </li>
             
@@ -135,15 +152,6 @@
                 <li>
                     
                         <a href="/modules/cli">Linkerd CLI</a>
-                    
-                </li>
-            
-        
-
-            
-                <li>
-                    
-                        <a href="/modules/timeouts">Timeouts</a>
                     
                 </li>
             
@@ -259,6 +267,36 @@
 <nav id="navbar" class="pure-menu">
     <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
                     
+                        <a href="/control-plane/" class="pure-menu-link">Control Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination" class="pure-menu-link">Destination Controller</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/data-plane/" class="pure-menu-link">Data Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/data-plane/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
                         <a href="/modules/" class="pure-menu-link">Modules</a>
                     
                     <ul class="pure-menu-children">
@@ -275,16 +313,7 @@
     
         <li class="pure-menu-item">
             
-                <a href="/modules/proxy-init" class="pure-menu-link">Proxy-Init</a>
-            
-        </li>
-    
-
-
-    
-        <li class="pure-menu-item">
-            
-                <a href="/modules/control-plane" class="pure-menu-link">Control Plane</a>
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
             
         </li>
     
@@ -294,15 +323,6 @@
         <li class="pure-menu-item">
             
                 <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
-            
-        </li>
-    
-
-
-    
-        <li class="pure-menu-item">
-            
-                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
             
         </li>
     
@@ -326,7 +346,37 @@
 <article class="line-numbers">
     
     
-    
+    <!-- ---
+type: 'blank'
+title: "About"
+description: "Who I am, why this course exists, and what you can expect to learn."
+--- -->
+<hr>
+
+<h2 id="weight-1" class="header-anchor-wrapper">title: &lsquo;balloon&rsquo;
+bookcase_cover_src: &lsquo;cover/balloon.png&rsquo;
+bookcase_cover_src_dark: &lsquo;cover/balloon_dark.png&rsquo;
+type: &lsquo;balloon&rsquo;
+balloon_img_src: &ldquo;icons/balloon.svg&rdquo;
+balloon_img_src_dark: &ldquo;icons/balloon_dark.svg&rdquo;
+balloon_circle: false
+balloon_resources: &ldquo;/about&rdquo;
+weight: 1
+  <a href="#weight-1" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+
 <h2 id="-hi-im-ivan-porta" class="header-anchor-wrapper">👋 Hi, I’m Ivan Porta
   <a href="#-hi-im-ivan-porta" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
@@ -343,7 +393,8 @@
 </h2>
 
 <p>I’m a <strong>Customer Engineer at Buoyant</strong> living in  <strong>South Korea</strong>.<br>
-Over the years I’ve helped organizations—large and small—adopt <strong>Linkerd</strong>, tune it for production traffic, and even peek under the hood when things got interesting.</p>
+Over the years I’ve helped large and small organizations adopt <strong>Linkerd</strong>, tune it for production traffic, and even peek under the hood when things got interesting.</p>
+<p><img src="about/selfie.png" alt="About"></p>
 <hr>
 
 <h3 id="why-this-course" class="header-anchor-wrapper">Why this course?
@@ -444,9 +495,9 @@ Copy, paste, and experiment at your own pace.</p>
 <p>Feedback, questions, or wild feature ideas?<br>
 Open an issue in the course repository or reach out on <strong><a href="https://linkerd.slack.com/archives/D07M5GLPVLK">Slack(@gtrekter)</a></strong>.<br>
 Let’s make service-mesh internals a little less mysterious—together.</p>
-<p><a href="https://github.com/GTRekter/Hori"><div class="icon">
+<div class="icon">
     
-        <a rel="noopener" target="_blank" href="https://github.com/kaiiiz/hugo-theme-monochrome" aria-label="github">
+        <a rel="noopener" target="_blank" href="https://github.com/GTRekter/Hori" aria-label="github">
     
         
             
@@ -464,7 +515,7 @@ Let’s make service-mesh internals a little less mysterious—together.</p>
         </a>
     
 </div>
-</a></p>
+
 
 </article>
 </div>
@@ -474,6 +525,32 @@ Let’s make service-mesh internals a little less mysterious—together.</p>
 
 
 <div class="postcard-layout content-margin">
+    
+        <a href="//localhost:1313/modules/timeouts/">
+            <div class="postcard-item">
+                <div class="postcard-title">
+                    <span>Timeouts</span>
+                </div>
+                <div class="postcard-summary">
+                    <span>Timeouts Linkerd provides fine‑grained timeout settings to control the lifecycle of HTTP requests and TCP connections between services in your mesh. You can configure three primary timeout policies via Kubernetes service annotations:
+timeout.linkerd.io/request: Maximum time from when a request is sent until the first byte of the request body arrives at the server. timeout.linkerd.io/response: Maximum time from when the first byte of the response header is received until the entire response body is delivered. timeout.linkerd.io/idle: Maximum time of inactivity between data frames (both request and response) before the connection is closed. Prerequisites macOS/Linux/Windows with a Unix‑style shell k3d (v5+) for local Kubernetes clusters kubectl (v1.25+) Helm (v3+) Smallstep (step) CLI for certificate generation Tutorial 1. Create the configuration files cat &lt;&lt; 'EOF' &gt; cluster.yaml apiVersion: k3d.io/v1alpha5 kind: Simple metadata: name: &quot;cluster&quot; servers: 1 agents: 0 image: rancher/k3s:v1.33.0-k3s1 network: playground options: k3s: extraArgs: - arg: --disable=traefik nodeFilters: [&quot;server:*&quot;] - arg: --cluster-cidr=10.23.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --service-cidr=10.247.0.0/16 nodeFilters: [&quot;server:*&quot;] - arg: --debug nodeFilters: [&quot;server:*&quot;] ports: - port: 8081:80 nodeFilters: [&quot;loadbalancer&quot;] EOF cat &lt;&lt; 'EOF' &gt; application.yaml apiVersion: v1 kind: Pod metadata: name: client namespace: simple-app annotations: linkerd.io/inject: enabled spec: containers: - name: curl image: curlimages/curl:latest command: [&quot;sleep&quot;, &quot;infinity&quot;] --- apiVersion: v1 kind: Namespace metadata: name: simple-app annotations: linkerd.io/inject: enabled --- apiVersion: apps/v1 kind: Deployment metadata: name: server namespace: simple-app spec: replicas: 1 selector: matchLabels: app: server version: v1 template: metadata: labels: app: server version: v1 spec: containers: - name: http-app image: kong/httpbin:latest ports: - containerPort: 80 --- apiVersion: v1 kind: Service metadata: name: server namespace: simple-app spec: selector: app: server version: v1 ports: - port: 80 targetPort: 80 EOF 2. Create a Local Kubernetes Cluster Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:
+</span>
+                </div>
+                <div class="postcard-metadata">
+                    <span>2025/06/01 · 
+    
+        
+    
+
+    
+        
+            <span>모듈</span>
+        
+    
+</span>
+                </div>
+            </div>
+        </a>
     
         <a href="//localhost:1313/changelog/">
             <div class="postcard-item">

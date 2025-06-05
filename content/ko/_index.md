@@ -1,57 +1,11 @@
 ---
-type: 'blank'
-type: "baloon"
-title: "소개"
-description: "저자, 강의 개설 이유, 그리고 여러분이 배우게 될 내용"
+type: 'balloon'
+title: 'balloon'
+bookcase_cover_src: 'about.png'
+bookcase_cover_src_dark: 'about_white.png'
+balloon_img_src: "about.png"
+balloon_img_src_dark: "about_white.png"
+balloon_circle: false
+balloon_resources: "/about"
+weight: 1
 ---
-
-## 👋 안녕하세요, 저는 Ivan Porta 입니다  
-
-저는 **Buoyant**에서 근무하는 **Customer Engineer**로, 현재 **대한민국**에 살고 있습니다.  
-대기업부터 스타트업까지 다양한 조직이 **Linkerd**를 도입·운영하도록 돕고, 필요할 때는 내부 동작까지 파헤쳐 문제를 해결해 왔습니다.
-
-![About](../about/selfie.png)
-
----
-
-### 왜 이 강의를 만들었을까요?
-
-Linkerd는 *설치와 운영이 쉽다*는 명성으로 잘 알려져 있지만, 그 이면에는 정교한 설계가 숨어 있습니다.
-
-* **애너테이션** 하나로 프록시 동작과 컨트롤 플레인 정책까지 세밀하게 제어할 수 있습니다.  
-* **mTLS, 프로토콜 감지, 서킷 브레이킹, 레이트 리미팅, 멀티클러스터 통신** 같은 기능은 프록시와 컨트롤 플레인 컨트롤러 간의 치밀한 연동으로 구현됩니다.  
-* 그 밑바닥에는 CRD, 웹훅, Lease 등 **쿠버네티스 리소스**가 조용히 일을 처리하고 있죠.
-
-대부분의 튜토리얼은 ‘해피 패스’에서 멈춥니다.  
-**이 강의는 다릅니다.** 소스 코드와 Kubernetes API 호출까지 낱낱이 해부해
-
-1. Linkerd가 *왜* 그렇게 동작하는지 **이해**하고  
-2. 프로덕션 장애를 **진단**하며  
-3. 필요하다면 기능을 **확장·통합**할 수 있도록 돕습니다.
-
-모든 모듈은 **k3d** 로컬 클러스터에서 바로 실행 가능한 실습 중심으로 구성했습니다.  
-복사·붙여넣기 후 직접 실험해 보세요!
-
----
-
-### 학습 내용
-
-| 주제 | 핵심 포인트 |
-|------|-------------|
-| 인증서 계층 | Trust Anchor·Issuer·Proxy가 mTLS를 구현하는 과정 |
-| 컨트롤 플레인 딥다이브 | gRPC 조율, 리더 선출, 정책 집행 메커니즘 |
-| Proxy-Init & iptables | 트래픽을 투명하게 우회하는 방법과 디버깅 팁 |
-| 타임아웃 정책 | 서비스 애너테이션으로 요청·응답·유휴 타임아웃 제어 |
-| CLI 마스터 | CRD 설치부터 운영 중 문제 해결까지 CLI 완전 정복 |
-
-…그리고 커리큘럼은 계속 확장됩니다.
-
----
-
-### 연락하기
-
-피드백·질문·아이디어가 있다면 언제든 환영합니다!  
-강의 저장소에 이슈를 남기거나 **[Slack(@gtrekter)](https://linkerd.slack.com/archives/D07M5GLPVLK)** 로 메시지를 주세요.  
-함께 서비스 메시의 내부를 더 투명하게 만들어 봅시다.
-
-{{< icon vendor="feather" name="github" link="https://github.com/GTRekter/Hori" >}}

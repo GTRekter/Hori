@@ -1,18 +1,20 @@
-+++
-author = "Ivan Porta"
-title = "Control Plane"
-date = "2025-06-01"
-description = "Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes."
-tags = [
+---
+title: 'Destination Controller'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes."
+tags: [
   "linkerd",
   "control-plane",
   "destination",
   "kubernetes",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'control-plane/destination.png'
+bookcase_cover_src_dark: 'control-plane/destination_white.png'
+---
 
-# Destination
+# Destination Controller
 
 The Destination controller in Linkerd’s control plane is responsible for service discovery and routing. It watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies. 
 
@@ -124,9 +126,7 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 ```
 
-## 5. Linkerd Destination 
-
-### Interactions with the Kuberentes API
+## 5. Interactions with the Kuberentes API
 
 When Destination starts, it use the `k8s.io/client-go` GO module to build one shared informer for every resource kinds it cares about (CronJobs, Pods, Services, etc.) and stores the handle in the API struct, as well as check and records a HasSynced check for each, and registers a Prometheus gauge that reports the current key count per cache. 
 
@@ -422,7 +422,7 @@ time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-proxy-inj
 time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-sp-validator-g7vgx" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-### External Workloads
+## 6. External Workloads
 
 Linkerd’s destination subsystem manages `ExternalWorkload` resources to represent workloads running outside the cluster. Unlike normal Pods, these workloads are not native Kubernetes objects; their IPs live in the `ExternalWorkload.spec.workloadIPs` field.
 

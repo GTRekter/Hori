@@ -1,17 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "인증서"
-date = "2025-06-01"
-description = "Linkerd의 인증서 계층 구조 심층 분석: 제어 플레인이 메시 전반에서 mTLS ID를 발급·저장·갱신하는 방법"
-
-tags = [
+---
+title: '인증서'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Linkerd의 인증서 계층 구조 심층 분석: 제어 플레인이 메시 전반에서 mTLS ID를 발급·저장·갱신하는 방법"
+tags: [
   "linkerd",
   "certificates",
   "mTLS",
   "identity",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'modules/certificates.png'
+bookcase_cover_src_dark: 'modules/certificates_white.png'
+---
 
 # 인증서
 

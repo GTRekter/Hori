@@ -15,6 +15,42 @@
                 href="//localhost:1313/"
                 />
   </url><url>
+    <loc>//localhost:1313/about/introduction/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/about/introduction/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/about/introduction/"
+                />
+  </url><url>
+    <loc>//localhost:1313/about/course/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/about/course/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/about/course/"
+                />
+  </url><url>
+    <loc>//localhost:1313/about/contacts/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/about/contacts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/about/contacts/"
+                />
+  </url><url>
     <loc>//localhost:1313/tags/architecture/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -80,19 +116,6 @@
                 href="//localhost:1313/control-plane/"
                 />
   </url><url>
-    <loc>//localhost:1313/control-plane/destination/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ko"
-                href="//localhost:1313/ko/control-plane/destination/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="//localhost:1313/control-plane/destination/"
-                />
-  </url><url>
     <loc>//localhost:1313/tags/control-plane/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -156,6 +179,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="//localhost:1313/tags/destination/"
+                />
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/control-plane/destination/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/control-plane/destination/"
                 />
   </url><url>
     <loc>//localhost:1313/tags/identity/</loc>
@@ -275,6 +311,19 @@
                 href="//localhost:1313/data-plane/proxy-init/"
                 />
   </url><url>
+    <loc>//localhost:1313/control-plane/proxy-injector/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="ko"
+                href="//localhost:1313/ko/control-plane/proxy-injector/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="//localhost:1313/control-plane/proxy-injector/"
+                />
+  </url><url>
     <loc>//localhost:1313/tags/service-annotations/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -351,19 +400,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="//localhost:1313/modules/"
-                />
-  </url><url>
-    <loc>//localhost:1313/control-plane/proxy-injector/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="ko"
-                href="//localhost:1313/ko/control-plane/proxy-injector/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="//localhost:1313/control-plane/proxy-injector/"
                 />
   </url><url>
     <loc>//localhost:1313/categories/</loc>

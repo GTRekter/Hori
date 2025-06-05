@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>About on Hori</title>
+    <title>balloon on Hori</title>
     <link>//localhost:1313/</link>
-    <description>Recent content in About on Hori</description>
+    <description>Recent content in balloon on Hori</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About Me</title>
+      <link>//localhost:1313/about/introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/about/introduction/</guid>
+      <description>&lt;p&gt;Hi, I’m Ivan Porta. I’m a &lt;strong&gt;Customer Engineer at Buoyant&lt;/strong&gt; living in Seoul, South Korea.&lt;br&gt;
+Over the years I’ve helped large and small organizations adopt &lt;strong&gt;Linkerd&lt;/strong&gt;, tune it for production traffic, and even peek under the hood when things got interesting.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;about/selfie.png&#34; alt=&#34;About&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Why this course?</title>
+      <link>//localhost:1313/about/course/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/about/course/</guid>
+      <description>&lt;p&gt;Linkerd is famously &lt;em&gt;simple&lt;/em&gt; to install and operate, but that apparent simplicity masks a lot of sophisticated engineering:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Annotations&lt;/strong&gt; configure everything from proxy behavior to control-plane policies.&lt;/li&gt;
+&lt;li&gt;Features such as &lt;strong&gt;mTLS, protocol detection, circuit breaking, rate limiting, and multi-cluster communication&lt;/strong&gt; all rely on carefully orchestrated interactions between the proxy and control-plane controllers.&lt;/li&gt;
+&lt;li&gt;Underneath it all, Kubernetes resources—CRDs, webhooks, leases, and more—quietly do the heavy lifting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Most tutorials stop at the “happy path.”&lt;br&gt;
+&lt;strong&gt;This course is different.&lt;/strong&gt; We’ll dissect &lt;em&gt;every&lt;/em&gt; moving part—down to the source code and Kubernetes API calls—so you can:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Get in touch</title>
+      <link>//localhost:1313/about/contacts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/about/contacts/</guid>
+      <description>&lt;p&gt;Feedback, questions, or wild feature ideas?&lt;br&gt;
+Open an issue in the course repository or reach out on &lt;strong&gt;&lt;a href=&#34;https://linkerd.slack.com/archives/D07M5GLPVLK&#34;&gt;Slack(@gtrekter)&lt;/a&gt;&lt;/strong&gt;.&lt;br&gt;
+Let’s make service-mesh internals a little less mysterious—together.&lt;/p&gt;
+&lt;div class=&#34;icon&#34;&gt;
+    
+        &lt;a rel=&#34;noopener&#34; target=&#34;_blank&#34; href=&#34;https://github.com/GTRekter/Hori&#34; aria-label=&#34;github&#34;&gt;
+    
+        
+            
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;path d=&#34;M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22&#34;&gt;&lt;/path&gt;
+&lt;/svg&gt;
+
+
+        
+    
+        &lt;/a&gt;
+    
+&lt;/div&gt;</description>
+    </item>
+    
     <item>
       <title>Certificates</title>
       <link>//localhost:1313/modules/certificates/</link>
@@ -32,13 +90,13 @@
     </item>
     
     <item>
-      <title>Control Plane</title>
+      <title>Destination Controller</title>
       <link>//localhost:1313/control-plane/destination/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>//localhost:1313/control-plane/destination/</guid>
-      <description>&lt;h1 id=&#34;destination&#34; class=&#34;header-anchor-wrapper&#34;&gt;Destination
-  &lt;a href=&#34;#destination&#34; class=&#34;header-anchor-link&#34;&gt;
+      <description>&lt;h1 id=&#34;destination-controller&#34; class=&#34;header-anchor-wrapper&#34;&gt;Destination Controller
+  &lt;a href=&#34;#destination-controller&#34; class=&#34;header-anchor-link&#34;&gt;
     &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
 &lt;svg
     xmlns=&#34;http://www.w3.org/2000/svg&#34;
@@ -377,6 +435,152 @@ EOF
     </item>
     
     <item>
+      <title>Proxy-Injector</title>
+      <link>//localhost:1313/control-plane/proxy-injector/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/proxy-injector/</guid>
+      <description>&lt;h2 id=&#34;linkerd-proxy-injector&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd Proxy-Injector
+  &lt;a href=&#34;#linkerd-proxy-injector&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;It&amp;rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is &lt;code&gt;linkerd.io/injected: enabled&lt;/code&gt; then inject a Linkerd proxy and ProxyInit containers.&lt;/p&gt;
+
+&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
+  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
+&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
+&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
+&lt;li&gt;Helm (v3+)&lt;/li&gt;
+&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
+  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+
+&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
+  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; audit-policy.yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: RequestResponse
+    resources:
+      - group: &amp;quot;linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;policy.linkerd.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+      - group: &amp;quot;gateway.networking.k8s.io&amp;quot;
+        resources: [&amp;quot;*&amp;quot;]
+  - level: None
+EOF
+cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: &amp;quot;cluster&amp;quot;
+servers: 1
+agents: 0
+image: rancher/k3s:v1.33.0-k3s1
+network: playground
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --cluster-cidr=10.23.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --service-cidr=10.247.0.0/16
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --debug
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
+        nodeFilters: [&amp;quot;server:*&amp;quot;]
+ports:
+  - port: 8081:80
+    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
+volumes:
+  - volume: &amp;quot;&amp;lt;LOCAL-FULL-PATH&amp;gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&amp;quot;
+    nodeFilters: [&amp;quot;server:*&amp;quot;]
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
+  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Timeouts</title>
       <link>//localhost:1313/modules/timeouts/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
@@ -557,50 +761,6 @@ EOF
 &lt;/h2&gt;
 
 &lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>컨트롤 플레인</title>
-      <link>//localhost:1313/control-plane/proxy-injector/</link>
-      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
-      
-      <guid>//localhost:1313/control-plane/proxy-injector/</guid>
-      <description>&lt;h2 id=&#34;linkerd-proxy-injector&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd Proxy-Injector
-  &lt;a href=&#34;#linkerd-proxy-injector&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;p&gt;It&amp;rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is &lt;code&gt;linkerd.io/injected: enabled&lt;/code&gt; then inject a Linkerd proxy and ProxyInit containers.&lt;/p&gt;
-
-&lt;h2 id=&#34;참고-자료&#34; class=&#34;header-anchor-wrapper&#34;&gt;참고 자료
-  &lt;a href=&#34;#%ec%b0%b8%ea%b3%a0-%ec%9e%90%eb%a3%8c&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://linkerd.io/2-edge/reference/architecture/&#34;&gt;https://linkerd.io/2-edge/reference/architecture/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/&#34;&gt;https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
     </item>
     
     <item>

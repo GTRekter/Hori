@@ -1,17 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "Linkerd CLI"
-date = "2025-06-01"
-description = "Linkerd CLI 설치 및 사용 실습 튜토리얼—Kubernetes에서 CRD 설치, 제어 플레인 설정, 명령어 탐색까지 다룹니다."
-
-tags = [
+---
+title: 'Linkerd CLI'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Linkerd CLI 설치 및 사용 실습 튜토리얼—Kubernetes에서 CRD 설치, 제어 플레인 설정, 명령어 탐색까지 다룹니다."
+tags: [
   "linkerd",
   "cli",
   "kubernetes",
   "crd",
   "tutorial"
 ]
-+++
+bookcase_cover_src: 'modules/linkerd-cli.png'
+bookcase_cover_src_dark: 'modules/linkerd-cli_white.png'
+---
 
 # Linkerd CLI
 

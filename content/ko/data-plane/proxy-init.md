@@ -1,17 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "프록시 초기화"
-date = "2025-06-01"
-description = "Linkerd proxy-init 컨테이너 심층 분석—메시 내 파드 트래픽을 우회하기 위해 iptables 규칙을 주입하는 방식과 Kubernetes에서 그 규칙을 확인하는 방법을 다룹니다."
-
-tags = [
+---
+title: '프록시 초기화'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Linkerd proxy-init 컨테이너 심층 분석—메시 내 파드 트래픽을 우회하기 위해 iptables 규칙을 주입하는 방식과 Kubernetes에서 그 규칙을 확인하는 방법을 다룹니다."
+tags: [
   "linkerd",
   "proxy-init",
   "iptables",
   "kubernetes",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'data-plane/proxy-init.png'
+bookcase_cover_src_dark: 'data-plane/proxy-init_white.png'
+---
 
 # 프록시 초기화
 

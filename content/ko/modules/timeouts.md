@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "타임아웃"
-date = "2025-06-01"
-description = "쿠버네티스 서비스 애너테이션으로 Linkerd의 요청·응답·유휴 타임아웃을 설정하는 실전 가이드—핸즈온 예제까지 제공합니다"
-tags = [
+---
+title: '타임아웃'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "쿠버네티스 서비스 애너테이션으로 Linkerd의 요청·응답·유휴 타임아웃을 설정하는 실전 가이드—핸즈온 예제까지 제공합니다"
+tags: [
   "linkerd",
   "timeouts",
   "service-annotations",
   "kubernetes",
   "tutorial"
 ]
-+++
+bookcase_cover_src: 'modules/timeouts.png'
+bookcase_cover_src_dark: 'modules/timeouts_white.png'
+---
 
 # 타임아웃
 

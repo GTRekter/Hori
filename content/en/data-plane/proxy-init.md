@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "Proxy-Init"
-date = "2025-06-01"
-description = "Deep dive into Linkerd’s proxy-init container—how it injects iptables rules to steer pod traffic through the mesh and how to inspect those rules in Kubernetes."
-tags = [
+---
+title: 'Proxy-Init'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Deep dive into Linkerd’s proxy-init container—how it injects iptables rules to steer pod traffic through the mesh and how to inspect those rules in Kubernetes."
+tags: [
   "linkerd",
   "proxy-init",
   "iptables",
   "kubernetes",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'data-plane/proxy-init.png'
+bookcase_cover_src_dark: 'data-plane/proxy-init_white.png'
+---
 
 # Proxy-Init
 

@@ -1,17 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "컨트롤 플레인"
-date = "2025-06-01"
-description = "Linkerd 컨트롤 플레인 아키텍처 심층 분석—destination, identity·policy, proxy-injector 컨트롤러가 Kubernetes에서 gRPC 트래픽과 리더 선출을 어떻게 조정하는지 살펴봅니다."
-
-tags = [
+---
+title: '컨트롤 플레인'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Linkerd 컨트롤 플레인 아키텍처 심층 분석—destination, identity·policy, proxy-injector 컨트롤러가 Kubernetes에서 gRPC 트래픽과 리더 선출을 어떻게 조정하는지 살펴봅니다."
+tags: [
   "linkerd",
   "control-plane",
   "architecture",
   "kubernetes",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'control-plane/proxy-injector.png'
+bookcase_cover_src_dark: 'control-plane/proxy-injector_white.png'
+---
 
 ## Linkerd Proxy-Injector
 

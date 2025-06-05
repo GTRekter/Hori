@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "컨트롤 플레인"
-date = "2025-06-01"
-description = "Linkerd의 Destination 컨트롤러에 대한 심층 분석—인포머를 어떻게 활용하고 EndpointSlice를 감시하며 리더 선출을 수행해 Kubernetes에서 서비스 디스커버리를 제공하는지."
-tags = [
+---
+title: '컨트롤 플레인'
+author: 'Ivan Porta'
+date: '2025-06-01'
+description: 'Linkerd의 Destination 컨트롤러에 대한 심층 분석—인포머를 어떻게 활용하고 EndpointSlice를 감시하며 리더 선출을 수행해 Kubernetes에서 서비스 디스커버리를 제공하는지.'
+tags: [
   "linkerd",
   "control-plane",
   "destination",
   "kubernetes",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'control-plane/destination.png'
+bookcase_cover_src_dark: 'control-plane/destination_white.png'
+---
 
 # Destination
 
@@ -126,9 +128,7 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 ```
 
-## 5. Linkerd Destination
-
-### Kubernetes API와의 상호작용
+## 5. Kubernetes API와의 상호작용
 
 Destination이 시작되면, `k8s.io/client-go` Go 모듈을 사용하여 관심 있는 모든 리소스 종류(CronJobs, Pods, Services 등)에 대해 하나의 공유 인포머(shared informer)를 생성하고, API 구조체에 해당 핸들을 저장하며, 각 인포머가 동기화되었는지 확인하는 체크(HasSynced)를 기록하고, 현재 캐시의 키 개수를 나타내는 Prometheus 게이지를 등록합니다.
 
@@ -423,7 +423,7 @@ time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-proxy-inj
 time="2025-06-03T15:39:09Z" level=debug msg="Adding ES linkerd/linkerd-sp-validator-g7vgx" addr=":8086" component=service-publisher ns=linkerd svc=linkerd-sp-validator
 ```
 
-### 외부 워크로드(External Workloads)
+## 6. 외부 워크로드(External Workloads)
 
 Linkerd의 Destination 서브시스템은 클러스터 외부에서 실행되는 워크로드를 나타내는 ExternalWorkload 리소스를 관리합니다. 일반적인 Pod과 달리 내부 IP가 Kubernetes 리소스에 존재하지 않으므로, 워크로드 IP는 ExternalWorkload.spec.workloadIPs 필드에 정의되어 있습니다.
 

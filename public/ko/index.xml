@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>소개 on Hori</title>
+    <title>balloon on Hori</title>
     <link>//localhost:1313/ko/</link>
-    <description>Recent content in 소개 on Hori</description>
+    <description>Recent content in balloon on Hori</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ko</language>
     <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="//localhost:1313/ko/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>내 소개</title>
+      <link>//localhost:1313/ko/about/introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/about/introduction/</guid>
+      <description>&lt;p&gt;안녕하세요, 저는 Ivan Porta 입니다 . 저는 &lt;strong&gt;Buoyant&lt;/strong&gt;에서 근무하는 &lt;strong&gt;Customer Engineer&lt;/strong&gt;로, 현재 &lt;strong&gt;대한민국&lt;/strong&gt;에 살고 있습니다.&lt;br&gt;
+대기업부터 스타트업까지 다양한 조직이 &lt;strong&gt;Linkerd&lt;/strong&gt;를 도입·운영하도록 돕고, 필요할 때는 내부 동작까지 파헤쳐 문제를 해결해 왔습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../about/selfie.png&#34; alt=&#34;About&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>왜 이 강의를 만들었을까요?</title>
+      <link>//localhost:1313/ko/about/course/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/about/course/</guid>
+      <description>&lt;p&gt;Linkerd는 &lt;em&gt;설치와 운영이 쉽다&lt;/em&gt;는 명성으로 잘 알려져 있지만, 그 이면에는 정교한 설계가 숨어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;애너테이션&lt;/strong&gt; 하나로 프록시 동작과 컨트롤 플레인 정책까지 세밀하게 제어할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;mTLS, 프로토콜 감지, 서킷 브레이킹, 레이트 리미팅, 멀티클러스터 통신&lt;/strong&gt; 같은 기능은 프록시와 컨트롤 플레인 컨트롤러 간의 치밀한 연동으로 구현됩니다.&lt;/li&gt;
+&lt;li&gt;그 밑바닥에는 CRD, 웹훅, Lease 등 &lt;strong&gt;쿠버네티스 리소스&lt;/strong&gt;가 조용히 일을 처리하고 있죠.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;대부분의 튜토리얼은 ‘해피 패스’에서 멈춥니다.&lt;br&gt;
+&lt;strong&gt;이 강의는 다릅니다.&lt;/strong&gt; 소스 코드와 Kubernetes API 호출까지 낱낱이 해부해&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>연락하기</title>
+      <link>//localhost:1313/ko/about/contacts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/ko/about/contacts/</guid>
+      <description>&lt;p&gt;피드백·질문·아이디어가 있다면 언제든 환영합니다!&lt;br&gt;
+강의 저장소에 이슈를 남기거나 &lt;strong&gt;&lt;a href=&#34;https://linkerd.slack.com/archives/D07M5GLPVLK&#34;&gt;Slack(@gtrekter)&lt;/a&gt;&lt;/strong&gt; 로 메시지를 주세요.&lt;br&gt;
+함께 서비스 메시의 내부를 더 투명하게 만들어 봅시다.&lt;/p&gt;
+&lt;div class=&#34;icon&#34;&gt;
+    
+        &lt;a rel=&#34;noopener&#34; target=&#34;_blank&#34; href=&#34;https://github.com/GTRekter/Hori&#34; aria-label=&#34;github&#34;&gt;
+    
+        
+            
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;path d=&#34;M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22&#34;&gt;&lt;/path&gt;
+&lt;/svg&gt;
+
+
+        
+    
+        &lt;/a&gt;
+    
+&lt;/div&gt;</description>
+    </item>
+    
     <item>
       <title>Linkerd CLI</title>
       <link>//localhost:1313/ko/modules/cli/</link>

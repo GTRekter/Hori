@@ -106,42 +106,42 @@
             </label>
             <div id="sidebar">
                 <ul><li>
-                            <a href="/control-plane/">제어 플레인</a>
+                            <a href="/ko/control-plane/">제어 플레인</a>
     <ul>
         
 
             
                 <li>
                     
-                        <a href="/control-plane/destination">목적지 컨트롤러</a>
+                        <a href="/ko/control-plane/destination">목적지 컨트롤러</a>
                     
                 </li>
             
         
     </ul>
 </li><li>
-                            <a href="/data-plane/">데이터 플레인</a>
+                            <a href="/ko/data-plane/">데이터 플레인</a>
     <ul>
         
 
             
                 <li>
                     
-                        <a href="/data-plane/proxy-init">프록시 초기화</a>
+                        <a href="/ko/data-plane/proxy-init">프록시 초기화</a>
                     
                 </li>
             
         
     </ul>
 </li><li>
-                            <a href="/modules/">모듈</a>
+                            <a href="/ko/modules/">모듈</a>
     <ul>
         
 
             
                 <li>
                     
-                        <a href="/modules/certificates">인증서</a>
+                        <a href="/ko/modules/certificates">인증서</a>
                     
                 </li>
             
@@ -150,7 +150,7 @@
             
                 <li>
                     
-                        <a href="/modules/timeouts">타임아웃</a>
+                        <a href="/ko/modules/timeouts">타임아웃</a>
                     
                 </li>
             
@@ -159,14 +159,14 @@
             
                 <li>
                     
-                        <a href="/modules/cli">Linkerd 커맨드라인 인터페이스</a>
+                        <a href="/ko/modules/cli">Linkerd 커맨드라인 인터페이스</a>
                     
                 </li>
             
         
     </ul>
 </li><li>
-                            <a href="/changelog/">변경 로그</a></li></ul>
+                            <a href="/ko/changelog/">변경 로그</a></li></ul>
             </div>
         </div>
     
@@ -275,14 +275,14 @@
 <nav id="navbar" class="pure-menu">
     <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
                     
-                        <a href="/control-plane/" class="pure-menu-link">제어 플레인</a>
+                        <a href="/ko/control-plane/" class="pure-menu-link">제어 플레인</a>
                     
                     <ul class="pure-menu-children">
 
     
         <li class="pure-menu-item">
             
-                <a href="/control-plane/destination" class="pure-menu-link">목적지 컨트롤러</a>
+                <a href="/ko/control-plane/destination" class="pure-menu-link">목적지 컨트롤러</a>
             
         </li>
     
@@ -290,14 +290,14 @@
 </ul>
                 </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
                     
-                        <a href="/data-plane/" class="pure-menu-link">데이터 플레인</a>
+                        <a href="/ko/data-plane/" class="pure-menu-link">데이터 플레인</a>
                     
                     <ul class="pure-menu-children">
 
     
         <li class="pure-menu-item">
             
-                <a href="/data-plane/proxy-init" class="pure-menu-link">프록시 초기화</a>
+                <a href="/ko/data-plane/proxy-init" class="pure-menu-link">프록시 초기화</a>
             
         </li>
     
@@ -305,14 +305,14 @@
 </ul>
                 </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
                     
-                        <a href="/modules/" class="pure-menu-link">모듈</a>
+                        <a href="/ko/modules/" class="pure-menu-link">모듈</a>
                     
                     <ul class="pure-menu-children">
 
     
         <li class="pure-menu-item">
             
-                <a href="/modules/certificates" class="pure-menu-link">인증서</a>
+                <a href="/ko/modules/certificates" class="pure-menu-link">인증서</a>
             
         </li>
     
@@ -321,7 +321,7 @@
     
         <li class="pure-menu-item">
             
-                <a href="/modules/timeouts" class="pure-menu-link">타임아웃</a>
+                <a href="/ko/modules/timeouts" class="pure-menu-link">타임아웃</a>
             
         </li>
     
@@ -330,7 +330,7 @@
     
         <li class="pure-menu-item">
             
-                <a href="/modules/cli" class="pure-menu-link">Linkerd 커맨드라인 인터페이스</a>
+                <a href="/ko/modules/cli" class="pure-menu-link">Linkerd 커맨드라인 인터페이스</a>
             
         </li>
     
@@ -338,7 +338,7 @@
 </ul>
                 </li><li class="navbar-item pure-menu-item ">
                     
-                        <a href="/changelog/" class="pure-menu-link">변경 로그</a>
+                        <a href="/ko/changelog/" class="pure-menu-link">변경 로그</a>
                     
                 </li></ul>
 </nav>
@@ -557,8 +557,8 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 </code></pre>
 
-<h2 id="5-linkerd-destination" class="header-anchor-wrapper">5. Linkerd Destination
-  <a href="#5-linkerd-destination" class="header-anchor-link">
+<h2 id="5-kubernetes-api와의-상호작용" class="header-anchor-wrapper">5. Kubernetes API와의 상호작용
+  <a href="#5-kubernetes-api%ec%99%80%ec%9d%98-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -571,22 +571,6 @@ helm upgrade --install linkerd-control-plane \
 </svg>
   </a>
 </h2>
-
-
-<h3 id="kubernetes-api와의-상호작용" class="header-anchor-wrapper">Kubernetes API와의 상호작용
-  <a href="#kubernetes-api%ec%99%80%ec%9d%98-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9" class="header-anchor-link">
-    <svg width="16px" height="16px" viewBox="0 0 24 24">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24" height="24" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-    stroke-linejoin="round">
-    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
-</svg>
-
-</svg>
-  </a>
-</h3>
 
 <p>Destination이 시작되면, <code>k8s.io/client-go</code> Go 모듈을 사용하여 관심 있는 모든 리소스 종류(CronJobs, Pods, Services 등)에 대해 하나의 공유 인포머(shared informer)를 생성하고, API 구조체에 해당 핸들을 저장하며, 각 인포머가 동기화되었는지 확인하는 체크(HasSynced)를 기록하고, 현재 캐시의 키 개수를 나타내는 Prometheus 게이지를 등록합니다.</p>
 <pre><code>func newAPI(
@@ -601,7 +585,6 @@ helm upgrade --install linkerd-control-plane \
 	if l5dCrdClient != nil {
 		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
 	}
-
 	api := &amp;API{
 		Client:                k8sClient,
 		L5dClient:             l5dCrdClient,
@@ -610,11 +593,9 @@ helm upgrade --install linkerd-control-plane \
 		sharedInformers:       sharedInformers,
 		l5dCrdSharedInformers: l5dCrdSharedInformers,
 	}
-
 	informerLabels := prometheus.Labels{
 		&quot;cluster&quot;: cluster,
 	}
-
 	for _, resource := range resources {
 		switch resource {
 		case CJ:
@@ -784,7 +765,7 @@ time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.
 	return ew, nil
 }
 </code></pre>
-<p>알림을 받으면, 동작에 따라 새 버전과 이전 버전 사이의 차분(diff)을 생성하고, 리스너(listener)에게 증분 변경만 전달하여 업데이트를 반영합니다.</p>
+<p>알림을 받으면, 동작에 따라 새 버전과 이전 버전 사이의 차분(diff)을 생성하고, 리스너(listener)에게 증분 변경만 전달하여 업데이트를 반영합니다. 중요한 점은 <code>ew.enableEndpointSlices</code> 값을 기준으로 둘 중 하나만 감시한다는 것입니다. 이 값은 컨테이너의 매개변수 <code>-enable-endpoint-slices</code>로 전달되며, 기본값은 true입니다.</p>
 <pre><code>func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
 	newAddressSet := pp.endpointsToAddresses(endpoints)
 	if len(newAddressSet.Addresses) == 0 {
@@ -821,7 +802,7 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-proxy-injector&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-sp-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
 </code></pre>
-<p>EndpointSlice와 Endpoints도 마찬가지로 처리됩니다. 중요한 점은 <code>ew.enableEndpointSlices</code> 값을 기준으로 둘 중 하나만 감시한다는 것입니다. 이 값은 컨테이너의 매개변수 <code>-enable-endpoint-slices</code>로 전달되며, 기본값은 true입니다.</p>
+<p>EndpointSlice와 Endpoints도 마찬가지로 처리됩니다.</p>
 <pre><code>func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {
 	sp.Lock()
 	defer sp.Unlock()
@@ -863,8 +844,8 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/li
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-sp-validator-g7vgx&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
 </code></pre>
 
-<h3 id="외부-워크로드external-workloads" class="header-anchor-wrapper">외부 워크로드(External Workloads)
-  <a href="#%ec%99%b8%eb%b6%80-%ec%9b%8c%ed%81%ac%eb%a1%9c%eb%93%9cexternal-workloads" class="header-anchor-link">
+<h2 id="6-외부-워크로드external-workloads" class="header-anchor-wrapper">6. 외부 워크로드(External Workloads)
+  <a href="#6-%ec%99%b8%eb%b6%80-%ec%9b%8c%ed%81%ac%eb%a1%9c%eb%93%9cexternal-workloads" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -876,7 +857,7 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/li
 
 </svg>
   </a>
-</h3>
+</h2>
 
 <p>Linkerd의 Destination 서브시스템은 클러스터 외부에서 실행되는 워크로드를 나타내는 ExternalWorkload 리소스를 관리합니다. 일반적인 Pod과 달리 내부 IP가 Kubernetes 리소스에 존재하지 않으므로, 워크로드 IP는 ExternalWorkload.spec.workloadIPs 필드에 정의되어 있습니다.</p>
 <pre><code>kubectl get externalworkload -n simple-app   external-simple-app-v1-0e340584 -o yaml

@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "Certificates"
-date = "2025-06-01"
-description = "Deep dive into Linkerd’s certificate hierarchy: how the control plane issues, stores, and renews mTLS identity across the mesh."
-tags = [
+---
+title: 'Certificates'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Deep dive into Linkerd’s certificate hierarchy: how the control plane issues, stores, and renews mTLS identity across the mesh."
+tags: [
   "linkerd",
   "certificates",
   "mTLS",
   "identity",
   "deep-dive"
 ]
-+++
+bookcase_cover_src: 'modules/certificates.png'
+bookcase_cover_src_dark: 'modules/certificates_white.png'
+---
 
 # Certificates
 

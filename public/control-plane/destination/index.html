@@ -20,7 +20,7 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Control Plane - Hori</title>
+    <title>Destination Controller - Hori</title>
 
     
     <meta name="description" content="Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes." />
@@ -355,8 +355,8 @@
     
     
     
-<h1 id="destination" class="header-anchor-wrapper">Destination
-  <a href="#destination" class="header-anchor-link">
+<h1 id="destination-controller" class="header-anchor-wrapper">Destination Controller
+  <a href="#destination-controller" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -555,8 +555,8 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 </code></pre>
 
-<h2 id="5-linkerd-destination" class="header-anchor-wrapper">5. Linkerd Destination
-  <a href="#5-linkerd-destination" class="header-anchor-link">
+<h2 id="5-interactions-with-the-kuberentes-api" class="header-anchor-wrapper">5. Interactions with the Kuberentes API
+  <a href="#5-interactions-with-the-kuberentes-api" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -569,22 +569,6 @@ helm upgrade --install linkerd-control-plane \
 </svg>
   </a>
 </h2>
-
-
-<h3 id="interactions-with-the-kuberentes-api" class="header-anchor-wrapper">Interactions with the Kuberentes API
-  <a href="#interactions-with-the-kuberentes-api" class="header-anchor-link">
-    <svg width="16px" height="16px" viewBox="0 0 24 24">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24" height="24" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-    stroke-linejoin="round">
-    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
-</svg>
-
-</svg>
-  </a>
-</h3>
 
 <p>When Destination starts, it use the <code>k8s.io/client-go</code> GO module to build one shared informer for every resource kinds it cares about (CronJobs, Pods, Services, etc.) and stores the handle in the API struct, as well as check and records a HasSynced check for each, and registers a Prometheus gauge that reports the current key count per cache.</p>
 <pre><code>func newAPI(
@@ -599,7 +583,6 @@ helm upgrade --install linkerd-control-plane \
 	if l5dCrdClient != nil {
 		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
 	}
-
 	api := &amp;API{
 		Client:                k8sClient,
 		L5dClient:             l5dCrdClient,
@@ -608,11 +591,9 @@ helm upgrade --install linkerd-control-plane \
 		sharedInformers:       sharedInformers,
 		l5dCrdSharedInformers: l5dCrdSharedInformers,
 	}
-
 	informerLabels := prometheus.Labels{
 		&quot;cluster&quot;: cluster,
 	}
-
 	for _, resource := range resources {
 		switch resource {
 		case CJ:
@@ -782,7 +763,7 @@ time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.
 	return ew, nil
 }
 </code></pre>
-<p>Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers  so that see only the incremental change.</p>
+<p>Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers so that see only the incremental change. It&rsquo;s important to understant that it won&rsquo;t watch both of them. Depending on <code>ew.enableEndpointSlices</code> it will watch one or the other. This value is received as parameter from the container <code>-enable-endpoint-slices</code> and by default is set to <code>true</code>.</p>
 <pre><code>func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
 	newAddressSet := pp.endpointsToAddresses(endpoints)
 	if len(newAddressSet.Addresses) == 0 {
@@ -819,7 +800,7 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-proxy-injector&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-sp-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
 </code></pre>
-<p>The same will happen for EndpointSlices and Endpoints. It&rsquo;s important to understant that it won&rsquo;t watch both of them. Depending on <code>ew.enableEndpointSlices</code> it will watch one or the other. This value is received as parameter from the container <code>-enable-endpoint-slices</code> and by default is set to <code>true</code>.</p>
+<p>The same will happen for EndpointSlices and Endpoints.</p>
 <pre><code>func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {
 	sp.Lock()
 	defer sp.Unlock()
@@ -861,8 +842,8 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/li
 time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-sp-validator-g7vgx&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
 </code></pre>
 
-<h3 id="external-workloads" class="header-anchor-wrapper">External Workloads
-  <a href="#external-workloads" class="header-anchor-link">
+<h2 id="6-external-workloads" class="header-anchor-wrapper">6. External Workloads
+  <a href="#6-external-workloads" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -874,7 +855,7 @@ time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/li
 
 </svg>
   </a>
-</h3>
+</h2>
 
 <p>Linkerd’s destination subsystem manages <code>ExternalWorkload</code> resources to represent workloads running outside the cluster. Unlike normal Pods, these workloads are not native Kubernetes objects; their IPs live in the <code>ExternalWorkload.spec.workloadIPs</code> field.</p>
 <pre><code>kubectl get externalworkload -n simple-app   external-simple-app-v1-0e340584 -o yaml

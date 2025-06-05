@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "Linkerd CLI"
-date = "2025-06-01"
-description = "Hands-on tutorial for installing and using the Linkerd CLI—covering CRD installation, control-plane setup, and command exploration on Kubernetes."
-tags = [
+---
+title: 'Linkerd CLI'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Hands-on tutorial for installing and using the Linkerd CLI—covering CRD installation, control-plane setup, and command exploration on Kubernetes."
+tags: [
   "linkerd",
   "cli",
   "kubernetes",
   "crd",
   "tutorial"
 ]
-+++
+bookcase_cover_src: 'modules/linkerd-cli.png'
+bookcase_cover_src_dark: 'modules/linkerd-cli_white.png'
+---
 
 # Linkerd CLI
 

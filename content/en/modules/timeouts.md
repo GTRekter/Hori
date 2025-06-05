@@ -1,16 +1,18 @@
-+++
-author = "Ivan Porta"
-title = "Timeouts"
-date = "2025-06-01"
-description = "Practical guide to configuring request, response, and idle timeouts in Linkerd using Kubernetes service annotations—complete with hands-on examples."
-tags = [
+---
+title: 'Timeouts'
+author: "Ivan Porta"
+date: "2025-06-01"
+description: "Practical guide to configuring request, response, and idle timeouts in Linkerd using Kubernetes service annotations—complete with hands-on examples."
+tags: [
   "linkerd",
   "timeouts",
   "service-annotations",
   "kubernetes",
   "tutorial"
 ]
-+++
+bookcase_cover_src: 'modules/timeouts.png'
+bookcase_cover_src_dark: 'modules/timeouts_white.png'
+---
 
 # Timeouts
 
