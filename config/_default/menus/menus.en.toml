@@ -13,7 +13,7 @@
     identifier = "en-proxy-injector"
     name = "Proxy-Injector Controller"
     url = "/control-plane/proxy-injector"
-    parent = "en-proxy-injector"
+    parent = "en-control-plane"
     weight = 2
 
 [[navbar]]

@@ -13,7 +13,7 @@
     identifier = "kr-proxy-injector"
     name = "컨트롤 플레인'"
     url = "/ko/control-plane/proxy-injector"
-    parent = "kr-proxy-injector"
+    parent = "kr-control-plane"
     weight = 2
 
 [[navbar]]
