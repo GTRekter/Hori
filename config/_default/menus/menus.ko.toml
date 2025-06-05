@@ -9,6 +9,12 @@
     url = "/ko/control-plane/destination"
     parent = "kr-control-plane"
     weight = 1
+  [[navbar]]
+    identifier = "kr-proxy-injector"
+    name = "컨트롤 플레인'"
+    url = "/ko/control-plane/proxy-injector"
+    parent = "kr-proxy-injector"
+    weight = 2
 
 [[navbar]]
   identifier = "kr-data-plane"

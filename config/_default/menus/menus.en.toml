@@ -9,6 +9,12 @@
     url = "/control-plane/destination"
     parent = "en-control-plane"
     weight = 1
+  [[navbar]]
+    identifier = "en-proxy-injector"
+    name = "Proxy-Injector Controller"
+    url = "/control-plane/proxy-injector"
+    parent = "en-proxy-injector"
+    weight = 2
 
 [[navbar]]
   identifier = "en-data-plane"
