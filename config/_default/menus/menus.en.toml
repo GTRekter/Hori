@@ -9,6 +9,48 @@
     url = "/control-plane/destination"
     parent = "en-control-plane"
     weight = 1
+    [[navbar]]
+      identifier = "en-server"
+      name = "Server"
+      url = "/control-plane/destination/server"
+      parent = "en-destination"
+      weight = 1
+    [[navbar]]
+      identifier = "en-endpoints-watcher"
+      name = "Endpoints Watcher"
+      url = "/control-plane/destination/endpoints-watcher"
+      parent = "en-destination"
+      weight = 2
+    [[navbar]]
+      identifier = "en-federated-service-watcher"
+      name = "Federated Service Watcher"
+      url = "/control-plane/destination/federated-service-watcher"
+      parent = "en-destination"
+      weight = 3
+    [[navbar]]
+      identifier = "en-opaque-port-watcher"
+      name = "Opaque Port Watcher"
+      url = "/control-plane/destination/opaque-port-watcher"
+      parent = "en-destination"
+      weight = 4
+    [[navbar]]
+      identifier = "en-profile-watcher"
+      name = "Profile Watcher"
+      url = "/control-plane/destination/profile-watcher"
+      parent = "en-destination"
+      weight = 5
+    [[navbar]]
+      identifier = "en-workload-watcher"
+      name = "Workload Watcher"
+      url = "/control-plane/destination/workload-watcher"
+      parent = "en-destination"
+      weight = 6
+    [[navbar]]
+      identifier = "en-external-workloads-controller"
+      name = "External Workloads Controller"
+      url = "/control-plane/destination/external-workloads-controller"
+      parent = "en-destination"
+      weight = 7
   [[navbar]]
     identifier = "en-proxy-injector"
     name = "Proxy-Injector Controller"

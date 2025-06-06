@@ -113,7 +113,82 @@
             
                 <li>
                     
-                        <a href="/control-plane/destination">Destination Controller</a>
+                        <span><a href="/control-plane/destination">Destination Controller</a></span>
+                    
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/server">Server</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/endpoints-watcher">Endpoints Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/federated-service-watcher">Federated Service Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/opaque-port-watcher">Opaque Port Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/profile-watcher">Profile Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/workload-watcher">Workload Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/external-workloads-controller">External Workloads Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/proxy-injector">Proxy-Injector Controller</a>
                     
                 </li>
             
@@ -280,9 +355,83 @@
                     <ul class="pure-menu-children">
 
     
-        <li class="pure-menu-item">
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
             
                 <a href="/control-plane/destination" class="pure-menu-link">Destination Controller</a>
+            
+            <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/server" class="pure-menu-link">Server</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/endpoints-watcher" class="pure-menu-link">Endpoints Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/federated-service-watcher" class="pure-menu-link">Federated Service Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/opaque-port-watcher" class="pure-menu-link">Opaque Port Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/profile-watcher" class="pure-menu-link">Profile Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/workload-watcher" class="pure-menu-link">Workload Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/external-workloads-controller" class="pure-menu-link">External Workloads Controller</a>
+            
+        </li>
+    
+
+</ul>
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/proxy-injector" class="pure-menu-link">Proxy-Injector Controller</a>
             
         </li>
     
@@ -370,7 +519,7 @@
   </a>
 </h2>
 
-<p>It&rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is <code>linkerd.io/injected: enabled</code> then inject a Linkerd proxy and ProxyInit containers.</p>
+<p>The Linkerd Proxy-Injector uses a mutating webhook to intercept requests to the Kubernetes API when a new Pod (or Service) is created. If the namespace or Pod is annotated with <code>linkerd.io/inject: enabled</code>, the webhook injects the Linkerd proxy and ProxyInit containers into the Pod spec.</p>
 
 <h1 id="prerequisites" class="header-anchor-wrapper">Prerequisites
   <a href="#prerequisites" class="header-anchor-link">
@@ -475,6 +624,37 @@ volumes:
   - volume: &quot;&lt;LOCAL-FULL-PATH&gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&quot;
     nodeFilters: [&quot;server:*&quot;]
 EOF
+cat &lt;&lt; 'EOF' &gt; application.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-app-v1
+  namespace: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      containers:
+        - name: http-app
+          image: kong/httpbin:latest
+          ports:
+            - containerPort: 80
+EOF
 </code></pre>
 
 <h2 id="2-create-a-local-kubernetes-cluster" class="header-anchor-wrapper">2. Create a Local Kubernetes Cluster
@@ -555,8 +735,8 @@ helm upgrade --install linkerd-control-plane \
   linkerd-edge/linkerd-control-plane
 </code></pre>
 
-<h2 id="5-interactions-with-the-kuberentes-api" class="header-anchor-wrapper">5. Interactions with the Kuberentes API
-  <a href="#5-interactions-with-the-kuberentes-api" class="header-anchor-link">
+<h2 id="5-deploy-the-sample-application" class="header-anchor-wrapper">5. Deploy the Sample Application
+  <a href="#5-deploy-the-sample-application" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -570,8 +750,27 @@ helm upgrade --install linkerd-control-plane \
   </a>
 </h2>
 
-<p>The entire flow starts with a request to create a new Pod or Service being sent to the Kuberentes API. It will then receive the request and call process the
-Mutating Webhook with the matiching rules. In case of Linkerd, the <code>linkerd-proxy-injector-webhook</code>. This Mutating Webhook will referenct the <code>linkerd-proxy-injector</code> service in the namespace <code>linkerd</code> on port <code>443</code>. Also, it will skip injection for namespaces labeled <code>config.linkerd.io/admission-webhooks=disabled</code> or the system namespaces <code>kube-system</code>, and <code>cert-manager</code>, as well as objects with <code>linkerd.io/control-plane-component</code> or <code>linkerd.io/cni-resource</code> labels.</p>
+<p>Since the <code>simple-app</code> namespace is annotated with <code>linkerd.io/inject: enabled</code>, Linkerd’s proxy-injector webhook will automatically inject a sidecar into the <code>simple-app-v1</code> Deployment’s Pods.</p>
+<pre><code>kubectl apply -f ./application.yaml
+</code></pre>
+<p>At this point, Kubernetes will send a CREATE request for the Deployment’s ReplicaSet and then for the Pod.</p>
+
+<h2 id="6-interactions-with-the-kuberentes-api" class="header-anchor-wrapper">6. Interactions with the Kuberentes API
+  <a href="#6-interactions-with-the-kuberentes-api" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>When you apply <code>application.yaml</code>, Kubernetes processes it and calls any matching mutating webhooks. In Linkerd’s case, this is the <code>linkerd-proxy-injector-webhook</code> (configured under <code>MutatingWebhookConfiguration</code>). Here’s a trimmed-down view of that webhook configuration:</p>
 <pre><code>kubectl get mutatingwebhookconfiguration linkerd-proxy-injector-webhook-config -o yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -623,13 +822,21 @@ webhooks:
   sideEffects: None
   timeoutSeconds: 10
 </code></pre>
-<p>If we look at the volumes mounted by the <code>linkerd-proxy-injector</code> pod and available to the <code>proxy-injector</code> controller, we will see both Root Certificate Trust Anchor (stored in the <code>linkerd-identity-trust-roots</code> configMap), and the linkerd configuration (stored in the <code>linkerd-config</code> configMap).</p>
-<p>config.Values(&hellip;) reads the chart‐rendered values.yaml from the mounted ConfigMap at /var/run/linkerd/config/values. This struct (*l5dcharts.Values) contains every configurable parameter in Linkerd’s control plane: proxy images, resource limits, default opaque ports, and so on.</p>
-<pre><code>kubectl get pods -n linkerd linkerd-proxy-injector-b97875998-9dvfj -o yaml
+<p>The mutating webhook will:</p>
+<ul>
+<li>Be triggered by any Pod or Service creation in a namespace that does NOT have <code>config.linkerd.io/admission-webhooks=disabled</code> will be sent to this webhook. The webhook also ignores any object labeled with <code>linkerd.io/control-plane-component</code> or <code>linkerd.io/cni-resource</code>, and it skips system namespaces <code>kube-system</code> and <code>cert-manager</code>.</li>
+<li>Point to the <code>linkerd-proxy-injector</code> service in the <code>linkerd</code> namespace on port <code>443</code>.</li>
+</ul>
+<p>If we take a look a inside the <code>linkerd-proxy-injector</code> Pod we will see that:</p>
+<ul>
+<li>It will mount a volume containing the <code>linkerd-config</code> ConfigMap that holds the chart‐rendered values.yaml, including defaults for proxy image, opaque ports, resource limits, and so forth.</li>
+<li>It will mount a volume which contains the <code>linkerd-identity-trust-roots</code> ConfigMap. This ConfigMap contains the the trust anchor Certificate.</li>
+</ul>
+<pre><code>kubectl get pods -n linkerd linkerd-proxy-injector-******** -o yaml
 apiVersion: v1
 kind: Pod
   ...
-  name: linkerd-proxy-injector-b97875998-9dvfj
+  name: linkerd-proxy-injector-********
   namespace: linkerd
 spec:
   containers:
@@ -706,7 +913,7 @@ spec:
       medium: Memory
     name: linkerd-identity-end-entity
 </code></pre>
-<p>These two referencese are important because, the first thing that the proxy-injector will do is to read the content of these volues, and later will inject them in the request.</p>
+<p>When the webhook binary starts handling a request, the first lines of code read both the mounted volume with the <code>linkerd-config</code> ConfigMap and <code>linkerd-identity-trust-roots</code> ConfigMap so that the injector will know the configurations and correct trust root to inject in the proxy configuration.</p>
 <pre><code>valuesConfig, err := config.Values(pkgK8s.MountPathValuesConfig)
 if err != nil {
   return nil, err
@@ -717,13 +924,19 @@ if err != nil {
 }
 valuesConfig.IdentityTrustAnchorsPEM = string(caPEM)
 </code></pre>
-<p>Then it call into the Metadata API to fetch the namespace‐level annotations object for the incoming admission request.</p>
+<p>Next, the webhook fetches the namespace object to read any namespace-level Linkerd annotations. This is important because these values will be propagated to the proxy itself if no annotations in the deployment override them.</p>
 <pre><code>ns, err := api.Get(k8s.NS, request.Namespace)
 if err != nil {
   return nil, err
 }
 </code></pre>
-<p>it will create a custom object called <code>ResourceConfig</code> that will contin informations about the object. injects all namespace annotations into the config as many Linkerd settings can be inherited at a namespace level (that value will be copied to any workload that does not override it), and collect informations whether the incoming admission object is a Pod, Deployment, Service, etc., and resolve its top‐level owner (e.g. Deployment, ReplicaSet). This is used later to emit Kubernetes Events on the parent resource instead of on the Pod itself.</p>
+<p>Then it constructs a <code>ResourceConfig</code> struct that carries:</p>
+<ul>
+<li>The chart values merged with any overrides from Pod annotations.</li>
+<li>All namespace‐level annotations, so that any Linkerd annotation set at the namespace is automatically inherited by each Pod.</li>
+<li>The resource kind (e.g. “Pod” or “Deployment”) so that the code knows where to look for a Pod template if the resource is a Deployment.</li>
+<li>An “OwnerRetriever” function that can look up the parent resource (e.g. Deployment → ReplicaSet → Pod) so that injected events can be attached to the highest‐level owner.</li>
+</ul>
 <pre><code>resourceConfig := inject.NewResourceConfig(valuesConfig, inject.OriginWebhook, linkerdNamespace).
   WithOwnerRetriever(ownerRetriever(ctx, api, request.Namespace)).
   WithNsAnnotations(ns.GetAnnotations()).
@@ -755,18 +968,23 @@ func (conf *ResourceConfig) WithKind(kind string) *ResourceConfig {
 	return conf
 }
 </code></pre>
-<p>Then deserializes the raw JSON bytes into a typed Kubernetes object</p>
+<p>At this point, the webhook deserializes the raw JSON bytes from the admission request into typed Kubernetes objects and fills some additional field in the <code>ResourceConfig</code> struct:</p>
+<ul>
+<li><code>resourceConfig.workload.metatype</code> and <code>resourceConfig.workload.meta</code> if the object is a Deployment, StatefulSet, Service, and so on.</li>
+<li><code>resourceConfig.pod.spec</code> and <code>resourceConfig.pod.meta</code> if the object is a Pod (or if the object has a PodTemplate, such as a Deployment template).</li>
+<li><code>resourceConfig.ownerRef</code> if there is a controller owner reference (for example, a Pod owned by a ReplicaSet, owned by a Deployment).</li>
+</ul>
 <pre><code>report, err := resourceConfig.ParseMetaAndYAML(request.Object.Raw)
 if err != nil {
   return nil, err
 }
 log.Infof(&quot;received %s&quot;, report.ResName())
 </code></pre>
-<p>You will be able to see the name in the name of the resource in the logs.</p>
+<p>You will see log lines like:</p>
 <pre><code>time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received service/simple-app-v1&quot;
 time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received admission review request \&quot;919c6889-a59c-4168-be0d-6d448460af98\&quot;&quot;
 </code></pre>
-<p>It will then determining the owner of the resource for recording the enent. It returns the top‐level *metav1.OwnerReference if the Pod was created by a ReplicaSet or Deployment.</p>
+<p>If the resource has a parent (for example, a Pod created by a ReplicaSet which is managed by a Deployment), the code looks it up so that any Kubernetes Event (Injected or Skipped) goes on the parent:</p>
 <pre><code>var parent *metav1.PartialObjectMetadata
 var ownerKind string
 if ownerRef := resourceConfig.GetOwnerRef(); ownerRef != nil {
@@ -786,11 +1004,15 @@ if ownerRef := resourceConfig.GetOwnerRef(); ownerRef != nil {
   }
 }
 </code></pre>
-<p>It will then proceed with the actual injection and patching only if the workload-level or namespace-level annotation indicates injection should occur.</p>
-<p>// Injectable returns false if the report flags indicate that the workload is on a host network
-// or there is already a sidecar or the resource is not supported or inject is explicitly disabled.
-// If false, the second returned value describes the reason.
-This conditions are important because they will prevent the actual inection.</p>
+<p>With those pieces in place, the webhook calls <code>report.Injectable()</code> to decide whether injection should proceed. To do so it checks:</p>
+<ul>
+<li><code>HostNetwork</code> mode (iptables won’t work if the Pod is on the host network).</li>
+<li>Existing sidecar detecting that injection would be redundant.</li>
+<li>Unsupported resource kinds.</li>
+<li>An explicit annotation that disables injection.</li>
+<li>Whether the Pod automounts its ServiceAccount token (needed for mTLS).
+If any of these checks fail, the function returns <code>false</code> along with one or more human-readable reasons.</li>
+</ul>
 <pre><code>injectable, reasons := report.Injectable()
 ...
 func (r *Report) Injectable() (bool, []string) {
@@ -818,11 +1040,20 @@ func (r *Report) Injectable() (bool, []string) {
 	return true, nil
 }
 </code></pre>
-<p>Finally, if everything is ok, it will proceed by:</p>
+<p>If <code>Injectable()</code> returns <code>true</code>, the webhook proceeds with injection and:</p>
 <ul>
-<li>Appending the pkgK8s.CreatedByAnnotation is &ldquo;config.linkerd.io/created-by&rdquo;</li>
-<li>Copy Namespace Overrides. If the namespace has settings like <code>config.linkerd.io/proxy-cpu-limit: &quot;100m&quot;</code> and the workload did not explicitly override those, this helper copies them onto the Pod template annotations.</li>
-<li>If the Pod’s annotation for config.linkerd.io/opaque-ports does not exist, it will split the default list from the chart (valuesConfig.Proxy.OpaquePorts), Filter to only those ports actually exposed by containers in this Pod, If we find any matches, we annotate the Pod with exactly those ports (e.g. &ldquo;3306,5432&rdquo;). This tells the injected proxy which ports to intercept for transparent TLS.</li>
+<li>Append a <code>config.linkerd.io/created-by</code> annotation.</li>
+<li>Copy any namespace‐level Linkerd annotations (for CPU/memory limits, proxy image overrides, etc.) onto the Pod template if they are not explicitly set on the Pod.</li>
+<li>If the Pod does not already have a <code>config.linkerd.io/opaque-ports</code> annotation, split the comma-separated default opaque ports from <code>valuesConfig.Proxy.OpaquePorts</code>, filter them against the actual container ports in the Pod spec, and then set the annotation to just the matching ports.</li>
+</ul>
+<p>Then it will call <code>resourceConfig.GetPodPatch(true)</code> to build the JSON patch that:</p>
+<ul>
+<li>Adds the <code>linkerd-init</code> init container (which programs iptables rules).</li>
+<li>Adds the <code>linkerd-proxy</code> sidecar container with all required environment variables, volume mounts, and command-line flags.</li>
+<li>Attaches the <code>config.linkerd.io/opaque-ports</code> and <code>config.linkerd.io/created-by</code> annotations.</li>
+<li>Mounts the trust anchors and TLS secrets (so the proxy can talk securely to the control plane).</li>
+<li>If a parent was found, emit a Kubernetes Event on the parent resource with reason Injected and message <strong>Linkerd sidecar proxy injected.</strong></li>
+<li>Log the generated patch at INFO level and debug-print the full JSON patch.</li>
 </ul>
 <pre><code>if injectable {
   resourceConfig.AppendPodAnnotation(pkgK8s.CreatedByAnnotation, fmt.Sprintf(&quot;linkerd/proxy-injector %s&quot;, version.Version))
@@ -853,15 +1084,7 @@ func (r *Report) Injectable() (bool, []string) {
     Patch:     patchJSON,
   }, nil
 }
-</code></pre>
-<p>The <code>GetPodPatch</code> is the methond in chargce of
-Add an init container named linkerd-init that programs iptables rules.
-Add the sidecar container linkerd-proxy with all necessary environment variables, volume mounts, and command-line flags.
-Attach the config.linkerd.io/opaque-ports annotation.
-Attach the config.linkerd.io/created-by annotation.
-Mount the toleration/config secrets and trust anchors inside the injected containers.</p>
-<pre><code>// GetPodPatch returns the JSON patch containing the proxy and init containers specs, if any.
-// If injectProxy is false, only the config.linkerd.io annotations are set.
+...
 func (conf *ResourceConfig) GetPodPatch(injectProxy bool) ([]byte, error) {
 	namedPorts := make(map[string]int32)
 	if conf.HasPodTemplate() {
@@ -922,59 +1145,29 @@ func (conf *ResourceConfig) GetPodPatch(injectProxy bool) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := rTrail.ReplaceAll(buf.Bytes(), []byte(&quot;}\n]&quot;))
+	res := rTrail.ReplaceAll(buf.Bytes(), []byte(&quot;\n&quot;))
 	return res, nil
 }
 </code></pre>
-<p>Once the Json is generated it will emit the event. If we resolved an owning Deployment/ReplicaSet/StatefulSet, we emit an event on the parent object instead of the Pod. and print the patch in the logs.</p>
-<pre><code>// Create a patch which adds the opaque ports annotation if the workload
-// doesn't already have it set.
-patchJSON, err := resourceConfig.CreateOpaquePortsPatch()
-if err != nil {
-  return nil, err
-}
-
-// If resource needs to be patched with annotations (e.g opaque
-// ports), then admit the request with the relevant patch
-if len(patchJSON) != 0 {
-  log.Infof(&quot;annotation patch generated for: %s&quot;, report.ResName())
-  log.Debugf(&quot;annotation patch: %s&quot;, patchJSON)
-  proxyInjectionAdmissionResponses.With(admissionResponseLabels(ownerKind, request.Namespace, &quot;false&quot;, &quot;&quot;, report.InjectAnnotationAt, configLabels)).Inc()
-  patchType := admissionv1beta1.PatchTypeJSONPatch
-  return &amp;admissionv1beta1.AdmissionResponse{
-    UID:       request.UID,
-    Allowed:   true,
-    PatchType: &amp;patchType,
-    Patch:     patchJSON,
-  }, nil
-}
-
-// If the resource is a pod, and no annotation patch has
-// been generated, record in the metrics (and log) that it has been
-// entirely skipped and admit without any mutations
-if resourceConfig.IsPod() {
-  log.Infof(&quot;skipped %s: %s&quot;, report.ResName(), readableMsg)
-  proxyInjectionAdmissionResponses.With(admissionResponseLabels(ownerKind, request.Namespace, &quot;true&quot;, strings.Join(reasons, &quot;,&quot;), report.InjectAnnotationAt, configLabels)).Inc()
-  return &amp;admissionv1beta1.AdmissionResponse{
-    UID:     request.UID,
-    Allowed: true,
-  }, nil
-}
-
-return &amp;admissionv1beta1.AdmissionResponse{
-  UID:     request.UID,
-  Allowed: true,
-}, nil
+<p>You can see the related logs in the Deployment&rsquo;s Events.</p>
+<pre><code>kubectl describe deployment/simple-app-v1 -n simple-app
+...
+Events:
+  Type    Reason             Age                    From                    Message
+  ----    ------             ----                   ----                    -------
+  Normal  ScalingReplicaSet  2m26s                  deployment-controller   Scaled up replica set simple-app-v1-658b475d7c from 0 to 1
+  Normal  Injected           2m25s (x2 over 2m26s)  linkerd-proxy-injector  Linkerd sidecar proxy injected
+  Normal  ScalingReplicaSet  2m25s                  deployment-controller   Scaled up replica set simple-app-v1-76fc99b86b from 0 to 1
+  Normal  ScalingReplicaSet  2m19s                  deployment-controller   Scaled down replica set simple-app-v1-658b475d7c from 1 to 0
 </code></pre>
-<pre><code>time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received service/simple-app-v1&quot;
-time=&quot;2025-06-04T11:19:18Z&quot; level=info msg=&quot;received admission review request \&quot;919c6889-a59c-4168-be0d-6d448460af98\&quot;&quot;
-time=&quot;2025-06-04T11:19:18Z&quot; level=debug msg=&quot;admission request: &amp;AdmissionRequest{UID:919c6889-a59c-4168-be0d-6d448460af98,Kind:/v1, Kind=Service,Resource:{ v1 services},SubResource:,Name:simple-app-v2,Namespace:simple-app,Operation:CREATE,UserInfo:{system:admin  [system:masters system:authenticated] map[authentication.kubernetes.io/credential-id:[X509SHA256=4bc6de6278f805fc173745e09f4a564b7c7b4fac138201f729d912cd623fa55b]]},Object:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 107 105 110 100 34 58 34 83 101 114 118 105 99 101 34 44 34 109 101 116 97 100 97 116 97 34 58 123 34 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 34 123 92 34 97 112 105 86 101 114 115 105 111 110 92 34 58 92 34 118 49 92 34 44 92 34 107 105 110 100 92 34 58 92 34 83 101 114 118 105 99 101 92 34 44 92 34 109 101 116 97 100 97 116 97 92 34 58 123 92 34 97 110 110 111 116 97 116 105 111 110 115 92 34 58 123 125 44 92 34 110 97 109 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 110 97 109 101 115 112 97 99 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 92 34 125 44 92 34 115 112 101 99 92 34 58 123 92 34 112 111 114 116 115 92 34 58 91 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 116 97 114 103 101 116 80 111 114 116 92 34 58 53 54 55 56 125 93 44 92 34 115 101 108 101 99 116 111 114 92 34 58 123 92 34 97 112 112 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 118 101 114 115 105 111 110 92 34 58 92 34 118 50 92 34 125 125 125 92 110 34 125 44 34 99 114 101 97 116 105 111 110 84 105 109 101 115 116 97 109 112 34 58 110 117 108 108 44 34 109 97 110 97 103 101 100 70 105 101 108 100 115 34 58 91 123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 102 105 101 108 100 115 84 121 112 101 34 58 34 70 105 101 108 100 115 86 49 34 44 34 102 105 101 108 100 115 86 49 34 58 123 34 102 58 109 101 116 97 100 97 116 97 34 58 123 34 102 58 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 46 34 58 123 125 44 34 102 58 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 123 125 125 125 44 34 102 58 115 112 101 99 34 58 123 34 102 58 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 123 125 44 34 102 58 112 111 114 116 115 34 58 123 34 46 34 58 123 125 44 34 107 58 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 112 114 111 116 111 99 111 108 92 34 58 92 34 84 67 80 92 34 125 34 58 123 34 46 34 58 123 125 44 34 102 58 112 111 114 116 34 58 123 125 44 34 102 58 112 114 111 116 111 99 111 108 34 58 123 125 44 34 102 58 116 97 114 103 101 116 80 111 114 116 34 58 123 125 125 125 44 34 102 58 115 101 108 101 99 116 111 114 34 58 123 125 44 34 102 58 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 123 125 44 34 102 58 116 121 112 101 34 58 123 125 125 125 44 34 109 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 111 112 101 114 97 116 105 111 110 34 58 34 85 112 100 97 116 101 34 44 34 116 105 109 101 34 58 34 50 48 50 53 45 48 54 45 48 52 84 49 49 58 49 57 58 49 56 90 34 125 93 44 34 110 97 109 101 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 110 97 109 101 115 112 97 99 101 34 58 34 115 105 109 112 108 101 45 97 112 112 34 125 44 34 115 112 101 99 34 58 123 34 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 34 67 108 117 115 116 101 114 34 44 34 112 111 114 116 115 34 58 91 123 34 112 111 114 116 34 58 56 48 44 34 112 114 111 116 111 99 111 108 34 58 34 84 67 80 34 44 34 116 97 114 103 101 116 80 111 114 116 34 58 53 54 55 56 125 93 44 34 115 101 108 101 99 116 111 114 34 58 123 34 97 112 112 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 118 101 114 115 105 111 110 34 58 34 118 50 34 125 44 34 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 34 78 111 110 101 34 44 34 116 121 112 101 34 58 34 67 108 117 115 116 101 114 73 80 34 125 44 34 115 116 97 116 117 115 34 58 123 34 108 111 97 100 66 97 108 97 110 99 101 114 34 58 123 125 125 125] &lt;nil&gt;},OldObject:{[] &lt;nil&gt;},DryRun:*false,Options:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 109 101 116 97 46 107 56 115 46 105 111 47 118 49 34 44 34 102 105 101 108 100 77 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 102 105 101 108 100 86 97 108 105 100 97 116 105 111 110 34 58 34 83 116 114 105 99 116 34 44 34 107 105 110 100 34 58 34 67 114 101 97 116 101 79 112 116 105 111 110 115 34 125] &lt;nil&gt;},RequestKind:/v1, Kind=Service,RequestResource:/v1, Resource=services,RequestSubResource:,}&quot;
+<p>Once the Json is generated, it calls the <code>chart.Render()</code> that returns the resulting []byte patch that Kubernetes applies. You can see the raw byte array of the incoming admission request, including the trust anchor PEM, Linkerd-related annotations, and Pod spec. For example:</p>
+<pre><code>time=&quot;2025-06-04T11:19:18Z&quot; level=debug msg=&quot;admission request: &amp;AdmissionRequest{UID:919c6889-a59c-4168-be0d-6d448460af98,Kind:/v1, Kind=Service,Resource:{ v1 services},SubResource:,Name:simple-app-v2,Namespace:simple-app,Operation:CREATE,UserInfo:{system:admin  [system:masters system:authenticated] map[authentication.kubernetes.io/credential-id:[X509SHA256=4bc6de6278f805fc173745e09f4a564b7c7b4fac138201f729d912cd623fa55b]]},Object:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 107 105 110 100 34 58 34 83 101 114 118 105 99 101 34 44 34 109 101 116 97 100 97 116 97 34 58 123 34 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 34 123 92 34 97 112 105 86 101 114 115 105 111 110 92 34 58 92 34 118 49 92 34 44 92 34 107 105 110 100 92 34 58 92 34 83 101 114 118 105 99 101 92 34 44 92 34 109 101 116 97 100 97 116 97 92 34 58 123 92 34 97 110 110 111 116 97 116 105 111 110 115 92 34 58 123 125 44 92 34 110 97 109 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 110 97 109 101 115 112 97 99 101 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 92 34 125 44 92 34 115 112 101 99 92 34 58 123 92 34 112 111 114 116 115 92 34 58 91 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 116 97 114 103 101 116 80 111 114 116 92 34 58 53 54 55 56 125 93 44 92 34 115 101 108 101 99 116 111 114 92 34 58 123 92 34 97 112 112 92 34 58 92 34 115 105 109 112 108 101 45 97 112 112 45 118 50 92 34 44 92 34 118 101 114 115 105 111 110 92 34 58 92 34 118 50 92 34 125 125 125 92 110 34 125 44 34 99 114 101 97 116 105 111 110 84 105 109 101 115 116 97 109 112 34 58 110 117 108 108 44 34 109 97 110 97 103 101 100 70 105 101 108 100 115 34 58 91 123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 118 49 34 44 34 102 105 101 108 100 115 84 121 112 101 34 58 34 70 105 101 108 100 115 86 49 34 44 34 102 105 101 108 100 115 86 49 34 58 123 34 102 58 109 101 116 97 100 97 116 97 34 58 123 34 102 58 97 110 110 111 116 97 116 105 111 110 115 34 58 123 34 46 34 58 123 125 44 34 102 58 107 117 98 101 99 116 108 46 107 117 98 101 114 110 101 116 101 115 46 105 111 47 108 97 115 116 45 97 112 112 108 105 101 100 45 99 111 110 102 105 103 117 114 97 116 105 111 110 34 58 123 125 125 125 44 34 102 58 115 112 101 99 34 58 123 34 102 58 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 123 125 44 34 102 58 112 111 114 116 115 34 58 123 34 46 34 58 123 125 44 34 107 58 123 92 34 112 111 114 116 92 34 58 56 48 44 92 34 112 114 111 116 111 99 111 108 92 34 58 92 34 84 67 80 92 34 125 34 58 123 34 46 34 58 123 125 44 34 102 58 112 111 114 116 34 58 123 125 44 34 102 58 112 114 111 116 111 99 111 108 34 58 123 125 44 34 102 58 116 97 114 103 101 116 80 111 114 116 34 58 123 125 125 125 44 34 102 58 115 101 108 101 99 116 111 114 34 58 123 125 44 34 102 58 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 123 125 44 34 102 58 116 121 112 101 34 58 123 125 125 125 44 34 109 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 111 112 101 114 97 116 105 111 110 34 58 34 85 112 100 97 116 101 34 44 34 116 105 109 101 34 58 34 50 48 50 53 45 48 54 45 48 52 84 49 49 58 49 57 58 49 56 90 34 125 93 44 34 110 97 109 101 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 110 97 109 101 115 112 97 99 101 34 58 34 115 105 109 112 108 101 45 97 112 112 34 125 44 34 115 112 101 99 34 58 123 34 105 110 116 101 114 110 97 108 84 114 97 102 102 105 99 80 111 108 105 99 121 34 58 34 67 108 117 115 116 101 114 34 44 34 112 111 114 116 115 34 58 91 123 34 112 111 114 116 34 58 56 48 44 34 112 114 111 116 111 99 111 108 34 58 34 84 67 80 34 44 34 116 97 114 103 101 116 80 111 114 116 34 58 53 54 55 56 125 93 44 34 115 101 108 101 99 116 111 114 34 58 123 34 97 112 112 34 58 34 115 105 109 112 108 101 45 97 112 112 45 118 50 34 44 34 118 101 114 115 105 111 110 34 58 34 118 50 34 125 44 34 115 101 115 115 105 111 110 65 102 102 105 110 105 116 121 34 58 34 78 111 110 101 34 44 34 116 121 112 101 34 58 34 67 108 117 115 116 101 114 73 80 34 125 44 34 115 116 97 116 117 115 34 58 123 34 108 111 97 100 66 97 108 97 110 99 101 114 34 58 123 125 125 125] &lt;nil&gt;},OldObject:{[] &lt;nil&gt;},DryRun:*false,Options:{[123 34 97 112 105 86 101 114 115 105 111 110 34 58 34 109 101 116 97 46 107 56 115 46 105 111 47 118 49 34 44 34 102 105 101 108 100 77 97 110 97 103 101 114 34 58 34 107 117 98 101 99 116 108 45 99 108 105 101 110 116 45 115 105 100 101 45 97 112 112 108 121 34 44 34 102 105 101 108 100 86 97 108 105 100 97 116 105 111 110 34 58 34 83 116 114 105 99 116 34 44 34 107 105 110 100 34 58 34 67 114 101 97 116 101 79 112 116 105 111 110 115 34 125] &lt;nil&gt;},RequestKind:/v1, Kind=Service,RequestResource:/v1, Resource=services,RequestSubResource:,}&quot;
 time=&quot;2025-06-04T11:19:18Z&quot; level=debug msg=&quot;request object bytes: {\&quot;apiVersion\&quot;:\&quot;v1\&quot;,\&quot;kind\&quot;:\&quot;Service\&quot;,\&quot;metadata\&quot;:{\&quot;annotations\&quot;:{\&quot;kubectl.kubernetes.io/last-applied-configuration\&quot;:\&quot;{\\\&quot;apiVersion\\\&quot;:\\\&quot;v1\\\&quot;,\\\&quot;kind\\\&quot;:\\\&quot;Service\\\&quot;,\\\&quot;metadata\\\&quot;:{\\\&quot;annotations\\\&quot;:{},\\\&quot;name\\\&quot;:\\\&quot;simple-app-v2\\\&quot;,\\\&quot;namespace\\\&quot;:\\\&quot;simple-app\\\&quot;},\\\&quot;spec\\\&quot;:{\\\&quot;ports\\\&quot;:[{\\\&quot;port\\\&quot;:80,\\\&quot;targetPort\\\&quot;:5678}],\\\&quot;selector\\\&quot;:{\\\&quot;app\\\&quot;:\\\&quot;simple-app-v2\\\&quot;,\\\&quot;version\\\&quot;:\\\&quot;v2\\\&quot;}}}\\n\&quot;},\&quot;creationTimestamp\&quot;:null,\&quot;managedFields\&quot;:[{\&quot;apiVersion\&quot;:\&quot;v1\&quot;,\&quot;fieldsType\&quot;:\&quot;FieldsV1\&quot;,\&quot;fieldsV1\&quot;:{\&quot;f:metadata\&quot;:{\&quot;f:annotations\&quot;:{\&quot;.\&quot;:{},\&quot;f:kubectl.kubernetes.io/last-applied-configuration\&quot;:{}}},\&quot;f:spec\&quot;:{\&quot;f:internalTrafficPolicy\&quot;:{},\&quot;f:ports\&quot;:{\&quot;.\&quot;:{},\&quot;k:{\\\&quot;port\\\&quot;:80,\\\&quot;protocol\\\&quot;:\\\&quot;TCP\\\&quot;}\&quot;:{\&quot;.\&quot;:{},\&quot;f:port\&quot;:{},\&quot;f:protocol\&quot;:{},\&quot;f:targetPort\&quot;:{}}},\&quot;f:selector\&quot;:{},\&quot;f:sessionAffinity\&quot;:{},\&quot;f:type\&quot;:{}}},\&quot;manager\&quot;:\&quot;kubectl-client-side-apply\&quot;,\&quot;operation\&quot;:\&quot;Update\&quot;,\&quot;time\&quot;:\&quot;2025-06-04T11:19:18Z\&quot;}],\&quot;name\&quot;:\&quot;simple-app-v2\&quot;,\&quot;namespace\&quot;:\&quot;simple-app\&quot;},\&quot;spec\&quot;:{\&quot;internalTrafficPolicy\&quot;:\&quot;Cluster\&quot;,\&quot;ports\&quot;:[{\&quot;port\&quot;:80,\&quot;protocol\&quot;:\&quot;TCP\&quot;,\&quot;targetPort\&quot;:5678}],\&quot;selector\&quot;:{\&quot;app\&quot;:\&quot;simple-app-v2\&quot;,\&quot;version\&quot;:\&quot;v2\&quot;},\&quot;sessionAffinity\&quot;:\&quot;None\&quot;,\&quot;type\&quot;:\&quot;ClusterIP\&quot;},\&quot;status\&quot;:{\&quot;loadBalancer\&quot;:{}}}&quot;
 time=&quot;2025-06-04T11:19:18Z&quot; level=debug msg=&quot;/var/run/linkerd/config/values config YAML: clusterDomain: cluster.local\nclusterNetworks: 10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,fd00::/8\ncniEnabled: false\ncommonLabels: {}\ncontrolPlaneTracing: false\ncontrolPlaneTracingNamespace: linkerd-jaeger\ncontroller:\n  podDisruptionBudget:\n    maxUnavailable: 1\ncontrollerGID: -1\ncontrollerImage: ghcr.io/buoyantio/controller\ncontrollerImageVersion: \&quot;\&quot;\ncontrollerLogFormat: plain\ncontrollerLogLevel: debug\ncontrollerReplicas: 1\ncontrollerUID: 2103\ndebugContainer:\n  image:\n    name: cr.l5d.io/linkerd/debug\n    pullPolicy: \&quot;\&quot;\n    version: edge-25.4.4\ndeploymentStrategy:\n  rollingUpdate:\n    maxSurge: 25%\n    maxUnavailable: 25%\ndestinationController:\n  additionalArgs:\n  - -ext-endpoint-zone-weights\n  livenessProbe:\n    timeoutSeconds: 1\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\ndisableHeartBeat: false\ndisableIPv6: true\negress:\n  globalEgressNetworkNamespace: linkerd-egress\nenableEndpointSlices: true\nenableH2Upgrade: true\nenablePSP: false\nenablePodAntiAffinity: false\nenablePodDisruptionBudget: false\nenablePprof: false\nidentity:\n  externalCA: false\n  issuer:\n    clockSkewAllowance: 20s\n    issuanceLifetime: 24h0m0s\n    scheme: linkerd.io/tls\n    tls:\n      crtPEM: |\n        -----BEGIN CERTIFICATE-----\n        MIIBsjCCAVigAwIBAgIQG4RR1EkQLvanRZspKw9R3jAKBggqhkjOPQQDAjAlMSMw\n        IQYDVQQDExpyb290LmxpbmtlcmQuY2x1c3Rlci5sb2NhbDAeFw0yNTA2MDQxMTE4\n        NDJaFw0yNjA2MDQxMTE4NDJaMCkxJzAlBgNVBAMTHmlkZW50aXR5LmxpbmtlcmQu\n        Y2x1c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKyE5Px3kwpI\n        ZEGR9Ky0feN3/X/3DQOSDweb3B1O6JK4fAtYDetnyUul+T0zXKtrLX0lrAdRzyaj\n        MLhci5ZMEd6jZjBkMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEA\n        MB0GA1UdDgQWBBSkrmSMxXmF/CJz14sL5SNbwNh9qjAfBgNVHSMEGDAWgBSw5rC0\n        vxQuKzp3Qyo9+367k6kzMTAKBggqhkjOPQQDAgNIADBFAiA7L9KiSSJdKD8WxSXM\n        cLcyqPe7Sw9lBko/Wcgcue80iwIhAJjddq/892QBoQspnTBctEfUVovznJCIMSKq\n        P4YtzyEn\n        -----END CERTIFICATE-----\n  kubeAPI:\n    clientBurst: 200\n    clientQPS: 100\n  livenessProbe:\n    timeoutSeconds: 1\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\n  serviceAccountTokenProjection: true\nidentityTrustAnchorsPEM: |\n  -----BEGIN CERTIFICATE-----\n  MIIBjTCCATSgAwIBAgIRAIMD4XLxwxvmNPAOcIuzz/EwCgYIKoZIzj0EAwIwJTEj\n  MCEGA1UEAxMacm9vdC5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMjUwNjA0MTEx\n  ODQyWhcNMzUwNjAyMTExODQyWjAlMSMwIQYDVQQDExpyb290LmxpbmtlcmQuY2x1\n  c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLwQ70dJQiN0LHY6\n  q4fvIND1LqcyypW8P+qrhVuIdHThgPx/KXXLa2+KjAbUzzeu8PRagGriwRn6+A69\n  AixeeuKjRTBDMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEBMB0G\n  A1UdDgQWBBSw5rC0vxQuKzp3Qyo9+367k6kzMTAKBggqhkjOPQQDAgNHADBEAiAt\n  ZkhSf0dHy7c6dDorCcfUiwNVjSdV2Z+Sl2EJ0ZxorgIgO9hII30K/26KlicbXygh\n  CxaYQ3t5qyY437Z08s11FEg=\n  -----END CERTIFICATE-----\nidentityTrustDomain: cluster.local\nimagePullPolicy: IfNotPresent\nimagePullSecrets: []\nkubeAPI:\n  clientBurst: 200\n  clientQPS: 100\nlicenseResources:\n  resources:\n    limits:\n      cpu: 500m\n      memory: 256Mi\n    requests:\n      cpu: 250m\n      memory: 128Mi\nlicenseSecret: null\nlinkerdVersion: enterprise-2.18.0\nmanageExternalWorkloads: true\nnetworkValidator:\n  connectAddr: \&quot;\&quot;\n  enableSecurityContext: true\n  listenAddr: \&quot;\&quot;\n  logFormat: plain\n  logLevel: debug\n  timeout: 10s\nnodeSelector:\n  kubernetes.io/os: linux\npodAnnotations: {}\npodLabels: {}\npodMonitor:\n  controller:\n    enabled: true\n    namespaceSelector: |\n      matchNames:\n        - {{ .Release.Namespace }}\n        - linkerd-viz\n        - linkerd-jaeger\n  enabled: false\n  labels: {}\n  proxy:\n    enabled: true\n  scrapeInterval: 10s\n  scrapeTimeout: 10s\n  serviceMirror:\n    enabled: true\npolicyController:\n  image:\n    name: ghcr.io/buoyantio/policy-controller\n    pullPolicy: \&quot;\&quot;\n    version: \&quot;\&quot;\n  livenessProbe:\n    timeoutSeconds: 1\n  logLevel: info\n  probeNetworks:\n  - 0.0.0.0/0\n  - ::/0\n  readinessProbe:\n    timeoutSeconds: 1\n  resources:\n    cpu:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\n    ephemeral-storage:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\n    memory:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\npolicyValidator:\n  caBundle: \&quot;\&quot;\n  crtPEM: \&quot;\&quot;\n  externalSecret: false\n  injectCaFrom: \&quot;\&quot;\n  injectCaFromSecret: \&quot;\&quot;\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\npriorityClassName: \&quot;\&quot;\nprofileValidator:\n  caBundle: \&quot;\&quot;\n  crtPEM: \&quot;\&quot;\n  externalSecret: false\n  injectCaFrom: \&quot;\&quot;\n  injectCaFromSecret: \&quot;\&quot;\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\nprometheusUrl: \&quot;\&quot;\nproxy:\n  additionalEnv:\n  - name: BUOYANT_BALANCER_LOAD_LOW\n    value: \&quot;0.1\&quot;\n  - name: BUOYANT_BALANCER_LOAD_HIGH\n    value: \&quot;3.0\&quot;\n  await: true\n  control:\n    streams:\n      idleTimeout: 5m\n      initialTimeout: 3s\n      lifetime: 1h\n  cores: null\n  defaultInboundPolicy: all-unauthenticated\n  disableInboundProtocolDetectTimeout: false\n  disableOutboundProtocolDetectTimeout: false\n  enableExternalProfiles: false\n  enableShutdownEndpoint: false\n  gid: -1\n  image:\n    name: ghcr.io/buoyantio/proxy\n    pullPolicy: \&quot;\&quot;\n    version: \&quot;\&quot;\n  inbound:\n    server:\n      http2:\n        keepAliveInterval: 100s\n        keepAliveTimeout: 100s\n  inboundConnectTimeout: 100ms\n  inboundDiscoveryCacheUnusedTimeout: 90s\n  livenessProbe:\n    initialDelaySeconds: 10\n    timeoutSeconds: 1\n  logFormat: plain\n  logHTTPHeaders: \&quot;off\&quot;\n  logLevel: warn,linkerd=debug,hickory=error,linkerd_proxy_http::client[{headers}]=on\n  metrics:\n    hostnameLabels: false\n  nativeSidecar: false\n  opaquePorts: 25,587,3306,4444,5432,6379,9300,11211\n  outbound:\n    server:\n      http2:\n        keepAliveInterval: 200s\n        keepAliveTimeout: 200s\n  outboundConnectTimeout: 1000ms\n  outboundDiscoveryCacheUnusedTimeout: 5s\n  outboundTransportMode: transport-header\n  ports:\n    admin: 4191\n    control: 4190\n    inbound: 4143\n    outbound: 4140\n  readinessProbe:\n    initialDelaySeconds: 2\n    timeoutSeconds: 1\n  requireIdentityOnInboundPorts: \&quot;\&quot;\n  resources:\n    cpu:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\n    ephemeral-storage:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\n    memory:\n      limit: \&quot;\&quot;\n      request: \&quot;\&quot;\n  runtime:\n    workers:\n      maximumCPURatio: null\n      minimum: 1\n  shutdownGracePeriod: \&quot;\&quot;\n  startupProbe:\n    failureThreshold: 120\n    initialDelaySeconds: 0\n    periodSeconds: 1\n  uid: 2102\n  waitBeforeExitSeconds: 0\nproxyInit:\n  closeWaitTimeoutSecs: 0\n  ignoreInboundPorts: 4567,4568\n  ignoreOutboundPorts: 4567,4568\n  image:\n    name: ghcr.io/buoyantio/proxy-init\n    pullPolicy: \&quot;\&quot;\n    version: enterprise-2.18.0\n  iptablesMode: legacy\n  kubeAPIServerPorts: 443,6443\n  logFormat: \&quot;\&quot;\n  logLevel: \&quot;\&quot;\n  privileged: false\n  runAsGroup: 65534\n  runAsRoot: false\n  runAsUser: 65534\n  skipSubnets: \&quot;\&quot;\n  xtMountPath:\n    mountPath: /run\n    name: linkerd-proxy-init-xtables-lock\nproxyInjector:\n  caBundle: \&quot;\&quot;\n  crtPEM: \&quot;\&quot;\n  externalSecret: false\n  injectCaFrom: \&quot;\&quot;\n  injectCaFromSecret: \&quot;\&quot;\n  livenessProbe:\n    timeoutSeconds: 1\n  namespaceSelector:\n    matchExpressions:\n    - key: config.linkerd.io/admission-webhooks\n      operator: NotIn\n      values:\n      - disabled\n    - key: kubernetes.io/metadata.name\n      operator: NotIn\n      values:\n      - kube-system\n      - cert-manager\n  objectSelector:\n    matchExpressions:\n    - key: linkerd.io/control-plane-component\n      operator: DoesNotExist\n    - key: linkerd.io/cni-resource\n      operator: DoesNotExist\n  podAnnotations: {}\n  readinessProbe:\n    timeoutSeconds: 1\n  timeoutSeconds: 10\nrevisionHistoryLimit: 10\nruntimeClassName: \&quot;\&quot;\nspValidator:\n  livenessProbe:\n    timeoutSeconds: 1\n  readinessProbe:\n    timeoutSeconds: 1\nwebhookFailurePolicy: Ignore\n&quot;
 </code></pre>
 
-<h2 id="참고-자료" class="header-anchor-wrapper">참고 자료
-  <a href="#%ec%b0%b8%ea%b3%a0-%ec%9e%90%eb%a3%8c" class="header-anchor-link">
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
     <svg width="16px" height="16px" viewBox="0 0 24 24">
 <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -992,6 +1185,8 @@ time=&quot;2025-06-04T11:19:18Z&quot; level=debug msg=&quot;/var/run/linkerd/con
 <li><a href="https://linkerd.io/2-edge/reference/architecture/">https://linkerd.io/2-edge/reference/architecture/</a></li>
 <li><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/</a></li>
 <li><a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook">https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/pkg/inject/inject.go">https://github.com/linkerd/linkerd2/blob/main/pkg/inject/inject.go</a></li>
+<li><a href="https://github.com/linkerd/linkerd2/blob/main/controller/proxy-injector/webhook.go">https://github.com/linkerd/linkerd2/blob/main/controller/proxy-injector/webhook.go</a></li>
 </ul>
 
 </article>

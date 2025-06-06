@@ -13,11 +13,37 @@
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
       <guid>//localhost:1313/ko/modules/cli/</guid>
-      <description>&lt;h1&gt;Linkerd CLI&lt;/h1&gt;
+      <description>&lt;h1 id=&#34;linkerd-cli&#34; class=&#34;header-anchor-wrapper&#34;&gt;Linkerd CLI
+  &lt;a href=&#34;#linkerd-cli&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
 
 &lt;p&gt;Linkerd 유지관리자들은 명령줄에서 Linkerd CRD, 제어 플레인 컴포넌트, 확장 기능을 손쉽게 설치·관리할 수 있도록 풍부한 CLI를 제공합니다.&lt;/p&gt;
 
-&lt;h1&gt;사전 요구 사항&lt;/h1&gt;
+&lt;h1 id=&#34;사전-요구-사항&#34; class=&#34;header-anchor-wrapper&#34;&gt;사전 요구 사항
+  &lt;a href=&#34;#%ec%82%ac%ec%a0%84-%ec%9a%94%ea%b5%ac-%ec%82%ac%ed%95%ad&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Unix-스타일 셸이 가능한 macOS/Linux/Windows&lt;/li&gt;
@@ -25,19 +51,38 @@
 &lt;li&gt;kubectl(v1.25+)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h1&gt;튜토리얼&lt;/h1&gt;
+&lt;h1 id=&#34;튜토리얼&#34; class=&#34;header-anchor-wrapper&#34;&gt;튜토리얼
+  &lt;a href=&#34;#%ed%8a%9c%ed%86%a0%eb%a6%ac%ec%96%bc&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
 
 
-&lt;h2&gt;1. 로컬 쿠버네티스 클러스터 생성&lt;/h2&gt;
+&lt;h2 id=&#34;1-로컬-쿠버네티스-클러스터-생성&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. 로컬 쿠버네티스 클러스터 생성
+  &lt;a href=&#34;#1-%eb%a1%9c%ec%bb%ac-%ec%bf%a0%eb%b2%84%eb%84%a4%ed%8b%b0%ec%8a%a4-%ed%81%b4%eb%9f%ac%ec%8a%a4%ed%84%b0-%ec%83%9d%ec%84%b1&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
 
-&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 사용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;k3d cluster create --kubeconfig-update-default \
-  -c ./cluster.yaml
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
 
-&lt;h2&gt;2. Linkerd CLI 설정&lt;/h2&gt;
-
-&lt;p&gt;Linkerd CLI에는 설치할 버전과 바이너리가 설치될 경로를 지정할 수 있는 두 가지 매개변수가 있습니다:&lt;/p&gt;</description>
+&lt;p&gt;&lt;code&gt;cluster.yaml&lt;/code&gt;을 사용해 k3d로 가벼운 쿠버네티스 클러스터를 띄웁니다:&lt;/p&gt;</description>
     </item>
     
   </channel>

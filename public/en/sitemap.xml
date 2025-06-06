@@ -194,6 +194,9 @@
                 href="//localhost:1313/control-plane/destination/"
                 />
   </url><url>
+    <loc>//localhost:1313/control-plane/destination/server/</loc>
+    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/identity/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -401,6 +404,18 @@
                 hreflang="en"
                 href="//localhost:1313/modules/"
                 />
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/endpoints-watcher/</loc>
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/external-workloads-controller/</loc>
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/federated-service-watcher/</loc>
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/opaque-port-watcher/</loc>
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/profile-watcher/</loc>
+  </url><url>
+    <loc>//localhost:1313/control-plane/destination/workload-watcher/</loc>
   </url><url>
     <loc>//localhost:1313/categories/</loc>
     <xhtml:link

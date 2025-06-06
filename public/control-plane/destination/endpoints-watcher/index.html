@@ -1,0 +1,702 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> - Hori</title>
+
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/control-plane/">Control Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <span><a href="/control-plane/destination">Destination Controller</a></span>
+                    
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/server">Server</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/endpoints-watcher">Endpoints Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/federated-service-watcher">Federated Service Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/opaque-port-watcher">Opaque Port Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/profile-watcher">Profile Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/workload-watcher">Workload Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/external-workloads-controller">External Workloads Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/proxy-injector">Proxy-Injector Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/data-plane/">Data Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/data-plane/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/changelog/">Changelog</a></li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/control-plane/" class="pure-menu-link">Control Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            
+                <a href="/control-plane/destination" class="pure-menu-link">Destination Controller</a>
+            
+            <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/server" class="pure-menu-link">Server</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/endpoints-watcher" class="pure-menu-link">Endpoints Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/federated-service-watcher" class="pure-menu-link">Federated Service Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/opaque-port-watcher" class="pure-menu-link">Opaque Port Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/profile-watcher" class="pure-menu-link">Profile Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/workload-watcher" class="pure-menu-link">Workload Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/external-workloads-controller" class="pure-menu-link">External Workloads Controller</a>
+            
+        </li>
+    
+
+</ul>
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/proxy-injector" class="pure-menu-link">Proxy-Injector Controller</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/data-plane/" class="pure-menu-link">Data Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/data-plane/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    
+<h3 id="endpoints-watcher" class="header-anchor-wrapper">Endpoints Watcher
+  <a href="#endpoints-watcher" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>THe Endpoints Watcher is in charge of handling changes to Services, EndpointSlices, and Endpoints. It&rsquo;s important to understant that it won&rsquo;t watch both of Ednpoint and EndpointSlice. Depending on <code>ew.enableEndpointSlices</code> it will watch one or the other. This value is received as parameter from the container <code>-enable-endpoint-slices</code> and by default is set to <code>true</code>.</p>
+<pre><code>func NewEndpointsWatcher(k8sAPI *k8s.API, metadataAPI *k8s.MetadataAPI, log *logging.Entry, enableEndpointSlices bool, cluster string) (*EndpointsWatcher, error) {
+	ew := &amp;EndpointsWatcher{
+		publishers:           make(map[ServiceID]*servicePublisher),
+		k8sAPI:               k8sAPI,
+		metadataAPI:          metadataAPI,
+		enableEndpointSlices: enableEndpointSlices,
+		cluster:              cluster,
+		log: log.WithFields(logging.Fields{
+			&quot;component&quot;: &quot;endpoints-watcher&quot;,
+		}),
+	}
+	var err error
+	ew.svcHandle, err = k8sAPI.Svc().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ew.addService,
+		DeleteFunc: ew.deleteService,
+		UpdateFunc: ew.updateService,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ew.srvHandle, err = k8sAPI.Srv().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ew.addServer,
+		DeleteFunc: ew.deleteServer,
+		UpdateFunc: ew.updateServer,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if ew.enableEndpointSlices {
+		ew.log.Debugf(&quot;Watching EndpointSlice resources&quot;)
+		ew.epHandle, err = k8sAPI.ES().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+			AddFunc:    ew.addEndpointSlice,
+			DeleteFunc: ew.deleteEndpointSlice,
+			UpdateFunc: ew.updateEndpointSlice,
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		ew.log.Debugf(&quot;Watching Endpoints resources&quot;)
+		ew.epHandle, err = k8sAPI.Endpoint().Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+			AddFunc:    ew.addEndpoints,
+			DeleteFunc: ew.deleteEndpoints,
+			UpdateFunc: ew.updateEndpoints,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ew, nil
+}
+</code></pre>
+<p>Once notified, depending on the action, will create a differential between the new and old version, and then update the listerers so that see only the incremental change.</p>
+<pre><code>func (pp *portPublisher) updateEndpoints(endpoints *corev1.Endpoints) {
+	newAddressSet := pp.endpointsToAddresses(endpoints)
+	if len(newAddressSet.Addresses) == 0 {
+		for _, listener := range pp.listeners {
+			listener.NoEndpoints(true)
+		}
+	} else {
+		add, remove := diffAddresses(pp.addresses, newAddressSet)
+		for _, listener := range pp.listeners {
+			if len(remove.Addresses) &gt; 0 {
+				listener.Remove(remove)
+			}
+			if len(add.Addresses) &gt; 0 {
+				listener.Add(add)
+			}
+		}
+	}
+	pp.addresses = newAddressSet
+	pp.exists = true
+	pp.metrics.incUpdates()
+	pp.metrics.setPods(len(pp.addresses.Addresses))
+	pp.metrics.setExists(true)
+}
+</code></pre>
+<p>You will be able to see the related logs message</p>
+<pre><code>time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for kube-system/kube-dns&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=kube-dns
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for kube-system/metrics-server&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=metrics-server
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-dst&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-dst-headless&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-identity&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-identity-headless&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-policy&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-policy-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy-validator
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-proxy-injector&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Updating service for linkerd/linkerd-sp-validator&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
+</code></pre>
+<p>The same will happen for EndpointSlices and Endpoints.</p>
+<pre><code>func (sp *servicePublisher) addEndpointSlice(newSlice *discovery.EndpointSlice) {
+	sp.Lock()
+	defer sp.Unlock()
+	sp.log.Debugf(&quot;Adding ES %s/%s&quot;, newSlice.Namespace, newSlice.Name)
+	for _, port := range sp.ports {
+		port.addEndpointSlice(newSlice)
+	}
+}
+...
+func (ew *EndpointsWatcher) addEndpointSlice(obj interface{}) {
+	newSlice, ok := obj.(*discovery.EndpointSlice)
+	if !ok {
+		ew.log.Errorf(&quot;error processing EndpointSlice resource, got %#v expected *discovery.EndpointSlice&quot;, obj)
+		return
+	}
+	id, err := getEndpointSliceServiceID(newSlice)
+	if err != nil {
+		ew.log.Errorf(&quot;Could not fetch resource service name:%v&quot;, err)
+		return
+	}
+	sp := ew.getOrNewServicePublisher(id)
+	sp.addEndpointSlice(newSlice)
+}
+</code></pre>
+<p>With their related logs</p>
+<pre><code>time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES default/kubernetes&quot; addr=&quot;:8086&quot; component=service-publisher ns=default svc=kubernetes
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES kube-system/kube-dns-g2kr4&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=kube-dns
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES kube-system/metrics-server-mfqjs&quot; addr=&quot;:8086&quot; component=service-publisher ns=kube-system svc=metrics-server
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-dst-headless-kz5q4&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-dst-pmtjw&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-dst
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-identity-dzpzm&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-identity-headless-45vjs&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-identity-headless
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-policy-n54jm&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-policy-validator-5hqbl&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-policy-validator
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-proxy-injector-kzk6j&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-proxy-injector
+time=&quot;2025-06-03T15:39:09Z&quot; level=debug msg=&quot;Adding ES linkerd/linkerd-sp-validator-g7vgx&quot; addr=&quot;:8086&quot; component=service-publisher ns=linkerd svc=linkerd-sp-validator
+</code></pre>
+<p>The endpoint watcher will also emit metrics about the crud opearations related to the endpoints</p>
+<pre><code># HELP endpoint_profile_updates_queue_overflow A counter incremented whenever the endpoint profile updates queue overflows
+# TYPE endpoint_profile_updates_queue_overflow counter
+endpoint_profile_updates_queue_overflow 0
+
+# HELP endpoint_updates_queue_overflow A counter incremented whenever the endpoint updates queue overflows
+# TYPE endpoint_updates_queue_overflow counter
+endpoint_updates_queue_overflow{service=&quot;linkerd-enterprise.linkerd.svc.cluster.local:8082&quot;} 0
+endpoint_updates_queue_overflow{service=&quot;prometheus-server.monitoring.svc.cluster.local:80&quot;} 0
+endpoint_updates_queue_overflow{service=&quot;prometheus-server.monitoring.svc.cluster.local:9090&quot;} 0
+endpoint_updates_queue_overflow{service=&quot;simple-app-v1.simple-app.svc.cluster.local:80&quot;} 0
+
+# HELP endpoints_exists A gauge which is 1 if the endpoints exists and 0 if it does not.
+# TYPE endpoints_exists gauge
+endpoints_exists{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;linkerd&quot;,port=&quot;8082&quot;,service=&quot;linkerd-enterprise&quot;} 1
+endpoints_exists{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;monitoring&quot;,port=&quot;9090&quot;,service=&quot;prometheus-server&quot;} 1
+endpoints_exists{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;simple-app&quot;,port=&quot;80&quot;,service=&quot;simple-app-v1&quot;} 1
+
+# HELP endpoints_pods A gauge for the current number of pods in a endpoints.
+# TYPE endpoints_pods gauge
+endpoints_pods{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;linkerd&quot;,port=&quot;8082&quot;,service=&quot;linkerd-enterprise&quot;} 1
+endpoints_pods{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;monitoring&quot;,port=&quot;9090&quot;,service=&quot;prometheus-server&quot;} 1
+endpoints_pods{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;simple-app&quot;,port=&quot;80&quot;,service=&quot;simple-app-v1&quot;} 1
+
+# HELP endpoints_subscribers A gauge for the current number of subscribers to a endpoints.
+# TYPE endpoints_subscribers gauge
+endpoints_subscribers{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;linkerd&quot;,port=&quot;8082&quot;,service=&quot;linkerd-enterprise&quot;} 5
+endpoints_subscribers{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;monitoring&quot;,port=&quot;9090&quot;,service=&quot;prometheus-server&quot;} 1
+endpoints_subscribers{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;simple-app&quot;,port=&quot;80&quot;,service=&quot;simple-app-v1&quot;} 1
+
+# HELP endpoints_updates A counter for number of updates to a endpoints.
+# TYPE endpoints_updates counter
+endpoints_updates{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;linkerd&quot;,port=&quot;8082&quot;,service=&quot;linkerd-enterprise&quot;} 3
+endpoints_updates{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;monitoring&quot;,port=&quot;9090&quot;,service=&quot;prometheus-server&quot;} 1
+endpoints_updates{cluster=&quot;local&quot;,hostname=&quot;&quot;,namespace=&quot;simple-app&quot;,port=&quot;80&quot;,service=&quot;simple-app-v1&quot;} 1
+</code></pre>
+<p><img src="/control-plane/destination_endpoints_metrics.png" alt="Destination Endpoint Watcher Metrics"></p>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

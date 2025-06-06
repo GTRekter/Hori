@@ -1,0 +1,1542 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang='en'><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href='//localhost:1313/favicon.ico' type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Destination Controller - Hori</title>
+
+    
+    <meta name="description" content="Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes." />
+    
+
+    
+
+    
+    <meta name="author" content="Ivan Porta" />
+    
+
+    
+
+    <link rel="stylesheet" href="/style.css" integrity="">
+
+
+
+
+
+    
+    <script>
+        if (!('theme' in localStorage)) {
+            localStorage.theme = 'light';
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+        }
+    </script>
+<script defer src="/js/header.js" integrity=""></script>
+
+
+
+    <script defer src="/js/zooming.js" integrity=""></script>
+
+
+
+
+
+
+
+    
+        
+        
+            <script defer src="/js/builtin-copy.js" integrity=""></script>
+        
+    
+
+
+
+    
+    
+    
+    <script defer src="/js/search-en.js" integrity=""></script>
+
+
+
+
+<link rel="stylesheet" href="//localhost:1313/user.css">
+
+    
+</head>
+<body><header>
+    <div id="header_left">
+        <div id="sidebar_btn">
+            <input type="checkbox" id="sidebar_btn_input" class="hidden" />
+            <label id="sidebar_btn_label" for="sidebar_btn_input">
+                <svg id="menu_icon" width="26px" height="26px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+</svg>
+
+</svg>
+            </label>
+            <label id="sidebar_canvas_overlay_wrapper" for="sidebar_btn_input">
+                <div id="sidebar_canvas_overlay"></div>
+            </label>
+            <div id="sidebar">
+                <ul><li>
+                            <a href="/control-plane/">Control Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <span><a href="/control-plane/destination">Destination Controller</a></span>
+                    
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/server">Server</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/endpoints-watcher">Endpoints Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/federated-service-watcher">Federated Service Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/opaque-port-watcher">Opaque Port Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/profile-watcher">Profile Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/workload-watcher">Workload Watcher</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/destination/external-workloads-controller">External Workloads Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/control-plane/proxy-injector">Proxy-Injector Controller</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/data-plane/">Data Plane</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/data-plane/proxy-init">Proxy-Init</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/modules/">Modules</a>
+    <ul>
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/certificates">Certificates</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/timeouts">Timeouts</a>
+                    
+                </li>
+            
+        
+
+            
+                <li>
+                    
+                        <a href="/modules/cli">Linkerd CLI</a>
+                    
+                </li>
+            
+        
+    </ul>
+</li><li>
+                            <a href="/changelog/">Changelog</a></li></ul>
+            </div>
+        </div>
+    
+        <div class="brand">
+            <div>
+                <a href="/">Hori</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbox">
+        <div id="theme_tool">
+            <svg id="dark_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+</svg>
+
+</svg>
+            <svg id="light_mode_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+</svg>
+
+</svg>
+        </div>
+
+        
+            <div id="search_tool">
+                <svg id="search_btn" class="toolbox-btn" width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+</svg>
+
+</svg><div id="search_menu_wrapper" class="hidden">
+    <div id="search_menu">
+        <div id="search_menu_toolbar">
+            <div id="search_menu_input_wrapper">
+                <input id="search_menu_input" type="text" placeholder='Search Posts'>
+            </div>
+            <div id="search_menu_close_btn">
+                <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+</svg>
+
+</svg>
+            </div>
+        </div>
+        <div id="search_menu_results">
+        </div>
+    </div>
+</div>
+</div>
+        
+
+        
+            <div id="translation_tool" class="dropdown-wrapper pure-menu pure-menu-horizontal toolbox-btn" onclick="void(0)">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <div class="dropdown-btn pure-menu-link">
+                            <svg width="18px" height="18px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+</svg>
+
+</svg>
+                            <span class="dropdown-desc">English</span>
+                        </div>
+                        <ul class="pure-menu-children">
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/" class="pure-menu-link">English</a>
+                            </li>
+                            
+                            <li class="pure-menu-item">
+                                <a href="//localhost:1313/ko/" class="pure-menu-link">한국어</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+</header>
+<nav id="navbar" class="pure-menu">
+    <ul class="pure-menu-list"><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover insection">
+                    
+                        <a href="/control-plane/" class="pure-menu-link">Control Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            
+                <a href="/control-plane/destination" class="pure-menu-link">Destination Controller</a>
+            
+            <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/server" class="pure-menu-link">Server</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/endpoints-watcher" class="pure-menu-link">Endpoints Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/federated-service-watcher" class="pure-menu-link">Federated Service Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/opaque-port-watcher" class="pure-menu-link">Opaque Port Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/profile-watcher" class="pure-menu-link">Profile Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/workload-watcher" class="pure-menu-link">Workload Watcher</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/destination/external-workloads-controller" class="pure-menu-link">External Workloads Controller</a>
+            
+        </li>
+    
+
+</ul>
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/control-plane/proxy-injector" class="pure-menu-link">Proxy-Injector Controller</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/data-plane/" class="pure-menu-link">Data Plane</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/data-plane/proxy-init" class="pure-menu-link">Proxy-Init</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item navbar-dropdown pure-menu-item pure-menu-has-children pure-menu-allow-hover ">
+                    
+                        <a href="/modules/" class="pure-menu-link">Modules</a>
+                    
+                    <ul class="pure-menu-children">
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/certificates" class="pure-menu-link">Certificates</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/timeouts" class="pure-menu-link">Timeouts</a>
+            
+        </li>
+    
+
+
+    
+        <li class="pure-menu-item">
+            
+                <a href="/modules/cli" class="pure-menu-link">Linkerd CLI</a>
+            
+        </li>
+    
+
+</ul>
+                </li><li class="navbar-item pure-menu-item ">
+                    
+                        <a href="/changelog/" class="pure-menu-link">Changelog</a>
+                    
+                </li></ul>
+</nav>
+<main>
+            <div id="content" class="content-margin">
+                
+
+
+    <div class="content-margin">
+
+
+
+<article class="line-numbers">
+    
+    
+    
+<h1 id="destination-controller" class="header-anchor-wrapper">Destination Controller
+  <a href="#destination-controller" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h1>
+
+<p>When we install Linkerd, it will deploy a destination controller in the destination pods. This controller is responsible for service discovery and routing. t watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies. It will server the requests coming from the proxies via gRPC on port 8086, and expose the metrics on port 9996.</p>
+<pre><code>kubectl get pod -n linkerd       linkerd-destination-86f8d8498b-sbtdl -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: linkerd-destination-86f8d8498b-sbtdl
+  namespace: linkerd
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - args:
+    - destination
+    - -addr=:8086
+    - -controller-namespace=linkerd
+    - -enable-h2-upgrade=true
+    - -log-level=debug
+    - -log-format=plain
+    - -enable-endpoint-slices=true
+    - -cluster-domain=cluster.local
+    - -identity-trust-domain=cluster.local
+    - -default-opaque-ports=25,587,3306,4444,5432,6379,9300,11211
+    - -enable-ipv6=false
+    - -enable-pprof=false
+    - -ext-endpoint-zone-weights
+    image: ghcr.io/buoyantio/controller:enterprise-2.17.1
+    name: destination
+    ports:
+    - containerPort: 8086
+      name: grpc
+      protocol: TCP
+    - containerPort: 9996
+      name: admin-http
+      protocol: TCP
+	...
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access
+      readOnly: true
+</code></pre>
+<p>When the container starts, it will:</p>
+<ul>
+<li>Start a new server to export the metrics via HTTP with <code>adminServer := admin.NewServer(*metricsAddr, *enablePprof, &amp;ready)</code></li>
+<li>Create a K8s API Client <code>k8Client, err := pkgK8s.NewAPI(*kubeConfigPath, &quot;&quot;, &quot;&quot;, []string{}, 0)</code> that is going to be later initialized diferently based on the <code>enableEndpointSlices</code> parameter.</li>
+<li>Validate and use the the parameter passed to the container to initialize a new server <code>destination.NewServer(*addr, config, k8sAPI, metadataAPI, clusterStore, done)</code></li>
+<li>Start the cluster store watcher directly via <code>clusterStore, err := watcher.NewClusterStore(k8Client, *controllerNamespace, *enableEndpointSlices)</code></li>
+</ul>
+
+<h2 id="interactions-with-the-kuberentes-api" class="header-anchor-wrapper">Interactions with the Kuberentes API
+  <a href="#interactions-with-the-kuberentes-api" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>When K8s API Client starts, it use the <code>k8s.io/client-go</code> GO module to build one shared informer for every resource kinds it cares about (CronJobs, Pods, Services, etc.) and stores the handle in the API struct, as well as check and records a HasSynced check for each, and registers a Prometheus gauge that reports the current key count per cache.</p>
+<pre><code>func newAPI(
+	k8sClient kubernetes.Interface,
+	dynamicClient dynamic.Interface,
+	l5dCrdClient l5dcrdclient.Interface,
+	sharedInformers informers.SharedInformerFactory,
+	cluster string,
+	resources ...APIResource,
+) *API {
+	var l5dCrdSharedInformers l5dcrdinformer.SharedInformerFactory
+	if l5dCrdClient != nil {
+		l5dCrdSharedInformers = l5dcrdinformer.NewSharedInformerFactory(l5dCrdClient, ResyncTime)
+	}
+	api := &amp;API{
+		Client:                k8sClient,
+		L5dClient:             l5dCrdClient,
+		DynamicClient:         dynamicClient,
+		syncChecks:            make([]cache.InformerSynced, 0),
+		sharedInformers:       sharedInformers,
+		l5dCrdSharedInformers: l5dCrdSharedInformers,
+	}
+	informerLabels := prometheus.Labels{
+		&quot;cluster&quot;: cluster,
+	}
+	for _, resource := range resources {
+		switch resource {
+		case CJ:
+			api.cj = sharedInformers.Batch().V1().CronJobs()
+			api.syncChecks = append(api.syncChecks, api.cj.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.CronJob, informerLabels, api.cj.Informer())
+		case CM:
+			api.cm = sharedInformers.Core().V1().ConfigMaps()
+			api.syncChecks = append(api.syncChecks, api.cm.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ConfigMap, informerLabels, api.cm.Informer())
+		case Deploy:
+			api.deploy = sharedInformers.Apps().V1().Deployments()
+			api.syncChecks = append(api.syncChecks, api.deploy.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Deployment, informerLabels, api.deploy.Informer())
+		case DS:
+			api.ds = sharedInformers.Apps().V1().DaemonSets()
+			api.syncChecks = append(api.syncChecks, api.ds.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.DaemonSet, informerLabels, api.ds.Informer())
+		case Endpoint:
+			api.endpoint = sharedInformers.Core().V1().Endpoints()
+			api.syncChecks = append(api.syncChecks, api.endpoint.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Endpoints, informerLabels, api.endpoint.Informer())
+		case ES:
+			api.es = sharedInformers.Discovery().V1().EndpointSlices()
+			api.syncChecks = append(api.syncChecks, api.es.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.EndpointSlices, informerLabels, api.es.Informer())
+		case ExtWorkload:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.ew = l5dCrdSharedInformers.Externalworkload().V1beta1().ExternalWorkloads()
+			api.syncChecks = append(api.syncChecks, api.ew.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ExtWorkload, informerLabels, api.ew.Informer())
+		case Job:
+			api.job = sharedInformers.Batch().V1().Jobs()
+			api.syncChecks = append(api.syncChecks, api.job.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Job, informerLabels, api.job.Informer())
+		case Link:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.link = l5dCrdSharedInformers.Link().V1alpha3().Links()
+			api.syncChecks = append(api.syncChecks, api.link.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Link, informerLabels, api.link.Informer())
+		case MWC:
+			api.mwc = sharedInformers.Admissionregistration().V1().MutatingWebhookConfigurations()
+			api.syncChecks = append(api.syncChecks, api.mwc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.MutatingWebhookConfig, informerLabels, api.mwc.Informer())
+		case NS:
+			api.ns = sharedInformers.Core().V1().Namespaces()
+			api.syncChecks = append(api.syncChecks, api.ns.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Namespace, informerLabels, api.ns.Informer())
+		case Pod:
+			api.pod = sharedInformers.Core().V1().Pods()
+			api.syncChecks = append(api.syncChecks, api.pod.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Pod, informerLabels, api.pod.Informer())
+		case RC:
+			api.rc = sharedInformers.Core().V1().ReplicationControllers()
+			api.syncChecks = append(api.syncChecks, api.rc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ReplicationController, informerLabels, api.rc.Informer())
+		case RS:
+			api.rs = sharedInformers.Apps().V1().ReplicaSets()
+			api.syncChecks = append(api.syncChecks, api.rs.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ReplicaSet, informerLabels, api.rs.Informer())
+		case SP:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.sp = l5dCrdSharedInformers.Linkerd().V1alpha2().ServiceProfiles()
+			api.syncChecks = append(api.syncChecks, api.sp.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.ServiceProfile, informerLabels, api.sp.Informer())
+		case Srv:
+			if l5dCrdSharedInformers == nil {
+				panic(&quot;Linkerd CRD shared informer not configured&quot;)
+			}
+			api.srv = l5dCrdSharedInformers.Server().V1beta3().Servers()
+			api.syncChecks = append(api.syncChecks, api.srv.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Server, informerLabels, api.srv.Informer())
+		case SS:
+			api.ss = sharedInformers.Apps().V1().StatefulSets()
+			api.syncChecks = append(api.syncChecks, api.ss.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.StatefulSet, informerLabels, api.ss.Informer())
+		case Svc:
+			api.svc = sharedInformers.Core().V1().Services()
+			api.syncChecks = append(api.syncChecks, api.svc.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Service, informerLabels, api.svc.Informer())
+		case Node:
+			api.node = sharedInformers.Core().V1().Nodes()
+			api.syncChecks = append(api.syncChecks, api.node.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Node, informerLabels, api.node.Informer())
+		case Secret:
+			api.secret = sharedInformers.Core().V1().Secrets()
+			api.syncChecks = append(api.syncChecks, api.secret.Informer().HasSynced)
+			api.promGauges.addInformerSize(k8s.Secret, informerLabels, api.secret.Informer())
+		}
+	}
+	return api
+}
+</code></pre>
+<p>When the <code>Sync</code> function is called, each informer request to get the initial snapshot, and then opens long-lived watch streams (parameter <code>watch=0</code>) so it can receive change events as they happen. If no events arrive withing 10 minutes (defined by the constant <code>ResyncTime = 10 * time.Minute</code>), it will requets a new compelte snapshot to the Kubernetes API Server.</p>
+<pre><code>kubectl logs -n linkerd deploy/linkerd-destination -c destination --follow
+...
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/workload.linkerd.io/v1beta1/externalworkloads?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m47s&amp;timeoutSeconds=467&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/discovery.k8s.io/v1/endpointslices?allowWatchBookmarks=true&amp;resourceVersion=751&amp;timeout=9m16s&amp;timeoutSeconds=556&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/batch/v1/jobs?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m10s&amp;timeoutSeconds=550&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/endpoints?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m35s&amp;timeoutSeconds=575&amp;watch=true 200 OK in 1 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/linkerd.io/v1alpha2/serviceprofiles?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m19s&amp;timeoutSeconds=439&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/policy.linkerd.io/v1beta3/servers?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m16s&amp;timeoutSeconds=496&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/services?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m50s&amp;timeoutSeconds=530&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/pods?allowWatchBookmarks=true&amp;resourceVersion=741&amp;timeout=8m55s&amp;timeoutSeconds=535&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/apps/v1/replicasets?allowWatchBookmarks=true&amp;resourceVersion=739&amp;timeout=7m4s&amp;timeoutSeconds=424&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/apis/batch/v1/jobs?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=7m29s&amp;timeoutSeconds=449&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/nodes?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=8m30s&amp;timeoutSeconds=510&amp;watch=true 200 OK in 0 milliseconds&quot;
+time=&quot;2025-05-19T09:10:15Z&quot; level=info msg=&quot;GET https://10.247.0.1:443/api/v1/namespaces/linkerd/secrets?allowWatchBookmarks=true&amp;resourceVersion=740&amp;timeout=9m7s&amp;timeoutSeconds=547&amp;watch=true 200 OK in 0 milliseconds&quot;
+</code></pre>
+<p>Each informer owns a thread-safe local cache where it store the data returned by the Kubernetes API Server.</p>
+<p>By itself, an informer does not actually notify your business logic when things change; it only populates a local cache and lets you query it. For this reason the Controller&rsquo;s source code has several watchers on top of the related informers that registers event handlers on those informers, so it actually gets notified when the cache is updated. At the time of this writing, there are currently 5 main watchers:</p>
+<ul>
+<li>Endpoints Watcher</li>
+<li>Profile Watcher</li>
+<li>Workload Watcher</li>
+<li>Opaque Port sWatcher</li>
+<li>Federated Service Watcher</li>
+</ul>
+
+<h2 id="destination-server" class="header-anchor-wrapper">Destination Server
+  <a href="#destination-server" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>The server.go file is the “glue” that ties all of the individual watchers and translators together into a single gRPC server that speaks the Destination API to the data‐plane proxies. Its contructor will ensure that all of the informer are set up so that each watcher can do fast lookups.</p>
+<pre><code>func NewServer(
+	addr string,
+	config Config,
+	k8sAPI *k8s.API,
+	metadataAPI *k8s.MetadataAPI,
+	clusterStore *watcher.ClusterStore,
+	shutdown &lt;-chan struct{},
+) (*grpc.Server, error) {
+	log := logging.WithFields(logging.Fields{
+		&quot;addr&quot;:      addr,
+		&quot;component&quot;: &quot;server&quot;,
+	})
+	err := watcher.InitializeIndexers(k8sAPI)
+	if err != nil {
+		return nil, err
+	}
+	workloads, err := watcher.NewWorkloadWatcher(k8sAPI, metadataAPI, log, config.EnableEndpointSlices, config.DefaultOpaquePorts)
+	if err != nil {
+		return nil, err
+	}
+	endpoints, err := watcher.NewEndpointsWatcher(k8sAPI, metadataAPI, log, config.EnableEndpointSlices, &quot;local&quot;)
+	if err != nil {
+		return nil, err
+	}
+	opaquePorts, err := watcher.NewOpaquePortsWatcher(k8sAPI, log, config.DefaultOpaquePorts)
+	if err != nil {
+		return nil, err
+	}
+	profiles, err := watcher.NewProfileWatcher(k8sAPI, log)
+	if err != nil {
+		return nil, err
+	}
+	federatedServices, err := newFederatedServiceWatcher(k8sAPI, metadataAPI, &amp;config, clusterStore, endpoints, log)
+	if err != nil {
+		return nil, err
+	}
+	srv := server{
+		pb.UnimplementedDestinationServer{},
+		config,
+		workloads,
+		endpoints,
+		opaquePorts,
+		profiles,
+		clusterStore,
+		federatedServices,
+		k8sAPI,
+		metadataAPI,
+		log,
+		shutdown,
+	}
+	s := prometheus.NewGrpcServer(grpc.MaxConcurrentStreams(0))
+	pb.RegisterDestinationServer(s, &amp;srv)
+	return s, nil
+}
+</code></pre>
+<p>It will then expose two endpoints: <code>Get</code> and <code>GetProfile</code>.</p>
+
+<h3 id="get-endpoint" class="header-anchor-wrapper">Get Endpoint
+  <a href="#get-endpoint" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<p>This method will process Inbound gRPC requests coming from the proxies. It extracts the remote TCP address of whoever opened this gRPC connection, and splits that string to get the <code>Host</code> and <code>Port</code>. Next, it takes <code>Host</code> (e.g. &ldquo;svc.ns.svc.cluster.local&rdquo;) and figures out which Kubernetes Service object it corresponds to. To do this, it uses the <code>parseK8sServiceName</code> function, which splits the FQDN and—based on the length of the resulting array does one of two things:</p>
+<ul>
+<li><strong>Service-only:</strong> <code>&lt;svc-name&gt;.&lt;ns&gt;.svc.&lt;cluster-domain&gt;</code>. It returns the service obtained from the service watcher.</li>
+<li><strong>Hostname + service:</strong> <code>&lt;pod-hostname&gt;.&lt;svc-name&gt;.&lt;ns&gt;.svc.&lt;cluster-domain&gt;</code>. It returns both the service obtained from the service watcher and an instanceID (the pod’s name), so updates can be scoped to that specific pod if needed.</li>
+</ul>
+<p>Next, it uses the informer’s Lister (cached read) to fetch the <code>*corev1.Service</code>. If it’s not found, it returns gRPC NotFound. Otherwise, now that it knows the Service, it identifies what kind of service it is:</p>
+<ul>
+<li>Federated service</li>
+<li>Remote-discovery service</li>
+<li>Local service</li>
+</ul>
+
+<h4 id="federated-services" class="header-anchor-wrapper">Federated Services
+  <a href="#federated-services" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h4>
+
+<p>If the Service has either the <code>multicluster.linkerd.io/local-discovery</code> or <code>multicluster.linkerd.io/remote-discovery</code> annotation, it processes it as a federated service and subscribes to the federatedServicesWatcher. This section is going to be described in details in the realted federated watcher page. However, to give you more context, it will looks up the in‐memory “federatedService” object for the given <code>&lt;namespace&gt;/&lt;service&gt;</code>, it will split the service’s <code>multicluster.linkerd.io/remote-discovery=&quot;&lt;svcA&gt;@clusterA,&lt;svcB&gt;@clusterB</code> annotation and get the remoteWatcher, and remoteConfig from the related clusterStore. It will create and start an endpointTraslator passing the service name, port, and traslator, then Subscribe to the remoteWatcher that
+whenever the remote cluster’s endpoints change for &lt;id.service&gt;, remoteWatcher calls translator.Add/Remove/NoEndpoints, which enqueues a diff. The translator then sends those changes via syncStream.Send(…) down to the proxy. It will optionally do the same for the local cluster.</p>
+
+<h4 id="remote-services" class="header-anchor-wrapper">Remote Services
+  <a href="#remote-services" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h4>
+
+<p>If the Service is labeled with <code>multicluster.linkerd.io/cluster-name=***</code>, it treats it as a remote-discovery service and calls <code>Get</code> function of the <code>clusterStore</code>, which returns:</p>
+<ul>
+<li>The <code>EndpointsWatcher</code> that manages Endpoints in the remote cluster. You subscribe to it with (ServiceID, port, hostname, listener), and it pushes endpoint‐added/removed events from that remote cluster into your translator.</li>
+<li>The <code>ClusterConfig</code> containing the TrustDomain and ClusterDomain. These fields were read from the Secret’s annotations when that remote cluster was added to the store. TrustDomain is the identity trust domain for mTLS in that remote cluster, and ClusterDomain is the DNS suffix (e.g. cluster.local) that Kubernetes uses in that cluster.
+It then builds and starts a new EndpointTranslator using these values, and subscribe to the remote EndpointsWatcher passing the <code>EndpointTranslator</code> and the service, port, and InstaceId as references.</li>
+</ul>
+
+<h4 id="local-services" class="header-anchor-wrapper">Local Services
+  <a href="#local-services" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h4>
+
+<p>If neither “federated” nor “remote discovery” applies, it treats the Service as a normal local Kubernetes service. It then builds an new <code>EndpointTranslator</code> pointing to the local cluster, starts it, and subscribes to it passing the <code>EndpointTranslator</code> and the service, port, and InstaceId as references.</p>
+<p>After setting up the translator and subscription to ay of these watchers, it waits until one of these three things happens:</p>
+<ul>
+<li>The control plane is shutting down entirely (i.e. the global shutdown channel is closed).</li>
+<li>The proxy’s gRPC connection is canceled (e.g. the pod was killed or the network broke). It logs at DEBUG and exits.</li>
+<li>The translator’s internal queue overflowed (meaning it couldn’t keep up with endpoint churn). The translator then does close(streamEnd). It logs an ERROR (“stream aborted”) to signal that the stream was closed because it fell behind. The proxy is expected to reconnect and resynchronize.
+After any of these three cases fires, it returns nil, which causes gRPC to complete the RPC and close the HTTP/2 stream. Because it uses defer translator.Stop() and defer s.endpoints.Unsubscribe(&hellip;), everything unhooks in the correct order.</li>
+</ul>
+<pre><code>func (s *server) Get(dest *pb.GetDestination, stream pb.Destination_GetServer) error {
+	log := s.log
+	client, _ := peer.FromContext(stream.Context())
+	if client != nil {
+		log = log.WithField(&quot;remote&quot;, client.Addr)
+	}
+	var token contextToken
+	if dest.GetContextToken() != &quot;&quot; {
+		log.Debugf(&quot;Dest token: %q&quot;, dest.GetContextToken())
+		token = s.parseContextToken(dest.GetContextToken())
+		log = log.WithFields(logging.Fields{&quot;context-pod&quot;: token.Pod, &quot;context-ns&quot;: token.Ns})
+	}
+	log.Debugf(&quot;Get %s&quot;, dest.GetPath())
+	streamEnd := make(chan struct{})
+	host, port, err := getHostAndPort(dest.GetPath())
+	if err != nil {
+		log.Debugf(&quot;Invalid service %s&quot;, dest.GetPath())
+		return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		return status.Errorf(codes.InvalidArgument, &quot;IP queries not supported by Get API: host=%s&quot;, host)
+	}
+	service, instanceID, err := parseK8sServiceName(host, s.config.ClusterDomain)
+	if err != nil {
+		log.Debugf(&quot;Invalid service %s&quot;, dest.GetPath())
+		return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+	}
+	svc, err := s.k8sAPI.Svc().Lister().Services(service.Namespace).Get(service.Name)
+	if err != nil {
+		if kerrors.IsNotFound(err) {
+			log.Debugf(&quot;Service not found %s&quot;, service)
+			return status.Errorf(codes.NotFound, &quot;Service %s.%s not found&quot;, service.Name, service.Namespace)
+		}
+		log.Debugf(&quot;Failed to get service %s: %v&quot;, service, err)
+		return status.Errorf(codes.Internal, &quot;Failed to get service %s&quot;, dest.GetPath())
+	}
+	if isFederatedService(svc) {
+		remoteDiscovery := svc.Annotations[labels.RemoteDiscoveryAnnotation]
+		localDiscovery := svc.Annotations[labels.LocalDiscoveryAnnotation]
+		log.Debugf(&quot;Federated service discovery, remote:[%s] local:[%s]&quot;, remoteDiscovery, localDiscovery)
+		err := s.federatedServices.Subscribe(svc.Name, svc.Namespace, port, token.NodeName, instanceID, stream, streamEnd)
+		if err != nil {
+			log.Errorf(&quot;Failed to subscribe to federated service %q: %s&quot;, dest.GetPath(), err)
+			return err
+		}
+		defer s.federatedServices.Unsubscribe(svc.Name, svc.Namespace, stream)
+	} else if cluster, found := svc.Labels[labels.RemoteDiscoveryLabel]; found {
+		log.Debug(&quot;Remote discovery service detected&quot;)
+		remoteSvc, found := svc.Labels[labels.RemoteServiceLabel]
+		if !found {
+			log.Debugf(&quot;Remote discovery service missing remote service name %s&quot;, service)
+			return status.Errorf(codes.FailedPrecondition, &quot;Remote discovery service missing remote service name %s&quot;, dest.GetPath())
+		}
+		remoteWatcher, remoteConfig, found := s.clusterStore.Get(cluster)
+		if !found {
+			log.Errorf(&quot;Failed to get remote cluster %s&quot;, cluster)
+			return status.Errorf(codes.NotFound, &quot;Remote cluster not found: %s&quot;, cluster)
+		}
+		translator := newEndpointTranslator(
+			s.config.ControllerNS,
+			remoteConfig.TrustDomain,
+			s.config.ForceOpaqueTransport,
+			s.config.EnableH2Upgrade,
+			false, // Disable endpoint filtering for remote discovery.
+			s.config.EnableIPv6,
+			s.config.ExtEndpointZoneWeights,
+			s.config.MeshedHttp2ClientParams,
+			fmt.Sprintf(&quot;%s.%s.svc.%s:%d&quot;, remoteSvc, service.Namespace, remoteConfig.ClusterDomain, port),
+			token.NodeName,
+			s.config.DefaultOpaquePorts,
+			s.metadataAPI,
+			stream,
+			streamEnd,
+			log,
+		)
+		translator.Start()
+		defer translator.Stop()
+		err = remoteWatcher.Subscribe(watcher.ServiceID{Namespace: service.Namespace, Name: remoteSvc}, port, instanceID, translator)
+		if err != nil {
+			var ise watcher.InvalidService
+			if errors.As(err, &amp;ise) {
+				log.Debugf(&quot;Invalid remote discovery service %s&quot;, dest.GetPath())
+				return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+			}
+			log.Errorf(&quot;Failed to subscribe to remote discovery service %q in cluster %s: %s&quot;, dest.GetPath(), cluster, err)
+			return err
+		}
+		defer remoteWatcher.Unsubscribe(watcher.ServiceID{Namespace: service.Namespace, Name: remoteSvc}, port, instanceID, translator)
+	} else {
+		log.Debug(&quot;Local discovery service detected&quot;)
+		translator := newEndpointTranslator(
+			s.config.ControllerNS,
+			s.config.IdentityTrustDomain,
+			s.config.ForceOpaqueTransport,
+			s.config.EnableH2Upgrade,
+			true,
+			s.config.EnableIPv6,
+			s.config.ExtEndpointZoneWeights,
+			s.config.MeshedHttp2ClientParams,
+			dest.GetPath(),
+			token.NodeName,
+			s.config.DefaultOpaquePorts,
+			s.metadataAPI,
+			stream,
+			streamEnd,
+			log,
+		)
+		translator.Start()
+		defer translator.Stop()
+		err = s.endpoints.Subscribe(service, port, instanceID, translator)
+		if err != nil {
+			var ise watcher.InvalidService
+			if errors.As(err, &amp;ise) {
+				log.Debugf(&quot;Invalid service %s&quot;, dest.GetPath())
+				return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+			}
+			log.Errorf(&quot;Failed to subscribe to %s: %s&quot;, dest.GetPath(), err)
+			return err
+		}
+		defer s.endpoints.Unsubscribe(service, port, instanceID, translator)
+	}
+	select {
+	case &lt;-s.shutdown:
+	case &lt;-stream.Context().Done():
+		log.Debugf(&quot;Get %s cancelled&quot;, dest.GetPath())
+	case &lt;-streamEnd:
+		log.Errorf(&quot;Get %s stream aborted&quot;, dest.GetPath())
+	}
+	return nil
+}
+</code></pre>
+<p>If we inspect the logs we will be able to see references to these behaviors. The following is an example of local service.</p>
+<pre><code>time=&quot;2025-06-06T06:11:39Z&quot; level=debug msg=&quot;Get simple-app-v1.simple-app.svc.cluster.local:80&quot; addr=&quot;:8086&quot; component=server context-ns=simple-app context-pod=traffic-5cf984699d-rvcrz remote=&quot;10.23.0.30:45616&quot;
+time=&quot;2025-06-06T06:11:39Z&quot; level=debug msg=&quot;Local discovery service detected&quot; addr=&quot;:8086&quot; component=server context-ns=simple-app context-pod=traffic-5cf984699d-rvcrz remote=&quot;10.23.0.30:45616&quot;
+time=&quot;2025-06-06T06:11:39Z&quot; level=debug msg=&quot;Hints not available on endpointslice. Zone Filtering disabled. Falling back to routing to all pods&quot; addr=&quot;:8086&quot; component=endpoint-translator context-ns=simple-app context-pod=traffic-5cf984699d-rvcrz remote=&quot;10.23.0.30:45616&quot; service=&quot;simple-app-v1.simple-app.svc.cluster.local:80&quot;
+time=&quot;2025-06-06T06:11:39Z&quot; level=debug msg=&quot;Sending destination add: add:{addrs:{addr:{ip:{ipv4:169279523} port:5678} weight:10000 metric_labels:{key:\&quot;control_plane_ns\&quot; value:\&quot;linkerd\&quot;} metric_labels:{key:\&quot;deployment\&quot; value:\&quot;simple-app-v1\&quot;} metric_labels:{key:\&quot;pod\&quot; value:\&quot;simple-app-v1-57b57f8947-b6bpd\&quot;} metric_labels:{key:\&quot;pod_template_hash\&quot; value:\&quot;57b57f8947\&quot;} metric_labels:{key:\&quot;serviceaccount\&quot; value:\&quot;default\&quot;} metric_labels:{key:\&quot;zone\&quot; value:\&quot;\&quot;} metric_labels:{key:\&quot;zone_locality\&quot; value:\&quot;unknown\&quot;} tls_identity:{dns_like_identity:{name:\&quot;default.simple-app.serviceaccount.identity.linkerd.cluster.local\&quot;} server_name:{name:\&quot;default.simple-app.serviceaccount.identity.linkerd.cluster.local\&quot;}} protocol_hint:{h2:{}}} metric_labels:{key:\&quot;namespace\&quot; value:\&quot;simple-app\&quot;} metric_labels:{key:\&quot;service\&quot; value:\&quot;simple-app-v1\&quot;}}&quot; addr=&quot;:8086&quot; component=endpoint-translator context-ns=simple-app context-pod=traffic-5cf984699d-rvcrz remote=&quot;10.23.0.30:45616&quot; service=&quot;simple-app-v1.simple-app.svc.cluster.local:80&quot;
+</code></pre>
+
+<h3 id="get-profile-endpoint" class="header-anchor-wrapper">Get Profile Endpoint
+  <a href="#get-profile-endpoint" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h3>
+
+<pre><code>func (s *server) GetProfile(dest *pb.GetDestination, stream pb.Destination_GetProfileServer) error {
+	log := s.log
+	client, _ := peer.FromContext(stream.Context())
+	if client != nil {
+		log = log.WithField(&quot;remote&quot;, client.Addr)
+	}
+	var token contextToken
+	if dest.GetContextToken() != &quot;&quot; {
+		log.Debugf(&quot;Dest token: %q&quot;, dest.GetContextToken())
+		token = s.parseContextToken(dest.GetContextToken())
+		log = log.WithFields(logging.Fields{&quot;context-pod&quot;: token.Pod, &quot;context-ns&quot;: token.Ns})
+	}
+	log.Debugf(&quot;Getting profile for %s&quot;, dest.GetPath())
+	host, port, err := getHostAndPort(dest.GetPath())
+	if err != nil {
+		log.Debugf(&quot;Invalid address %q&quot;, dest.GetPath())
+		return status.Errorf(codes.InvalidArgument, &quot;invalid authority: %q: %q&quot;, dest.GetPath(), err)
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		err = s.getProfileByIP(token, ip, port, log, stream)
+		if err != nil {
+			var ise watcher.InvalidService
+			if errors.As(err, &amp;ise) {
+				log.Debugf(&quot;Invalid service %s&quot;, dest.GetPath())
+				return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+			}
+			log.Errorf(&quot;Failed to subscribe to profile by ip %q: %q&quot;, dest.GetPath(), err)
+		}
+		return err
+	}
+	err = s.getProfileByName(token, host, port, log, stream)
+	if err != nil {
+		var ise watcher.InvalidService
+		if errors.As(err, &amp;ise) {
+			log.Debugf(&quot;Invalid service %s&quot;, dest.GetPath())
+			return status.Errorf(codes.InvalidArgument, &quot;Invalid authority: %s&quot;, dest.GetPath())
+		}
+		log.Errorf(&quot;Failed to subscribe to profile by name %q: %q&quot;, dest.GetPath(), err)
+	}
+	return err
+}
+</code></pre>
+
+<h2 id="metrics" class="header-anchor-wrapper">Metrics
+  <a href="#metrics" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<p>The destination controller will exponse an extensive quantity of metrics that can be summarized by sending a GET request to the <code>/metrics</code> endpoint of the port <code>9996</code>.</p>
+<pre><code>kubectl -n linkerd port-forward deploy/linkerd-destination 9996
+curl -s http://localhost:9996/metrics
+</code></pre>
+<pre><code># HELP cluster_store_size The number of linked clusters in the remote discovery cluster store
+# TYPE cluster_store_size gauge
+cluster_store_size 0
+
+
+
+# HELP grpc_server_handled_total Total number of RPCs completed on the server, regardless of success or failure.
+# TYPE grpc_server_handled_total counter
+grpc_server_handled_total{grpc_code=&quot;OK&quot;,grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 318
+grpc_server_handled_total{grpc_code=&quot;OK&quot;,grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 318
+
+# HELP grpc_server_handling_seconds Histogram of response latency (seconds) of gRPC that had been application-level handled by the server.
+# TYPE grpc_server_handling_seconds histogram
+grpc_server_handling_seconds_bucket{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;,le=&quot;0.005&quot;} 0
+...
+grpc_server_handling_seconds_sum{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 8135.809845959998
+grpc_server_handling_seconds_count{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 318
+grpc_server_handling_seconds_bucket{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;,le=&quot;0.005&quot;} 0
+... 
+grpc_server_handling_seconds_sum{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 9666.61187774301
+grpc_server_handling_seconds_count{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 318
+
+# HELP grpc_server_msg_received_total Total number of RPC stream messages received on the server.
+# TYPE grpc_server_msg_received_total counter
+grpc_server_msg_received_total{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 325
+grpc_server_msg_received_total{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 328
+
+# HELP grpc_server_msg_sent_total Total number of gRPC stream messages sent by the server.
+# TYPE grpc_server_msg_sent_total counter
+grpc_server_msg_sent_total{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 319
+grpc_server_msg_sent_total{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 328
+
+# HELP grpc_server_started_total Total number of RPCs started on the server.
+# TYPE grpc_server_started_total counter
+grpc_server_started_total{grpc_method=&quot;Get&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 325
+grpc_server_started_total{grpc_method=&quot;GetProfile&quot;,grpc_service=&quot;io.linkerd.proxy.destination.Destination&quot;,grpc_type=&quot;server_stream&quot;} 328
+
+# HELP http_client_burst Burst used for the client config.
+# TYPE http_client_burst gauge
+http_client_burst{client=&quot;k8s&quot;} 10
+
+# HELP http_client_in_flight_requests A gauge of in-flight requests for the wrapped client.
+# TYPE http_client_in_flight_requests gauge
+http_client_in_flight_requests{client=&quot;k8s&quot;} 0
+http_client_in_flight_requests{client=&quot;l5dCrd&quot;} 0
+
+# HELP http_client_qps Max QPS used for the client config.
+# TYPE http_client_qps gauge
+http_client_qps{client=&quot;k8s&quot;} 5
+
+# HELP http_client_request_latency_seconds A histogram of request latencies.
+# TYPE http_client_request_latency_seconds histogram
+http_client_request_latency_seconds_bucket{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;get&quot;,le=&quot;0.01&quot;} 53
+...
+http_client_request_latency_seconds_sum{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 0.06556754500000002
+http_client_request_latency_seconds_count{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 53
+http_client_request_latency_seconds_bucket{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;put&quot;,le=&quot;0.01&quot;} 855
+...
+http_client_request_latency_seconds_sum{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;put&quot;} 4.401309381000001
+http_client_request_latency_seconds_count{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;put&quot;} 868
+http_client_request_latency_seconds_bucket{client=&quot;k8s&quot;,code=&quot;201&quot;,method=&quot;post&quot;,le=&quot;0.01&quot;} 3
+...
+http_client_request_latency_seconds_sum{client=&quot;k8s&quot;,code=&quot;201&quot;,method=&quot;post&quot;} 0.003263582
+http_client_request_latency_seconds_count{client=&quot;k8s&quot;,code=&quot;201&quot;,method=&quot;post&quot;} 3
+http_client_request_latency_seconds_bucket{client=&quot;k8s&quot;,code=&quot;404&quot;,method=&quot;get&quot;,le=&quot;0.01&quot;} 1
+...
+http_client_request_latency_seconds_sum{client=&quot;k8s&quot;,code=&quot;404&quot;,method=&quot;get&quot;} 0.001214416
+http_client_request_latency_seconds_count{client=&quot;k8s&quot;,code=&quot;404&quot;,method=&quot;get&quot;} 1
+http_client_request_latency_seconds_bucket{client=&quot;l5dCrd&quot;,code=&quot;200&quot;,method=&quot;get&quot;,le=&quot;0.01&quot;} 18
+...
+http_client_request_latency_seconds_sum{client=&quot;l5dCrd&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 0.023537168000000004
+http_client_request_latency_seconds_count{client=&quot;l5dCrd&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 18
+
+# HELP http_client_requests_total A counter for requests from the wrapped client.
+# TYPE http_client_requests_total counter
+http_client_requests_total{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 53
+http_client_requests_total{client=&quot;k8s&quot;,code=&quot;200&quot;,method=&quot;put&quot;} 868
+http_client_requests_total{client=&quot;k8s&quot;,code=&quot;201&quot;,method=&quot;post&quot;} 3
+http_client_requests_total{client=&quot;k8s&quot;,code=&quot;404&quot;,method=&quot;get&quot;} 1
+http_client_requests_total{client=&quot;l5dCrd&quot;,code=&quot;200&quot;,method=&quot;get&quot;} 18
+
+# HELP workqueue_adds_total Total number of adds handled by workqueue
+# TYPE workqueue_adds_total counter
+workqueue_adds_total{name=&quot;endpoints_controller_workqueue&quot;} 48
+
+# HELP workqueue_depth Current depth of workqueue
+# TYPE workqueue_depth gauge
+workqueue_depth{name=&quot;endpoints_controller_workqueue&quot;} 0
+
+# HELP workqueue_drops_total Total number of dropped items from the queue due to exceeding retry threshold
+# TYPE workqueue_drops_total counter
+workqueue_drops_total{name=&quot;endpoints_controller_workqueue&quot;} 0
+
+# HELP workqueue_longest_running_processor_seconds How many seconds has the longest running processor for workqueue been running.
+# TYPE workqueue_longest_running_processor_seconds gauge
+workqueue_longest_running_processor_seconds{name=&quot;endpoints_controller_workqueue&quot;} 0
+
+# HELP workqueue_queue_duration_seconds How long in seconds an item stays in workqueue before being requested.
+# TYPE workqueue_queue_duration_seconds histogram
+workqueue_queue_duration_seconds_bucket{name=&quot;endpoints_controller_workqueue&quot;,le=&quot;1e-08&quot;} 0
+...
+workqueue_queue_duration_seconds_sum{name=&quot;endpoints_controller_workqueue&quot;} 0.011922585000000001
+workqueue_queue_duration_seconds_count{name=&quot;endpoints_controller_workqueue&quot;} 48
+
+# HELP workqueue_retries_total Total number of retries handled by workqueue
+# TYPE workqueue_retries_total counter
+workqueue_retries_total{name=&quot;endpoints_controller_workqueue&quot;} 0
+
+# HELP workqueue_unfinished_work_seconds How many seconds of work has done that is in progress and hasn't been observed by work_duration. Large values indicate stuck threads. One can deduce the number of stuck threads by observing the rate at which this increases.
+# TYPE workqueue_unfinished_work_seconds gauge
+workqueue_unfinished_work_seconds{name=&quot;endpoints_controller_workqueue&quot;} 0
+
+# HELP workqueue_work_duration_seconds How long in seconds processing an item from workqueue takes.
+# TYPE workqueue_work_duration_seconds histogram
+workqueue_work_duration_seconds_bucket{name=&quot;endpoints_controller_workqueue&quot;,le=&quot;1e-08&quot;} 0
+...
+workqueue_work_duration_seconds_sum{name=&quot;endpoints_controller_workqueue&quot;} 0.002472292
+workqueue_work_duration_seconds_count{name=&quot;endpoints_controller_workqueue&quot;} 48
+</code></pre>
+<p>The destination controller will emit metrics related to each informer with a gauge named <code>&lt;kind&gt;_cache_size</code> that reports the current number of items in that informer’s cache.</p>
+<pre><code># HELP endpoints_cache_size Number of items in the client-go endpoints cache
+# TYPE endpoints_cache_size gauge
+endpoints_cache_size{cluster=&quot;local&quot;} 26
+
+# HELP job_cache_size Number of items in the client-go job cache
+# TYPE job_cache_size gauge
+job_cache_size{cluster=&quot;local&quot;} 0
+
+# HELP node_cache_size Number of items in the client-go node cache
+# TYPE node_cache_size gauge
+node_cache_size{cluster=&quot;local&quot;} 4
+
+# HELP pod_cache_size Number of items in the client-go pod cache
+# TYPE pod_cache_size gauge
+pod_cache_size{cluster=&quot;local&quot;} 24
+
+# HELP replicaset_cache_size Number of items in the client-go replicaset cache
+# TYPE replicaset_cache_size gauge
+replicaset_cache_size{cluster=&quot;local&quot;} 24
+
+# HELP server_cache_size Number of items in the client-go server cache
+# TYPE server_cache_size gauge
+server_cache_size{cluster=&quot;local&quot;} 0
+
+# HELP service_cache_size Number of items in the client-go service cache
+# TYPE service_cache_size gauge
+service_cache_size{cluster=&quot;local&quot;} 26
+
+# HELP serviceprofile_cache_size Number of items in the client-go serviceprofile cache
+# TYPE serviceprofile_cache_size gauge
+serviceprofile_cache_size{cluster=&quot;local&quot;} 0
+</code></pre>
+<p><img src="/control-plane/destination_cache_metrics.png" alt="Destination Cache Metrics"></p>
+<p>The watchers will also expose metrics related to the lag (in seconds) between the last update to a specific object and its processing by the informer with a gauge named <code>&lt;kind&gt;_informer_lag_seconds</code>.</p>
+<pre><code># HELP endpoints_informer_lag_seconds The amount of time between when an Endpoints resource is updated and when an informer observes it
+# TYPE endpoints_informer_lag_seconds histogram
+endpoints_informer_lag_seconds_bucket{le=&quot;0.5&quot;} 0
+...
+endpoints_informer_lag_seconds_sum 0
+endpoints_informer_lag_seconds_count 0
+
+# HELP endpointslices_informer_lag_seconds The amount of time between when an EndpointSlice resource is updated and when an informer observes it
+# TYPE endpointslices_informer_lag_seconds histogram
+endpointslices_informer_lag_seconds_bucket{le=&quot;0.5&quot;} 4
+...
+endpointslices_informer_lag_seconds_sum 30.301216474000004
+endpointslices_informer_lag_seconds_count 42
+
+# HELP externalworkload_cache_size Number of items in the client-go externalworkload cache
+# TYPE externalworkload_cache_size gauge
+externalworkload_cache_size{cluster=&quot;local&quot;} 0
+
+# HELP externalworkload_informer_lag_seconds The amount of time between when an ExternalWorkload resource is updated and when an informer observes it
+# TYPE externalworkload_informer_lag_seconds histogram
+externalworkload_informer_lag_seconds_bucket{le=&quot;0.5&quot;} 0
+...
+externalworkload_informer_lag_seconds_sum 0
+externalworkload_informer_lag_seconds_count 0
+
+# HELP pods_informer_lag_seconds The amount of time between when a Pod resource is updated and when an informer observes it
+# TYPE pods_informer_lag_seconds histogram
+pods_informer_lag_seconds_bucket{le=&quot;0.5&quot;} 6
+...
+pods_informer_lag_seconds_sum 41.22129725400001
+pods_informer_lag_seconds_count 56
+
+# HELP servers_informer_lag_seconds The amount of time between when a Server resource is updated and when an informer observes it
+# TYPE servers_informer_lag_seconds histogram
+servers_informer_lag_seconds_bucket{le=&quot;0.5&quot;} 0
+...
+servers_informer_lag_seconds_sum 0
+servers_informer_lag_seconds_count 0
+</code></pre>
+<p><img src="/control-plane/destination_lag_metrics.png" alt="Destination Cache Metrics"></p>
+<p>Linkerd Controllers share the usage of the <code>/prometheus/client_golang/prometheus/promhttp</code> module that will allow them to expose metrics related to he Go runtime metrics.</p>
+<pre><code># HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile=&quot;0&quot;} 3.1001e-05
+go_gc_duration_seconds_sum 0.007744916
+go_gc_duration_seconds_count 24
+
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent
+# TYPE go_gc_gogc_percent gauge
+go_gc_gogc_percent 100
+
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes
+# TYPE go_gc_gomemlimit_bytes gauge
+go_gc_gomemlimit_bytes 9.223372036854776e+18
+
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 187
+
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version=&quot;go1.23.5&quot;} 1
+
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 1.6198776e+07
+
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 1.56505128e+08
+
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.515081e+06
+
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 1.366899e+06
+
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 4.032768e+06
+
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 1.6198776e+07
+
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 9.633792e+06
+
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 2.1397504e+07
+
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 82595
+
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 8.372224e+06
+
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 3.1031296e+07
+
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.749141896403e+09
+
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 1.449494e+06
+
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 16800
+
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 31200
+
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 324640
+
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 359040
+
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 2.2538656e+07
+
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 1.325407e+06
+
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 2.424832e+06
+
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 2.424832e+06
+
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 4.0719624e+07
+
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads
+# TYPE go_sched_gomaxprocs_threads gauge
+go_sched_gomaxprocs_threads 14
+
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 14
+
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 4.15
+
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 65536
+
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# TYPE process_network_receive_bytes_total counter
+process_network_receive_bytes_total 1.1785203e+07
+
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# TYPE process_network_transmit_bytes_total counter
+process_network_transmit_bytes_total 1.2693481e+07
+
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 18
+
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 7.45472e+07
+
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.7491402229e+09
+
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 5.612982272e+09
+
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+promhttp_metric_handler_requests_in_flight 1
+
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE promhttp_metric_handler_requests_total counter
+promhttp_metric_handler_requests_total{code=&quot;200&quot;} 170
+promhttp_metric_handler_requests_total{code=&quot;500&quot;} 0
+promhttp_metric_handler_requests_total{code=&quot;503&quot;} 0
+</code></pre>
+<p><img src="/control-plane/destination_go_metrics.png" alt="Destination Go Metrics"></p>
+
+<h2 id="references" class="header-anchor-wrapper">References
+  <a href="#references" class="header-anchor-link">
+    <svg width="16px" height="16px" viewBox="0 0 24 24">
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24" height="24" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+</svg>
+
+</svg>
+  </a>
+</h2>
+
+<ul>
+<li>
+<p>Entrypoint: <a href="https://github.com/linkerd/linkerd2/blob/main/controller/cmd/destination/main.go">https://github.com/linkerd/linkerd2/blob/main/controller/cmd/destination/main.go</a></p>
+</li>
+<li>
+<p><a href="https://linkerd.io/2-edge/reference/architecture/">https://linkerd.io/2-edge/reference/architecture/</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/">https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/workload_watcher.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/workload_watcher.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/k8s.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/k8s.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/endpoints_watcher.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/watcher/endpoints_watcher.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_controller.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_controller.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_reconciler.go">https://github.com/linkerd/linkerd2/blob/main/controller/api/destination/external-workload/endpoints_reconciler.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/k8s/k8s.go">https://github.com/linkerd/linkerd2/blob/main/controller/k8s/k8s.go</a></p>
+</li>
+<li>
+<p><a href="https://github.com/linkerd/linkerd2/blob/main/controller/k8s/api.go">https://github.com/linkerd/linkerd2/blob/main/controller/k8s/api.go</a></p>
+</li>
+<li>
+<p><a href="https://pkg.go.dev/k8s.io/client-go">https://pkg.go.dev/k8s.io/client-go</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/</a></p>
+</li>
+</ul>
+
+</article>
+</div>
+
+
+                
+                    
+                
+
+                
+            </div>
+        </main>
+<footer>
+    <article>Copyright © 2025</article>
+</footer>
+
+</body>
+</html>

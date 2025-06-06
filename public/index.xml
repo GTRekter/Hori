@@ -15,7 +15,7 @@
       <guid>//localhost:1313/about/introduction/</guid>
       <description>&lt;p&gt;Hi, I’m Ivan Porta. I’m a &lt;strong&gt;Customer Engineer at Buoyant&lt;/strong&gt; living in Seoul, South Korea.&lt;br&gt;
 Over the years I’ve helped large and small organizations adopt &lt;strong&gt;Linkerd&lt;/strong&gt;, tune it for production traffic, and even peek under the hood when things got interesting.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;about/selfie.png&#34; alt=&#34;About&#34;&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img src=&#34;about/selfie.jpeg&#34; alt=&#34;About&#34;&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -91,10 +91,10 @@ Let’s make service-mesh internals a little less mysterious—together.&lt;/p&g
     
     <item>
       <title>Destination Controller</title>
-      <link>//localhost:1313/control-plane/destination/</link>
+      <link>//localhost:1313/control-plane/destination/server/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       
-      <guid>//localhost:1313/control-plane/destination/</guid>
+      <guid>//localhost:1313/control-plane/destination/server/</guid>
       <description>&lt;h1 id=&#34;destination-controller&#34; class=&#34;header-anchor-wrapper&#34;&gt;Destination Controller
   &lt;a href=&#34;#destination-controller&#34; class=&#34;header-anchor-link&#34;&gt;
     &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
@@ -110,129 +110,7 @@ Let’s make service-mesh internals a little less mysterious—together.&lt;/p&g
   &lt;/a&gt;
 &lt;/h1&gt;
 
-&lt;p&gt;The Destination controller in Linkerd’s control plane is responsible for service discovery and routing. It watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies.&lt;/p&gt;
-
-&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
-  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
-&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
-&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
-&lt;li&gt;Helm (v3+)&lt;/li&gt;
-&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
-  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h1&gt;
-
-
-&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
-  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; audit-policy.yaml
-apiVersion: audit.k8s.io/v1
-kind: Policy
-rules:
-  - level: RequestResponse
-    resources:
-      - group: &amp;quot;&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-  - level: RequestResponse
-    resources:
-      - group: &amp;quot;linkerd.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-      - group: &amp;quot;policy.linkerd.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-      - group: &amp;quot;gateway.networking.k8s.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-  - level: None
-EOF
-cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
-apiVersion: k3d.io/v1alpha5
-kind: Simple
-metadata:
-  name: &amp;quot;cluster&amp;quot;
-servers: 1
-agents: 0
-image: rancher/k3s:v1.33.0-k3s1
-network: playground
-options:
-  k3s:
-    extraArgs:
-      - arg: --disable=traefik
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --cluster-cidr=10.23.0.0/16
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --service-cidr=10.247.0.0/16
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --debug
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-ports:
-  - port: 8081:80
-    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
-volumes:
-  - volume: &amp;quot;&amp;lt;LOCAL-FULL-PATH&amp;gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&amp;quot;
-    nodeFilters: [&amp;quot;server:*&amp;quot;]
-EOF
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
-  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+&lt;p&gt;When we install Linkerd, it will deploy a destination controller in the destination pods. This controller is responsible for service discovery and routing. t watches Kubernetes resources (Services, EndpointSlices, Pods, ExternalWorkloads, etc.) via shared informers, builds a local cache of endpoints, and serves gRPC requests from data-plane proxies. It will server the requests coming from the proxies via gRPC on port 8086, and expose the metrics on port 9996.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -455,129 +333,7 @@ EOF
   &lt;/a&gt;
 &lt;/h2&gt;
 
-&lt;p&gt;It&amp;rsquo;s using a mutating webhook to intercept the requests to the kubernetes API when a new pod is created, then check the annotations and if there is &lt;code&gt;linkerd.io/injected: enabled&lt;/code&gt; then inject a Linkerd proxy and ProxyInit containers.&lt;/p&gt;
-
-&lt;h1 id=&#34;prerequisites&#34; class=&#34;header-anchor-wrapper&#34;&gt;Prerequisites
-  &lt;a href=&#34;#prerequisites&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;macOS/Linux/Windows with a Unix‑style shell&lt;/li&gt;
-&lt;li&gt;k3d (v5+) for local Kubernetes clusters&lt;/li&gt;
-&lt;li&gt;kubectl (v1.25+)&lt;/li&gt;
-&lt;li&gt;Helm (v3+)&lt;/li&gt;
-&lt;li&gt;Smallstep (step) CLI for certificate generation&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&#34;tutorial&#34; class=&#34;header-anchor-wrapper&#34;&gt;Tutorial
-  &lt;a href=&#34;#tutorial&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h1&gt;
-
-
-&lt;h2 id=&#34;1-create-the-configuration-files&#34; class=&#34;header-anchor-wrapper&#34;&gt;1. Create the configuration files
-  &lt;a href=&#34;#1-create-the-configuration-files&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; audit-policy.yaml
-apiVersion: audit.k8s.io/v1
-kind: Policy
-rules:
-  - level: RequestResponse
-    resources:
-      - group: &amp;quot;&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-  - level: RequestResponse
-    resources:
-      - group: &amp;quot;linkerd.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-      - group: &amp;quot;policy.linkerd.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-      - group: &amp;quot;gateway.networking.k8s.io&amp;quot;
-        resources: [&amp;quot;*&amp;quot;]
-  - level: None
-EOF
-cat &amp;lt;&amp;lt; &#39;EOF&#39; &amp;gt; cluster.yaml
-apiVersion: k3d.io/v1alpha5
-kind: Simple
-metadata:
-  name: &amp;quot;cluster&amp;quot;
-servers: 1
-agents: 0
-image: rancher/k3s:v1.33.0-k3s1
-network: playground
-options:
-  k3s:
-    extraArgs:
-      - arg: --disable=traefik
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --cluster-cidr=10.23.0.0/16
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --service-cidr=10.247.0.0/16
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --debug
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --kube-apiserver-arg=audit-policy-file=/etc/rancher/k3s/audit-policy.yaml
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-      - arg: --kube-apiserver-arg=audit-log-path=/var/log/kubernetes/audit/audit.log
-        nodeFilters: [&amp;quot;server:*&amp;quot;]
-ports:
-  - port: 8081:80
-    nodeFilters: [&amp;quot;loadbalancer&amp;quot;]
-volumes:
-  - volume: &amp;quot;&amp;lt;LOCAL-FULL-PATH&amp;gt;/audit-policy.yaml:/etc/rancher/k3s/audit-policy.yaml&amp;quot;
-    nodeFilters: [&amp;quot;server:*&amp;quot;]
-EOF
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-wrapper&#34;&gt;2. Create a Local Kubernetes Cluster
-  &lt;a href=&#34;#2-create-a-local-kubernetes-cluster&#34; class=&#34;header-anchor-link&#34;&gt;
-    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
-&lt;svg
-    xmlns=&#34;http://www.w3.org/2000/svg&#34;
-    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
-    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
-    stroke-linejoin=&#34;round&#34;&gt;
-    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
-&lt;/svg&gt;
-
-&lt;/svg&gt;
-  &lt;/a&gt;
-&lt;/h2&gt;
-
-&lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+&lt;p&gt;The Linkerd Proxy-Injector uses a mutating webhook to intercept requests to the Kubernetes API when a new Pod (or Service) is created. If the namespace or Pod is annotated with &lt;code&gt;linkerd.io/inject: enabled&lt;/code&gt;, the webhook injects the Linkerd proxy and ProxyInit containers into the Pod spec.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -761,6 +517,125 @@ EOF
 &lt;/h2&gt;
 
 &lt;p&gt;Use k3d and your cluster.yaml to spin up a lightweight Kubernetes cluster:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/endpoints-watcher/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/endpoints-watcher/</guid>
+      <description>&lt;h3 id=&#34;endpoints-watcher&#34; class=&#34;header-anchor-wrapper&#34;&gt;Endpoints Watcher
+  &lt;a href=&#34;#endpoints-watcher&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h3&gt;
+
+&lt;p&gt;THe Endpoints Watcher is in charge of handling changes to Services, EndpointSlices, and Endpoints. It&amp;rsquo;s important to understant that it won&amp;rsquo;t watch both of Ednpoint and EndpointSlice. Depending on &lt;code&gt;ew.enableEndpointSlices&lt;/code&gt; it will watch one or the other. This value is received as parameter from the container &lt;code&gt;-enable-endpoint-slices&lt;/code&gt; and by default is set to &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/external-workloads-controller/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/external-workloads-controller/</guid>
+      <description>&lt;h2 id=&#34;6-external-workloads-controller&#34; class=&#34;header-anchor-wrapper&#34;&gt;6. External Workloads Controller
+  &lt;a href=&#34;#6-external-workloads-controller&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h2&gt;
+
+&lt;p&gt;Linkerd’s destination subsystem manages &lt;code&gt;ExternalWorkload&lt;/code&gt; resources to represent workloads running outside the cluster. Unlike normal Pods, these workloads are not native Kubernetes objects; their IPs live in the &lt;code&gt;ExternalWorkload.spec.workloadIPs&lt;/code&gt; field.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kubectl get externalworkload -n simple-app   external-simple-app-v1-0e340584 -o yaml
+apiVersion: workload.linkerd.io/v1beta1
+kind: ExternalWorkload
+metadata:
+  name: external-simple-app-v1-0e340584
+  namespace: simple-app
+  ...
+spec:
+  meshTLS:
+    identity: spiffe://root.linkerd.cluster.local/proxy-harness
+    serverName: external-simple-app-v1-0e340584.simple-app.external.identity.linkerd.cluster.local
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  workloadIPs:
+  - ip: 172.20.0.8
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When an &lt;code&gt;ExternalWorkload&lt;/code&gt; is created, updated, or deleted, Linkerd’s controller sets up informers to catch those events and invoke the related function in the handler.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/federated-service-watcher/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/federated-service-watcher/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/opaque-port-watcher/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/opaque-port-watcher/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/profile-watcher/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/profile-watcher/</guid>
+      <description>&lt;h1 id=&#34;profiles&#34; class=&#34;header-anchor-wrapper&#34;&gt;Profiles
+  &lt;a href=&#34;#profiles&#34; class=&#34;header-anchor-link&#34;&gt;
+    &lt;svg width=&#34;16px&#34; height=&#34;16px&#34; viewBox=&#34;0 0 24 24&#34;&gt;
+&lt;svg
+    xmlns=&#34;http://www.w3.org/2000/svg&#34;
+    width=&#34;24&#34; height=&#34;24&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34;
+    stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34; stroke-linecap=&#34;round&#34;
+    stroke-linejoin=&#34;round&#34;&gt;
+    &lt;line x1=&#34;4&#34; y1=&#34;9&#34; x2=&#34;20&#34; y2=&#34;9&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;4&#34; y1=&#34;15&#34; x2=&#34;20&#34; y2=&#34;15&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;10&#34; y1=&#34;3&#34; x2=&#34;8&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;&lt;line x1=&#34;16&#34; y1=&#34;3&#34; x2=&#34;14&#34; y2=&#34;21&#34;&gt;&lt;/line&gt;
+&lt;/svg&gt;
+
+&lt;/svg&gt;
+  &lt;/a&gt;
+&lt;/h1&gt;
+
+&lt;p&gt;The Profile Watcher is responsible for monitoring &lt;code&gt;ServiceProfile&lt;/code&gt; custom resources in the cluster. It triggers updates to subscribed listeners whenever a profile is added, updated, or deleted. This enables dynamic service behavior such as retries, timeouts, and routing logic to be applied to Linkerd proxies without restarting them.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>//localhost:1313/control-plane/destination/workload-watcher/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>//localhost:1313/control-plane/destination/workload-watcher/</guid>
+      <description></description>
     </item>
     
     <item>
