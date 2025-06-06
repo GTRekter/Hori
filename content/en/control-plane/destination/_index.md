@@ -3,6 +3,8 @@ title = "Destination"
 author = "Ivan Porta"
 tags = ["index"]
 type = "bookcase"
+bookcase_cover_src = 'control-plane/destination.png'
+bookcase_cover_src_dark = 'control-plane/destination_white.png'
 +++
 
 Deep dive into Linkerd’s Destination controller—how it leverages informers, watches EndpointSlices, and performs leader election to serve service discovery in Kubernetes.
